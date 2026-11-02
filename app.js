@@ -133,6 +133,12 @@
           h('path', { d: 'M5 12h14' }),
           h('path', { d: 'm12 5 7 7-7 7' })
         );
+      case 'menu':
+        return h('svg', props,
+          h('line', { x1: 3, y1: 6, x2: 21, y2: 6 }),
+          h('line', { x1: 3, y1: 12, x2: 21, y2: 12 }),
+          h('line', { x1: 3, y1: 18, x2: 21, y2: 18 })
+        );
       default:
         return h('svg', props, h('circle', { cx: 12, cy: 12, r: 8 }));
     }
@@ -221,6 +227,7 @@
     const [pitchMode, setPitchMode] = useState(false);
     const [pitchModalOpen, setPitchModalOpen] = useState(false);
     const [orderSuccessOpen, setOrderSuccessOpen] = useState(false);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [toasts, setToasts] = useState([]);
 
     // Currency Helper
@@ -373,7 +380,7 @@
           h('a', { href: '#storeSection', className: 'live-store-pill' },
             h('span', { className: 'status-dot' }),
             h(Icon, { name: 'pin', size: 14, color: '#D4A359' }),
-            h('span', null,
+            h('span', { className: 'store-pill-text' },
               h('strong', null, currentStore.name),
               ` (${currentStore.distance}) · Express Pickup in ~${currentStore.waitMins} mins`
             )
@@ -444,8 +451,75 @@
               onClick: () => setCartOpen(true)
             },
               h(Icon, { name: 'bag', size: 15 }),
-              h('span', null, 'Click & Collect'),
+              h('span', { className: 'cart-btn-label' }, 'Click & Collect'),
               h('span', { className: 'cart-count-badge' }, totalCartCount)
+            ),
+            h('button', {
+              type: 'button',
+              className: 'mobile-menu-btn',
+              'aria-label': mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu',
+              onClick: () => setMobileNavOpen((o) => !o)
+            },
+              h(Icon, { name: mobileNavOpen ? 'close' : 'menu', size: 19 })
+            )
+          )
+        ),
+
+        // Mobile Slide-Down Navigation Drawer
+        mobileNavOpen && h('div', { className: 'mobile-nav-drawer' },
+          [
+            { href: '#menuSection', label: '01 · Menu & Allergen Guard', icon: 'coffee' },
+            { href: '#matchmakerSection', label: '02 · 15s Coffee Taste Matchmaker', icon: 'sparkle' },
+            { href: '#loyaltySection', label: '03 · 9-Stamp Digital Wallet & QR Pass', icon: 'award' },
+            { href: '#storeSection', label: '04 · Live Store Occupancy & Wi-Fi Radar', icon: 'pin' },
+            { href: '#roasterySection', label: '05 · Coffee At Home Subscriptions', icon: 'bag' }
+          ].map((nav) =>
+            h('a', {
+              key: nav.href,
+              href: nav.href,
+              className: 'mobile-nav-link',
+              onClick: () => setMobileNavOpen(false)
+            },
+              h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.55rem' } },
+                h(Icon, { name: nav.icon, size: 16, color: '#C47D4E' }),
+                nav.label
+              ),
+              h(Icon, { name: 'arrowRight', size: 15, color: '#8A7668' })
+            )
+          ),
+          h('div', { className: 'mobile-nav-actions' },
+            h('button', {
+              type: 'button',
+              className: `pitch-toggle-btn ${pitchMode ? 'active' : ''}`,
+              style: { color: pitchMode ? '#fff' : '#1E1510', borderColor: 'rgba(196,125,78,0.4)' },
+              onClick: () => {
+                setPitchMode((p) => !p);
+                setMobileNavOpen(false);
+              }
+            },
+              h(Icon, { name: 'sliders', size: 13 }),
+              pitchMode ? 'Audit Callouts: ON' : 'Audit Callouts: OFF'
+            ),
+            h('button', {
+              type: 'button',
+              className: 'pitch-deck-btn',
+              onClick: () => {
+                setMobileNavOpen(false);
+                setPitchModalOpen(true);
+              }
+            },
+              h(Icon, { name: 'chart', size: 13 }),
+              'UX Audit Scorecard'
+            ),
+            h('select', {
+              className: 'region-select',
+              style: { color: '#1E1510', background: '#fff', borderColor: 'rgba(196,125,78,0.4)' },
+              value: region,
+              onChange: (e) => setRegion(e.target.value)
+            },
+              Object.keys(DATA.regions).map((k) =>
+                h('option', { key: k, value: k }, DATA.regions[k].label)
+              )
             )
           )
         )
@@ -1236,18 +1310,7 @@
                   ),
 
                   // Workspace & Occupancy Telemetry Strip
-                  h('div', {
-                    style: {
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
-                      gap: '0.6rem',
-                      background: 'rgba(0,0,0,0.28)',
-                      padding: '0.7rem',
-                      borderRadius: '8px',
-                      marginBottom: '0.85rem',
-                      fontSize: '0.76rem'
-                    }
-                  },
+                  h('div', { className: 'store-telemetry-grid' },
                     h('div', null,
                       h('span', { style: { color: 'var(--text-on-dark-muted)', display: 'block' } }, 'Live Occupancy'),
                       h('strong', { style: { color: '#4ADE80' } }, `${currentStore.occupancyPct}% (${currentStore.occupancy.split('·')[0]})`)
@@ -1697,7 +1760,7 @@
                     h('span', { style: { background: '#EEF2FF', color: '#4F46E5', padding: '0.18rem 0.6rem', borderRadius: '99px' } }, af.impact)
                   )
                 ),
-                h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-secondary)' } },
+                h('div', { className: 'audit-comparison-grid' },
                   h('div', null, h('strong', { style: { color: '#991B1B' } }, 'Bottleneck: '), af.problem),
                   h('div', null, h('strong', { style: { color: '#166534' } }, 'React Solution: '), af.solution)
                 )
@@ -1950,6 +2013,36 @@
               }
             }, 'Complete Express Checkout (Apple Pay / Card)')
           )
+        )
+      ),
+
+      // ======================================================================
+      // NATIVE SMARTPHONE BOTTOM TAB BAR (Sticky Thumb-Zone Navigation)
+      // ======================================================================
+      h('nav', { className: 'mobile-bottom-nav', 'aria-label': 'Smartphone Quick Navigation' },
+        h('a', { href: '#menuSection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'coffee', size: 18 }),
+          h('span', null, 'Menu')
+        ),
+        h('a', { href: '#matchmakerSection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'sparkle', size: 18 }),
+          h('span', null, 'Match')
+        ),
+        h('a', { href: '#loyaltySection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'award', size: 18 }),
+          h('span', null, `${stamps}/9 Stamps`)
+        ),
+        h('a', { href: '#storeSection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'pin', size: 18 }),
+          h('span', null, 'Stores')
+        ),
+        h('button', {
+          type: 'button',
+          className: 'mobile-tab-item highlight-tab',
+          onClick: () => setCartOpen(true)
+        },
+          h(Icon, { name: 'bag', size: 18 }),
+          h('span', null, `Bag (${totalCartCount})`)
         )
       ),
 
