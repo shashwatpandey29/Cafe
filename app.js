@@ -1,24 +1,15 @@
 /* ==========================================================================
-   CAFFÈ NERO — ENTERPRISE REACT 18 APPLICATION (POST-UX AUDIT EDITION)
-   Components:
-     - <Icon /> (Architectural Vector SVG System)
-     - <UtilityBar /> & <Header />
-     - <HeroSection /> + <QuickOrderExpressBar />
-     - <MenuExplorerSection /> (with Allergen Exclusion Matrix & Dietary Filters)
-     - <CoffeeMatchmakerSection /> (Interactive 3-Step Barista Recommender)
-     - <LoyaltyWalletSection /> (9-Stamp Card + Flippable In-Store QR Pass)
-     - <StoreLocatorSection /> (Interactive SVG Radar Map + Workspace Telemetry)
-     - <RoasterySubscriptionSection /> (Grind Configurator + Per-Cup Costing)
-     - <CustomizerModal />, <PitchAuditModal />, <OrderSuccessModal />, <CartDrawer />
+   ONE CLUB ROW (oneclubrow.com) — ENTERPRISE REACT 18 DIGITAL FLAGSHIP
+   Customer Pitch Remake · 1 Club Row, Shoreditch, London E1 6JX
    ========================================================================== */
 
 (function () {
   const { useState, useMemo, useEffect, createElement: h, Fragment } = window.React;
   const { createRoot } = window.ReactDOM;
-  const DATA = window.NERO_DATA;
+  const DATA = window.OCR_DATA;
 
   // ==========================================================================
-  // 1. ARCHITECTURAL SVG ICON COMPONENT (<Icon />)
+  // 1. ARCHITECTURAL VECTOR SVG ICON & CREST SYSTEM
   // ==========================================================================
   function Icon({ name, size = 16, color = 'currentColor' }) {
     const props = {
@@ -35,56 +26,76 @@
     };
 
     switch (name) {
-      case 'coffee':
+      case 'martini':
         return h('svg', props,
-          h('path', { d: 'M17 8h1a4 4 0 1 1 0 8h-1' }),
-          h('path', { d: 'M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z' }),
-          h('line', { x1: 6, y1: 2, x2: 6, y2: 4 }),
-          h('line', { x1: 10, y1: 2, x2: 10, y2: 4 }),
-          h('line', { x1: 14, y1: 2, x2: 14, y2: 4 })
+          h('path', { d: 'M8 22h8' }),
+          h('path', { d: 'M12 15v7' }),
+          h('path', { d: 'm19 3-7 8-7-8Z' }),
+          h('path', { d: 'm5.5 6.5 13 0' })
+        );
+      case 'bag':
+        return h('svg', props,
+          h('path', { d: 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z' }),
+          h('line', { x1: 3, y1: 6, x2: 21, y2: 6 }),
+          h('path', { d: 'M16 10a4 4 0 0 1-8 0' })
+        );
+      case 'menu':
+        return h('svg', props,
+          h('line', { x1: 3, y1: 7, x2: 21, y2: 7 }),
+          h('line', { x1: 3, y1: 17, x2: 21, y2: 17 })
+        );
+      case 'arrowRight':
+        return h('svg', props,
+          h('path', { d: 'M5 12h14' }),
+          h('path', { d: 'm12 5 7 7-7 7' })
+        );
+      case 'clock':
+        return h('svg', props,
+          h('circle', { cx: 12, cy: 12, r: 10 }),
+          h('polyline', { points: '12 6 12 12 16 14' })
+        );
+      case 'utensils':
+        return h('svg', props,
+          h('path', { d: 'M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2' }),
+          h('path', { d: 'M7 2v20' }),
+          h('path', { d: 'M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7' })
+        );
+      case 'wine':
+        return h('svg', props,
+          h('path', { d: 'M8 22h8' }),
+          h('path', { d: 'M7 10h10' }),
+          h('path', { d: 'M12 15v7' }),
+          h('path', { d: 'M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z' })
+        );
+      case 'calendar':
+        return h('svg', props,
+          h('rect', { width: 18, height: 18, x: 3, y: 4, rx: 2 }),
+          h('line', { x1: 16, y1: 2, x2: 16, y2: 6 }),
+          h('line', { x1: 8, y1: 2, x2: 8, y2: 6 }),
+          h('line', { x1: 3, y1: 10, x2: 21, y2: 10 })
+        );
+      case 'users':
+        return h('svg', props,
+          h('path', { d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' }),
+          h('circle', { cx: 9, cy: 7, r: 4 }),
+          h('path', { d: 'M22 21v-2a4 4 0 0 0-3-3.87' }),
+          h('path', { d: 'M16 3.13a4 4 0 0 1 0 7.75' })
+        );
+      case 'gift':
+        return h('svg', props,
+          h('rect', { x: 3, y: 8, width: 18, height: 4, rx: 1 }),
+          h('path', { d: 'M12 8v13' }),
+          h('path', { d: 'M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7' }),
+          h('path', { d: 'M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' })
         );
       case 'pin':
         return h('svg', props,
           h('path', { d: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z' }),
           h('circle', { cx: 12, cy: 10, r: 3 })
         );
-      case 'bag':
-        return h('svg', props,
-          h('path', { d: 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z' }),
-          h('path', { d: 'M3 6h18' }),
-          h('path', { d: 'M16 10a4 4 0 0 1-8 0' })
-        );
-      case 'stamp':
-      case 'award':
-        return h('svg', props,
-          h('circle', { cx: 12, cy: 8, r: 6 }),
-          h('path', { d: 'M15.477 12.89 17 22l-5-3-5 3 1.523-9.11' })
-        );
       case 'sparkle':
         return h('svg', props,
           h('path', { d: 'm12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z' })
-        );
-      case 'leaf':
-        return h('svg', props,
-          h('path', { d: 'M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z' }),
-          h('path', { d: 'M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12' })
-        );
-      case 'wifi':
-        return h('svg', props,
-          h('path', { d: 'M12 20h.01' }),
-          h('path', { d: 'M2 8.82a15 15 0 0 1 20 0' }),
-          h('path', { d: 'M5 12.859a10 10 0 0 1 14 0' }),
-          h('path', { d: 'M8.5 16.429a5 5 0 0 1 7 0' })
-        );
-      case 'sun':
-        return h('svg', props,
-          h('circle', { cx: 12, cy: 12, r: 4 }),
-          h('path', { d: 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41' })
-        );
-      case 'search':
-        return h('svg', props,
-          h('circle', { cx: 11, cy: 11, r: 8 }),
-          h('path', { d: 'm21 21-4.3-4.3' })
         );
       case 'check':
         return h('svg', props,
@@ -94,904 +105,681 @@
         return h('svg', props,
           h('path', { d: 'M18 6 6 18M6 6l12 12' })
         );
-      case 'sliders':
+      case 'search':
         return h('svg', props,
-          h('line', { x1: 4, y1: 21, x2: 4, y2: 14 }),
-          h('line', { x1: 4, y1: 10, x2: 4, y2: 3 }),
-          h('line', { x1: 12, y1: 21, x2: 12, y2: 12 }),
-          h('line', { x1: 12, y1: 8, x2: 12, y2: 3 }),
-          h('line', { x1: 20, y1: 21, x2: 20, y2: 16 }),
-          h('line', { x1: 20, y1: 12, x2: 20, y2: 3 }),
-          h('line', { x1: 2, y1: 14, x2: 6, y2: 14 }),
-          h('line', { x1: 10, y1: 8, x2: 14, y2: 8 }),
-          h('line', { x1: 18, y1: 16, x2: 22, y2: 16 })
+          h('circle', { cx: 11, cy: 11, r: 8 }),
+          h('path', { d: 'm21 21-4.3-4.3' })
         );
       case 'shield':
         return h('svg', props,
           h('path', { d: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z' })
         );
-      case 'qr':
+      case 'key':
         return h('svg', props,
-          h('rect', { width: 5, height: 5, x: 3, y: 3, rx: 1 }),
-          h('rect', { width: 5, height: 5, x: 16, y: 3, rx: 1 }),
-          h('rect', { width: 5, height: 5, x: 3, y: 16, rx: 1 }),
-          h('path', { d: 'M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1' })
+          h('circle', { cx: 7.5, cy: 15.5, r: 5.5 }),
+          h('path', { d: 'm21 2-9.6 9.6' }),
+          h('path', { d: 'm15.5 7.5 3 3L22 7l-3-3' })
         );
-      case 'clock':
+      case 'mail':
         return h('svg', props,
-          h('circle', { cx: 12, cy: 12, r: 10 }),
-          h('polyline', { points: '12 6 12 12 16 14' })
+          h('rect', { width: 20, height: 16, x: 2, y: 4, rx: 2 }),
+          h('path', { d: 'm22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' })
         );
-      case 'chart':
+      case 'external':
         return h('svg', props,
-          h('line', { x1: 18, y1: 20, x2: 18, y2: 10 }),
-          h('line', { x1: 12, y1: 20, x2: 12, y2: 4 }),
-          h('line', { x1: 6, y1: 20, x2: 6, y2: 14 })
-        );
-      case 'arrowRight':
-        return h('svg', props,
-          h('path', { d: 'M5 12h14' }),
-          h('path', { d: 'm12 5 7 7-7 7' })
-        );
-      case 'menu':
-        return h('svg', props,
-          h('line', { x1: 3, y1: 6, x2: 21, y2: 6 }),
-          h('line', { x1: 3, y1: 12, x2: 21, y2: 12 }),
-          h('line', { x1: 3, y1: 18, x2: 21, y2: 18 })
+          h('path', { d: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' }),
+          h('polyline', { points: '15 3 21 3 21 9' }),
+          h('line', { x1: 10, y1: 14, x2: 21, y2: 3 })
         );
       default:
         return h('svg', props, h('circle', { cx: 12, cy: 12, r: 8 }));
     }
   }
 
-  // ==========================================================================
-  // 2. PITCH INSIGHTS CALLOUT BANNER (<PitchCallout />)
-  // ==========================================================================
-  function PitchCallout({ visible, badge, problem, advantage }) {
-    if (!visible) return null;
-    return h('div', { className: 'pitch-callout' },
-      h('span', { className: 'pitch-callout-badge' }, badge),
-      h('div', null,
-        h('div', { style: { marginBottom: '0.2rem' } },
-          h('strong', null, 'Audit Finding on Current caffenero.com: '),
-          problem
-        ),
-        h('div', null,
-          h('strong', null, 'Our React Platform Solution: '),
-          advantage
-        )
+  // Victorian Bird Crest Ornament (Echoing One Club Row's signature illustration)
+  function BirdCrest({ size = 26, color = 'currentColor' }) {
+    return h('svg', {
+      width: size,
+      height: size,
+      viewBox: '0 0 32 32',
+      fill: 'none',
+      stroke: color,
+      strokeWidth: 1.7,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      className: 'icon-svg'
+    },
+      h('path', { d: 'M22 7c-2.5 0-4.5 1.8-5 4.2-.8 3.5-4.2 5.8-8 5.8-1.5 0-3-.4-4-1.2 1.2 4.2 5 7.2 9.5 7.2 5.5 0 9.5-4 9.5-9.5 0-1.5.5-3 2-4-1.2-.5-2.6-2.5-4-2.5Z' }),
+      h('path', { d: 'M24 9.5h3.5l-2 2' }),
+      h('path', { d: 'M14 23v5m-3 0h6' }),
+      h('circle', { cx: 21.5, cy: 9.5, r: 0.8, fill: color })
+    );
+  }
+
+  // Interactive Architectural Floorplan SVG for "The Apartment" Private Dining
+  function ApartmentFloorplanSvg({ layoutId, guests }) {
+    return h('svg', {
+      viewBox: '0 0 360 130',
+      style: { width: '100%', height: 'auto', display: 'block', borderRadius: '4px', background: '#131333', border: '1px solid rgba(201,164,97,0.35)' },
+      'aria-label': 'Architectural Floorplan Preview'
+    },
+      // Outer Victorian Salon Walls & Sash Windows
+      h('rect', { x: 8, y: 8, width: 344, height: 114, rx: 4, fill: 'none', stroke: '#C9A461', strokeWidth: 1.5, strokeDasharray: '4 2' }),
+      h('text', { x: 18, y: 22, fill: '#DFB973', fontSize: '8', fontFamily: 'JetBrains Mono, monospace' }, 'CLUB ROW SASH WINDOWS (NATURAL DAYLIGHT / CANDLELIGHT)'),
+      // Private Mahogany Bar Station
+      h('rect', { x: 282, y: 28, width: 58, height: 82, rx: 3, fill: 'rgba(197,54,39,0.28)', stroke: '#C53627', strokeWidth: 1.5 }),
+      h('text', { x: 291, y: 66, fill: '#F6F3E3', fontSize: '8', fontWeight: 'bold' }, 'PRIVATE'),
+      h('text', { x: 291, y: 77, fill: '#F6F3E3', fontSize: '8', fontWeight: 'bold' }, 'BAR'),
+
+      layoutId === 'seated-dinner' && h(Fragment, null,
+        h('rect', { x: 28, y: 40, width: 234, height: 26, rx: 3, fill: 'rgba(201,164,97,0.22)', stroke: '#DFB973', strokeWidth: 1.5 }),
+        h('rect', { x: 28, y: 78, width: 234, height: 26, rx: 3, fill: 'rgba(201,164,97,0.22)', stroke: '#DFB973', strokeWidth: 1.5 }),
+        h('text', { x: 64, y: 56, fill: '#F6F3E3', fontSize: '8.5', fontFamily: 'JetBrains Mono, monospace' }, `LONG BANQUET SALON · ${guests} SEATED`),
+        h('text', { x: 64, y: 94, fill: '#F6F3E3', fontSize: '8.5', fontFamily: 'JetBrains Mono, monospace' }, 'FAMILY-STYLE SHARING FEAST TABLES')
+      ),
+
+      layoutId === 'standing-party' && h(Fragment, null,
+        h('circle', { cx: 65, cy: 68, r: 24, fill: 'rgba(197,54,39,0.25)', stroke: '#DFB973', strokeWidth: 1.4 }),
+        h('text', { x: 47, y: 71, fill: '#F6F3E3', fontSize: '7.5', fontWeight: 'bold' }, 'PIANO SHOW'),
+        h('circle', { cx: 145, cy: 55, r: 18, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
+        h('circle', { cx: 195, cy: 84, r: 18, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
+        h('circle', { cx: 235, cy: 52, r: 16, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
+        h('text', { x: 112, y: 112, fill: '#DFB973', fontSize: '8', fontFamily: 'JetBrains Mono, monospace' }, `STANDING COCKTAIL FLOW · ${guests} GUESTS`)
+      ),
+
+      layoutId === 'semi-private-feast' && h(Fragment, null,
+        h('rect', { x: 52, y: 46, width: 190, height: 48, rx: 6, fill: 'rgba(197,54,39,0.28)', stroke: '#DFB973', strokeWidth: 1.8 }),
+        h('text', { x: 75, y: 68, fill: '#F6F3E3', fontSize: '8.5', fontWeight: 'bold' }, `CENTRAL FEASTING TABLE (${guests}P)`),
+        h('text', { x: 75, y: 81, fill: '#DFB973', fontSize: '7.5', fontFamily: 'JetBrains Mono, monospace' }, 'MAIN GRADE II DINING ROOM')
       )
     );
   }
 
   // ==========================================================================
-  // 3. MAIN REACT APPLICATION (<CaffeNeroApp />)
+  // 2. MAIN APPLICATION COMPONENT (<OneClubRowApp />)
   // ==========================================================================
-  function CaffeNeroApp() {
-    // Global State
-    const [region, setRegion] = useState('UK');
-    const [selectedStoreId, setSelectedStoreId] = useState('st-covent');
-    const [spotlightIdx, setSpotlightIdx] = useState(0);
+  function OneClubRowApp() {
+    // Pitch Audit Mode (Default to false for a clean, pristine, uncluttered presentation)
+    const [pitchAnnotationsOn, setPitchAnnotationsOn] = useState(false);
+    const [pitchModalOpen, setPitchModalOpen] = useState(false);
 
-    // Quick-Order Hero Express State
-    const [expressDrinkId, setExpressDrinkId] = useState('m-flat-white');
-    const [expressMilk, setExpressMilk] = useState('Barista Oat (Free)');
-    const [expressSlot, setExpressSlot] = useState('ASAP (~4 mins)');
+    // Responsive Tablet/Smartphone Slide-Over Navigation
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-    // Menu & Allergen State
-    const [menuCat, setMenuCat] = useState('all');
+    // Hero Spotlight Carousel
+    const [activeSpotlightIdx, setActiveSpotlightIdx] = useState(0);
+
+    // Post-Audit Heritage Story Chapter Switcher (/about upgrade)
+    const [activeStoryId, setActiveStoryId] = useState('chap-building');
+
+    // Quick-Reserve Concierge State
+    const [resGuests, setResGuests] = useState('2 Guests');
+    const [resDate, setResDate] = useState('2026-11-06');
+    const [resSession, setResSession] = useState('Prime Dinner · 19:45');
+    const [resZone, setResZone] = useState('Main Dining Room');
+    const [resSpecialNotes, setResSpecialNotes] = useState('');
+    const [resGuestName, setResGuestName] = useState('');
+    const [resGuestEmail, setResGuestEmail] = useState('');
+    const [reservationModalOpen, setReservationModalOpen] = useState(false);
+    const [confirmedReservation, setConfirmedReservation] = useState(null);
+
+    // Menu, Dish Allergen Inspector & Cellar State
+    const [activeMenuTab, setActiveMenuTab] = useState('lunch_dinner');
     const [menuSearch, setMenuSearch] = useState('');
-    const [activeDietary, setActiveDietary] = useState([]);
-    const [excludedAllergens, setExcludedAllergens] = useState([]);
+    const [activeDietaryFilters, setActiveDietaryFilters] = useState([]);
+    const [wineStyleFilter, setWineStyleFilter] = useState('All');
+    const [wineByGlassOnly, setWineByGlassOnly] = useState(false);
+    const [feastGuestCount, setFeastGuestCount] = useState(12);
+    const [inspectedDish, setInspectedDish] = useState(null);
 
-    // Interactive Barista Taste Matchmaker State (Post-Audit Addition)
-    const [quizStyle, setQuizStyle] = useState('milky');
-    const [quizNote, setQuizNote] = useState('chocolate');
-    const [quizMoment, setQuizMoment] = useState('cafe');
+    // Newsletter & VIP Club Row Society Modal (Upgrading 820px SevenRooms iframe)
+    const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [newsletterName, setNewsletterName] = useState('');
+    const [newsletterDone, setNewsletterDone] = useState(false);
 
-    // Loyalty 9-Stamp Card & Wallet Pass Flip State
-    const [stamps, setStamps] = useState(7);
-    const [walletFlipped, setWalletFlipped] = useState(false);
-    const [freeDrinkApplied, setFreeDrinkApplied] = useState(false);
+    // Martini Atelier State ("Tell Us How You Like It")
+    const [martiniSpiritId, setMartiniSpiritId] = useState('tanqueray-10');
+    const [martiniStyleId, setMartiniStyleId] = useState('classic-dry');
+    const [martiniGarnishId, setMartiniGarnishId] = useState('lemon-twist');
 
-    // Store Locator State
-    const [storeAmenity, setStoreAmenity] = useState('all');
-    const [storeSearch, setStoreSearch] = useState('');
+    // "The Apartment" Private Dining Configurator State
+    const [activeLayoutId, setActiveLayoutId] = useState('seated-dinner');
+    const [eventGuests, setEventGuests] = useState(28);
+    const [selectedEventAddons, setSelectedEventAddons] = useState(['champagne-arrival']);
+    const [eventDate, setEventDate] = useState('2026-11-20');
+    const [eventTimeWindow, setEventTimeWindow] = useState('Evening Reception & Dinner (18:30 – 23:30)');
+    const [eventHostName, setEventHostName] = useState('');
+    const [eventCompany, setEventCompany] = useState('');
+    const [eventEmail, setEventEmail] = useState('');
+    const [eventBriefSubmitted, setEventBriefSubmitted] = useState(false);
 
-    // Coffee At Home Roastery State
-    const [retailFormat, setRetailFormat] = useState('all');
-    const [isSubscription, setIsSubscription] = useState(true);
-    const [selectedGrinds, setSelectedGrinds] = useState({});
+    // Gift Voucher Studio State
+    const [voucherRecipient, setVoucherRecipient] = useState('Alex & Sam');
+    const [voucherMessage, setVoucherMessage] = useState('For long lunches, late dinners, and one too many martinis on Club Row.');
+    const [voucherDelivery, setVoucherDelivery] = useState('Digital Apple/Google Wallet Pass');
 
-    // Cart & Modals State
-    const [cart, setCart] = useState([
+    // Gallery Lightbox State
+    const [galleryFilter, setGalleryFilter] = useState('all');
+    const [lightboxPhoto, setLightboxPhoto] = useState(null);
+
+    // Evening Plan / Pre-Order & Voucher Bag Drawer
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [bagItems, setBagItems] = useState([
       {
-        uid: 'init-1',
-        id: 'm-flat-white',
-        name: 'Classico Flat White',
-        details: 'Regular (12oz) · Signature Classico · Barista Oat (Free)',
-        unitPriceGBP: 3.65,
-        qty: 1,
-        type: 'cafe'
+        uid: 'init-martini',
+        name: 'Club Row Martini (Bar Arrival Pour)',
+        category: 'Martini Bar',
+        details: 'Tanqueray No. Ten, Dolin Chambéryzette, Italicus, Rosemary',
+        unitPrice: 14,
+        qty: 2
+      },
+      {
+        uid: 'init-gougeres',
+        name: 'Pickled Jalapeño Gougères',
+        category: 'Snacks',
+        details: 'Warm choux pastry & aged Comté for the table',
+        unitPrice: 9,
+        qty: 1
       }
     ]);
-    const [cartOpen, setCartOpen] = useState(false);
-    const [pickupSlot, setPickupSlot] = useState('ASAP (In ~4 mins)');
-    const [customizerItem, setCustomizerItem] = useState(null);
-    const [custSize, setCustSize] = useState({ label: 'Regular (12oz)', priceMod: 0, calMod: 1.0 });
-    const [custBean, setCustBean] = useState({ label: 'Signature Classico', priceMod: 0 });
-    const [custMilk, setCustMilk] = useState({ label: 'Barista Oat (Free)', calMod: -12 });
-    const [custExtraShot, setCustExtraShot] = useState(false);
-    const [custSyrup, setCustSyrup] = useState('None');
 
-    const [pitchMode, setPitchMode] = useState(false);
-    const [pitchModalOpen, setPitchModalOpen] = useState(false);
-    const [orderSuccessOpen, setOrderSuccessOpen] = useState(false);
-    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    // Toast Stack
     const [toasts, setToasts] = useState([]);
 
-    // Currency Helper
-    const formatPrice = (gbp) => {
-      const reg = DATA.regions[region] || DATA.regions.UK;
-      return `${reg.symbol}${(gbp * reg.rate).toFixed(2)}`;
-    };
-
-    const pushToast = (text) => {
+    function pushToast(text) {
       const id = Date.now() + Math.random();
       setToasts((prev) => [...prev, { id, text }]);
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, 3200);
-    };
+      }, 3600);
+    }
 
-    const currentStore = useMemo(
-      () => DATA.stores.find((s) => s.id === selectedStoreId) || DATA.stores[0],
-      [selectedStoreId]
-    );
+    function addToBag(item) {
+      setBagItems((prev) => {
+        const existing = prev.find((p) => p.uid === item.uid);
+        if (existing) {
+          return prev.map((p) => (p.uid === item.uid ? { ...p, qty: p.qty + 1 } : p));
+        }
+        return [...prev, { ...item, qty: 1 }];
+      });
+      pushToast(`Added "${item.name}" to your One Club Row Evening Plan & Bag.`);
+    }
 
-    // Filtered Menu Items (with Post-Audit Allergen Exclusion!)
-    const filteredMenu = useMemo(() => {
+    function toggleDietaryFilter(filterKey) {
+      setActiveDietaryFilters((prev) =>
+        prev.includes(filterKey) ? prev.filter((k) => k !== filterKey) : [...prev, filterKey]
+      );
+    }
+
+    // Filtered Menu Items
+    const filteredMenuItems = useMemo(() => {
       return DATA.menuItems.filter((item) => {
-        if (menuCat !== 'all' && item.category !== menuCat) return false;
+        if (item.menuTab !== activeMenuTab) return false;
         if (menuSearch.trim() !== '') {
           const q = menuSearch.toLowerCase();
-          const match =
-            item.name.toLowerCase().includes(q) ||
-            item.desc.toLowerCase().includes(q) ||
-            item.notes.some((n) => n.toLowerCase().includes(q));
-          if (!match) return false;
+          const matchName = item.name.toLowerCase().includes(q);
+          const matchDesc = item.desc.toLowerCase().includes(q);
+          const matchCourse = item.course.toLowerCase().includes(q);
+          if (!matchName && !matchDesc && !matchCourse) return false;
         }
-        for (const d of activeDietary) {
-          if (!item.dietary.includes(d)) return false;
-        }
-        for (const alg of excludedAllergens) {
-          if (item.allergens && item.allergens.includes(alg)) return false;
+        for (const req of activeDietaryFilters) {
+          if (!item.dietary || !item.dietary.includes(req)) return false;
         }
         return true;
       });
-    }, [menuCat, menuSearch, activeDietary, excludedAllergens]);
+    }, [activeMenuTab, menuSearch, activeDietaryFilters]);
 
-    // Barista Matchmaker Computed Recommendation
-    const matchedRecommendation = useMemo(() => {
-      if (quizMoment === 'home') {
-        const homeProd =
-          quizNote === 'fruity'
-            ? DATA.retailProducts.find((r) => r.id === 'r-colombia-origin')
-            : DATA.retailProducts[0];
-        return {
-          isRetail: true,
-          title: homeProd.name,
-          tag: '98% Roastery Palate Match · At-Home Subscription',
-          desc: homeProd.desc,
-          notes: homeProd.notes,
-          priceGBP: homeProd.basePrice * 0.85,
-          image: homeProd.image,
-          item: homeProd
-        };
-      }
-      let targetId = 'm-flat-white';
-      if (quizStyle === 'black' && quizNote === 'fruity') targetId = 'm-cold-brew';
-      else if (quizStyle === 'black') targetId = 'm-cortado';
-      else if (quizStyle === 'iced' && quizNote === 'nutty') targetId = 'm-pistachio-iced';
-      else if (quizStyle === 'iced') targetId = 'm-frappe-mocha';
-      else if (quizNote === 'nutty') targetId = 'm-caramel-latte';
+    // Group dishes by course
+    const groupedCourses = useMemo(() => {
+      const map = new Map();
+      filteredMenuItems.forEach((item) => {
+        if (!map.has(item.course)) map.set(item.course, []);
+        map.get(item.course).push(item);
+      });
+      return Array.from(map.entries());
+    }, [filteredMenuItems]);
 
-      const drink = DATA.menuItems.find((m) => m.id === targetId) || DATA.menuItems[0];
+    // Filtered Wines
+    const filteredWines = useMemo(() => {
+      return DATA.wines.filter((w) => {
+        if (wineStyleFilter !== 'All' && w.style !== wineStyleFilter) return false;
+        if (wineByGlassOnly && !w.byTheGlass) return false;
+        if (menuSearch.trim() !== '') {
+          const q = menuSearch.toLowerCase();
+          if (
+            !w.name.toLowerCase().includes(q) &&
+            !w.region.toLowerCase().includes(q) &&
+            !w.grape.toLowerCase().includes(q) &&
+            !w.pairingTag.toLowerCase().includes(q)
+          ) {
+            return false;
+          }
+        }
+        return true;
+      });
+    }, [wineStyleFilter, wineByGlassOnly, menuSearch]);
+
+    // Current Martini Atelier Selection
+    const selectedSpirit = DATA.martiniConfig.spirits.find((s) => s.id === martiniSpiritId) || DATA.martiniConfig.spirits[0];
+    const selectedStyle = DATA.martiniConfig.styles.find((s) => s.id === martiniStyleId) || DATA.martiniConfig.styles[0];
+    const selectedGarnish = DATA.martiniConfig.garnishes.find((g) => g.id === martiniGarnishId) || DATA.martiniConfig.garnishes[0];
+    const customMartiniPrice = 12 + selectedSpirit.supplement + (martiniStyleId === 'olive-oil-mastiha' ? 2 : 0);
+
+    // Current Apartment Layout Selection
+    const activeApartmentLayout = DATA.apartmentPackages.layouts.find((l) => l.id === activeLayoutId) || DATA.apartmentPackages.layouts[0];
+
+    const apartmentTotalEstimate = useMemo(() => {
+      const clampedGuests = Math.min(Math.max(eventGuests, activeApartmentLayout.minGuests), activeApartmentLayout.maxGuests);
+      let perHead = activeApartmentLayout.basePricePerHead;
+      let flat = 0;
+      selectedEventAddons.forEach((addId) => {
+        const addon = DATA.apartmentPackages.addons.find((a) => a.id === addId);
+        if (addon) {
+          perHead += addon.pricePerHead;
+          flat += addon.flatFee;
+        }
+      });
       return {
-        isRetail: false,
-        title: drink.name,
-        tag: `99% Barista Palate Match · Ready in ${currentStore.waitMins} mins`,
-        desc: drink.desc,
-        notes: drink.notes.join(' · '),
-        priceGBP: drink.basePrice,
-        image: drink.image,
-        item: drink
+        guests: clampedGuests,
+        perHead,
+        flat,
+        total: clampedGuests * perHead + flat
       };
-    }, [quizStyle, quizNote, quizMoment, currentStore]);
+    }, [activeApartmentLayout, eventGuests, selectedEventAddons]);
 
-    // Filtered Stores
-    const filteredStores = useMemo(() => {
-      return DATA.stores.filter((st) => {
-        if (storeAmenity !== 'all' && !st.amenities.includes(storeAmenity)) return false;
-        if (storeSearch.trim() !== '') {
-          const q = storeSearch.toLowerCase();
-          return (
-            st.name.toLowerCase().includes(q) ||
-            st.city.toLowerCase().includes(q) ||
-            st.address.toLowerCase().includes(q)
-          );
-        }
-        return true;
-      });
-    }, [storeAmenity, storeSearch]);
+    // Filtered Gallery
+    const visibleGallery = useMemo(() => {
+      if (galleryFilter === 'all') return DATA.galleryPhotos;
+      return DATA.galleryPhotos.filter((p) => p.category === galleryFilter);
+    }, [galleryFilter]);
 
-    // Filtered Retail
-    const filteredRetail = useMemo(() => {
-      return DATA.retailProducts.filter((r) => retailFormat === 'all' || r.format === retailFormat);
-    }, [retailFormat]);
+    // Bag Totals
+    const totalBagCount = bagItems.reduce((acc, item) => acc + item.qty, 0);
+    const totalBagValue = bagItems.reduce((acc, item) => acc + item.unitPrice * item.qty, 0);
 
-    // Open Customizer Helper
-    const openDrinkCustomizer = (item) => {
-      setCustomizerItem(item);
-      setCustSize({ label: 'Regular (12oz)', priceMod: 0, calMod: 1.0 });
-      setCustBean({ label: 'Signature Classico', priceMod: 0 });
-      setCustMilk({ label: 'Barista Oat (Free)', calMod: -12 });
-      setCustExtraShot(false);
-      setCustSyrup('None');
-    };
-
-    // Add to Cart Helpers
-    const addToCart = (newItem, earnStamp = false) => {
-      setCart((prev) => {
-        const existingIdx = prev.findIndex(
-          (c) => c.id === newItem.id && c.details === newItem.details
-        );
-        if (existingIdx > -1) {
-          const copy = [...prev];
-          copy[existingIdx] = { ...copy[existingIdx], qty: copy[existingIdx].qty + 1 };
-          return copy;
-        }
-        return [...prev, { ...newItem, uid: 'uid-' + Date.now() + '-' + Math.random() }];
-      });
-      if (earnStamp && stamps < 9) {
-        setStamps((s) => Math.min(9, s + 1));
-      }
-    };
-
-    const totalCartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-    const subtotalGBP = cart.reduce((sum, i) => sum + i.unitPriceGBP * i.qty, 0);
-    const discountGBP = useMemo(() => {
-      if (freeDrinkApplied || stamps >= 9) {
-        const cafeDrink = cart.find((c) => c.type === 'cafe');
-        return cafeDrink ? cafeDrink.unitPriceGBP : 0;
-      }
-      return 0;
-    }, [cart, freeDrinkApplied, stamps]);
-    const finalTotalGBP = Math.max(0, subtotalGBP - discountGBP);
-
-    const activeSpot = DATA.heroSpotlights[spotlightIdx] || DATA.heroSpotlights[0];
+    const activeSpotlight = DATA.heroSpotlights[activeSpotlightIdx] || DATA.heroSpotlights[0];
 
     return h(Fragment, null,
       // ======================================================================
-      // 1. SMART GEO-AWARE UTILITY BAR
+      // TOP UTILITY TELEMETRY BAR
       // ======================================================================
       h('div', { className: 'utility-bar' },
         h('div', { className: 'container utility-inner' },
-          h('a', { href: '#storeSection', className: 'live-store-pill' },
-            h('span', { className: 'status-dot' }),
-            h(Icon, { name: 'pin', size: 14, color: '#D4A359' }),
-            h('span', { className: 'store-pill-text' },
-              h('strong', null, currentStore.name),
-              ` (${currentStore.distance}) · Express Pickup in ~${currentStore.waitMins} mins`
-            )
+          h('div', { className: 'utility-left' },
+            h('span', { className: 'live-pill' },
+              h('span', { className: 'pulse-dot' }),
+              'Shoreditch Dining Room & Martini Bar · Open Tue–Sun'
+            ),
+            h('span', null, '1 Club Row, London E1 6JX (Above The Knave of Clubs)')
           ),
           h('div', { className: 'utility-right' },
+            h('a', {
+              href: DATA.venue.googleMapsUrl,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              style: { textDecoration: 'underline', color: 'var(--brass-bright)' }
+            }, 'Secret Doorway Directions'),
             h('button', {
               type: 'button',
-              className: `pitch-toggle-btn ${pitchMode ? 'active' : ''}`,
-              onClick: () => {
-                setPitchMode((p) => !p);
-                pushToast(!pitchMode
-                  ? 'Pitch Audit Annotations enabled across all sections.'
-                  : 'Pitch annotations hidden — viewing clean customer UI.');
-              }
-            },
-              h(Icon, { name: 'sliders', size: 13 }),
-              pitchMode ? 'UX Audit Annotations: ON' : 'UX Audit Annotations: OFF'
-            ),
-            h('button', {
-              type: 'button',
-              className: 'pitch-deck-btn',
+              className: 'audit-trigger-btn',
               onClick: () => setPitchModalOpen(true)
             },
-              h(Icon, { name: 'chart', size: 13 }),
-              'Executive UX Audit & ROI'
-            ),
-            h('select', {
-              className: 'region-select',
-              value: region,
-              'aria-label': 'Select Region and Currency',
-              onChange: (e) => {
-                setRegion(e.target.value);
-                pushToast(`Region & pricing switched to ${DATA.regions[e.target.value].label}`);
-              }
-            },
-              Object.keys(DATA.regions).map((k) =>
-                h('option', { key: k, value: k }, DATA.regions[k].label)
-              )
+              h(Icon, { name: 'sparkle', size: 13 }),
+              'Customer Pitch Audit (38 → 98/100)'
             )
           )
         )
       ),
 
       // ======================================================================
-      // 2. STICKY GLASS HEADER
+      // STICKY HEADER (Replaces hidden #modalmenu-only desktop nav)
       // ======================================================================
       h('header', { className: 'site-header' },
         h('div', { className: 'container header-inner' },
-          h('a', { href: '#', className: 'brand-logo' },
-            h('span', { className: 'brand-wordmark' }, 'CAFFÈ NERO'),
-            h('span', { className: 'brand-sub' }, 'Società Italiana · Est. 1997')
-          ),
-          h('nav', { className: 'main-nav', 'aria-label': 'Primary Navigation' },
-            h('a', { href: '#menuSection', className: 'nav-link' }, '01 Menu & Allergens'),
-            h('a', { href: '#matchmakerSection', className: 'nav-link' }, '02 Taste Matchmaker'),
-            h('a', { href: '#loyaltySection', className: 'nav-link' }, '03 Digital Stamp Card'),
-            h('a', { href: '#storeSection', className: 'nav-link' }, '04 Store Radar'),
-            h('a', { href: '#roasterySection', className: 'nav-link' }, '05 Coffee at Home')
-          ),
-          h('div', { className: 'header-actions' },
-            h('a', { href: '#loyaltySection', className: 'stamp-header-pill' },
-              h(Icon, { name: 'award', size: 15, color: '#D4A359' }),
-              h('span', null, `${stamps}/9 Stamps`)
+          h('a', { href: '#top', className: 'brand-logo' },
+            h('div', { className: 'brand-crest-badge' },
+              h(BirdCrest, { size: 24, color: '#F6F3E3' })
             ),
-            h('button', {
-              type: 'button',
-              className: 'cart-trigger-btn',
-              onClick: () => setCartOpen(true)
-            },
-              h(Icon, { name: 'bag', size: 15 }),
-              h('span', { className: 'cart-btn-label' }, 'Click & Collect'),
-              h('span', { className: 'cart-count-badge' }, totalCartCount)
-            ),
-            h('button', {
-              type: 'button',
-              className: 'mobile-menu-btn',
-              'aria-label': mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu',
-              onClick: () => setMobileNavOpen((o) => !o)
-            },
-              h(Icon, { name: mobileNavOpen ? 'close' : 'menu', size: 19 })
+            h('div', { className: 'brand-wordmark' },
+              h('span', { className: 'brand-title' }, 'One Club Row'),
+              h('span', { className: 'brand-subtitle' }, 'Shoreditch · Est. 1 Club Row')
             )
-          )
-        ),
+          ),
 
-        // Mobile Slide-Down Navigation Drawer
-        mobileNavOpen && h('div', { className: 'mobile-nav-drawer' },
-          [
-            { href: '#menuSection', label: '01 · Menu & Allergen Guard', icon: 'coffee' },
-            { href: '#matchmakerSection', label: '02 · 15s Coffee Taste Matchmaker', icon: 'sparkle' },
-            { href: '#loyaltySection', label: '03 · 9-Stamp Digital Wallet & QR Pass', icon: 'award' },
-            { href: '#storeSection', label: '04 · Live Store Occupancy & Wi-Fi Radar', icon: 'pin' },
-            { href: '#roasterySection', label: '05 · Coffee At Home Subscriptions', icon: 'bag' }
-          ].map((nav) =>
-            h('a', {
-              key: nav.href,
-              href: nav.href,
-              className: 'mobile-nav-link',
-              onClick: () => setMobileNavOpen(false)
-            },
-              h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.55rem' } },
-                h(Icon, { name: nav.icon, size: 16, color: '#C47D4E' }),
-                nav.label
-              ),
-              h(Icon, { name: 'arrowRight', size: 15, color: '#8A7668' })
-            )
+          h('nav', { className: 'main-nav', 'aria-label': 'Primary Navigation' },
+            h('a', { href: '#storySection', className: 'nav-link' }, 'The Story'),
+            h('a', { href: '#menuSection', className: 'nav-link' }, 'Menus & Cellar'),
+            h('a', { href: '#martiniSection', className: 'nav-link' }, 'Martini Atelier'),
+            h('a', { href: '#apartmentSection', className: 'nav-link' }, 'The Apartment'),
+            h('a', { href: '#vouchersSection', className: 'nav-link' }, 'Gift Vouchers'),
+            h('a', { href: '#gallerySection', className: 'nav-link' }, 'Gallery'),
+            h('a', { href: '#visitSection', className: 'nav-link' }, 'Find The Door')
           ),
-          h('div', { className: 'mobile-nav-actions' },
+
+          h('div', { className: 'header-actions' },
             h('button', {
               type: 'button',
-              className: `pitch-toggle-btn ${pitchMode ? 'active' : ''}`,
-              style: { color: pitchMode ? '#fff' : '#1E1510', borderColor: 'rgba(196,125,78,0.4)' },
-              onClick: () => {
-                setPitchMode((p) => !p);
-                setMobileNavOpen(false);
-              }
+              className: 'btn-outline-cream header-plan-btn',
+              onClick: () => setDrawerOpen(true),
+              'aria-label': `View Evening Plan (${totalBagCount} items)`
             },
-              h(Icon, { name: 'sliders', size: 13 }),
-              pitchMode ? 'Audit Callouts: ON' : 'Audit Callouts: OFF'
+              h(Icon, { name: 'bag', size: 16 }),
+              h('span', { className: 'header-plan-label' }, 'Evening Plan'),
+              totalBagCount > 0 && h('span', { className: 'bag-counter-pill' }, totalBagCount)
             ),
             h('button', {
               type: 'button',
-              className: 'pitch-deck-btn',
-              onClick: () => {
-                setMobileNavOpen(false);
-                setPitchModalOpen(true);
-              }
+              className: 'btn-primary header-reserve-btn',
+              onClick: () => setReservationModalOpen(true)
             },
-              h(Icon, { name: 'chart', size: 13 }),
-              'UX Audit Scorecard'
+              h(Icon, { name: 'calendar', size: 15 }),
+              h('span', null, 'Reserve Table')
             ),
-            h('select', {
-              className: 'region-select',
-              style: { color: '#1E1510', background: '#fff', borderColor: 'rgba(196,125,78,0.4)' },
-              value: region,
-              onChange: (e) => setRegion(e.target.value)
+            h('button', {
+              type: 'button',
+              className: `mobile-burger-btn ${mobileNavOpen ? 'active' : ''}`,
+              'aria-label': mobileNavOpen ? 'Close Menu' : 'Open Navigation Menu',
+              onClick: () => setMobileNavOpen(!mobileNavOpen)
             },
-              Object.keys(DATA.regions).map((k) =>
-                h('option', { key: k, value: k }, DATA.regions[k].label)
-              )
+              h(Icon, { name: mobileNavOpen ? 'close' : 'menu', size: 18 })
             )
           )
         )
       ),
 
       // ======================================================================
-      // 3. HERO SECTION + QUICK-ORDER EXPRESS BAR
+      // HERO SECTION (Replaces Dead '/' GIF Splash Gate & Empty '/home' Page)
       // ======================================================================
-      h('section', { className: 'hero-section' },
+      h('section', { id: 'top', className: 'hero-section' },
         h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #1 · Entry & Conversion',
-            problem: 'caffenero.com forces a static country splash gate and lacks above-the-fold ordering.',
-            advantage: 'Geo-aware header + 10-second Quick-Order Express Strip right inside the hero for repeat commuters.'
-          }),
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #01'),
+            h('div', null,
+              h('strong', null, 'Eliminated Dead GIF Splash Gate ("/") & Empty "/home" Screen: '),
+              'On the live WordPress site, visitors land on an unlabeled GIF with a broken "<title>One Club Row -</title>" and must click "Enter Site" only to see a single photo with hidden navigation. Our remake welcomes guests immediately with the Victorian tavern story, dish spotlights, and a 1-click Table & Bar Seat Booking Bar.'
+            )
+          ),
+
+          h('div', { className: 'hero-squiggle-top', 'aria-hidden': 'true' },
+            h('span', { className: 'squiggle-line' }),
+            h(BirdCrest, { size: 28, color: '#C53627' }),
+            h('span', { style: { fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--brass-bright)', fontSize: '0.95rem' } },
+              'New York Tavern Energy · Parisian Brasserie Soul'
+            ),
+            h(BirdCrest, { size: 28, color: '#C53627' }),
+            h('span', { className: 'squiggle-line' })
+          ),
 
           h('div', { className: 'hero-grid' },
+            // Left Column: Editorial Story
             h('div', null,
-              h('div', { className: 'eyebrow-tag' },
-                h(Icon, { name: 'award', size: 14 }),
-                h('span', null, 'Award-Winning Master Italian Roasters · React Flagship')
+              h('div', { className: 'hero-eyebrow' },
+                h(Icon, { name: 'martini', size: 14, color: '#DFB973' }),
+                'Grade II Listed Victorian Dining Room · Above The Knave of Clubs'
               ),
-              h('h1', { className: 'hero-title' },
-                'Your Home Away From Home, ',
-                h('em', null, 'Handcrafted'),
-                ' to Order.'
+              h('h1', { className: 'hero-headline' },
+                'For Long Lunches, Late Dinners & ',
+                h('em', null, 'One Too Many Martinis.')
               ),
-              h('p', { className: 'hero-subtitle' },
-                'Rich dark-roasted Classico espresso, warm leather booths, and freshly baked pastries—now with instant allergen transparency, customizable plant milks, and 4-minute Web Click & Collect.'
+              h('p', { className: 'hero-lead' },
+                'Set in the faded grandeur of 1 Club Row in Shoreditch, our dining room draws inspiration from the lively taverns of New York and the timeless bistros of Paris—with raucous private dining & post-dinner shows upstairs in The Apartment.'
               ),
-              h('div', { className: 'hero-cta-group' },
-                h('a', { href: '#menuSection', className: 'btn-primary' },
-                  h(Icon, { name: 'coffee', size: 17 }),
-                  h('span', null, 'Order Click & Collect'),
-                  h(Icon, { name: 'arrowRight', size: 16 })
+
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '1.8rem' } },
+                h('button', {
+                  type: 'button',
+                  className: 'btn-primary',
+                  onClick: () => setReservationModalOpen(true)
+                },
+                  h(Icon, { name: 'calendar', size: 16 }),
+                  'Book Dining Room or Bar Stool'
                 ),
-                h('a', { href: '#matchmakerSection', className: 'btn-secondary-light' },
-                  h(Icon, { name: 'sparkle', size: 16 }),
-                  h('span', null, 'Take 15s Coffee Taste Quiz')
+                h('a', { href: '#menuSection', className: 'btn-outline-cream' },
+                  h(Icon, { name: 'wine', size: 16 }),
+                  'Explore Menus & Wine Cellar'
+                ),
+                h('a', { href: '#apartmentSection', className: 'btn-outline-cream' },
+                  h(Icon, { name: 'users', size: 16 }),
+                  'Hire The Apartment (Up to 60p)'
                 )
               ),
-              h('div', { className: 'hero-trust-row' },
-                h('div', { className: 'trust-metric' },
-                  h('strong', null, '~4 Mins'),
-                  h('span', null, 'Express In-Store Pickup Queue Bypass')
-                ),
-                h('div', { className: 'trust-metric' },
-                  h('strong', null, '£0.00'),
-                  h('span', null, 'Free Barista Oat & Plant Milk Upgrade')
-                ),
-                h('div', { className: 'trust-metric' },
-                  h('strong', null, '9 Stamps'),
-                  h('span', null, '10th Handcrafted Drink Always Free')
+
+              h('div', { className: 'hero-accolades' },
+                DATA.venue.accolades.map((acc, i) =>
+                  h('div', { key: i, className: 'accolade-card' },
+                    h('div', { className: 'accolade-title' }, acc.label),
+                    h('div', { className: 'accolade-sub' }, acc.detail)
+                  )
                 )
               )
             ),
 
-            // Right: Interactive Hero Spotlight Card
-            h('div', { className: 'hero-showcase-card' },
-              h('div', { className: 'hero-feature-img-wrap' },
-                h('img', { src: activeSpot.image, alt: activeSpot.name }),
-                h('span', { className: 'hero-badge-overlay' }, activeSpot.tag)
-              ),
-              h('div', { className: 'hero-drink-meta' },
-                h('div', null,
-                  h('h3', null, activeSpot.name),
-                  h('p', null, activeSpot.subtitle),
-                  h('div', {
-                    style: {
-                      marginTop: '0.45rem',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.73rem',
-                      color: 'var(--gold)'
-                    }
-                  }, `${activeSpot.kcal} kcal · ${activeSpot.caffeine} caffeine · ${activeSpot.roastLevel}`)
-                ),
-                h('div', { style: { textAlign: 'right' } },
-                  h('div', { className: 'hero-price-tag' }, formatPrice(activeSpot.basePrice)),
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-primary',
-                    style: { marginTop: '0.5rem', padding: '0.5rem 0.95rem', fontSize: '0.78rem' },
-                    onClick: () => {
-                      const target = DATA.menuItems.find((m) => m.id === activeSpot.menuId);
-                      if (target) openDrinkCustomizer(target);
-                    }
-                  }, 'Customize')
+            // Right Column: Authentic One Club Row Framed Spotlight
+            h('div', null,
+              h('div', { className: 'ocr-art-frame' },
+                h('div', { className: 'ocr-art-inner' },
+                  h('img', {
+                    src: activeSpotlight.image,
+                    alt: activeSpotlight.name
+                  }),
+                  h('div', { className: 'spotlight-overlay' },
+                    h('div', {
+                      style: {
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.12em',
+                        color: 'var(--brass-bright)',
+                        marginBottom: '0.25rem'
+                      }
+                    }, activeSpotlight.tag),
+                    h('h2', {
+                      style: {
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: '1.65rem',
+                        fontWeight: 700,
+                        lineHeight: 1.15,
+                        color: 'var(--parchment)',
+                        marginBottom: '0.35rem'
+                      }
+                    }, activeSpotlight.name),
+                    h('p', {
+                      style: {
+                        fontSize: '0.84rem',
+                        color: 'var(--text-cream-muted)',
+                        marginBottom: '0.65rem'
+                      }
+                    }, activeSpotlight.subtitle),
+                    h('div', {
+                      style: {
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem',
+                        paddingTop: '0.55rem',
+                        borderTop: '1px solid rgba(246,243,227,0.18)'
+                      }
+                    },
+                      h('span', {
+                        style: {
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          color: 'var(--brass-bright)'
+                        }
+                      }, activeSpotlight.priceLabel),
+                      h('span', {
+                        style: {
+                          fontSize: '0.74rem',
+                          color: 'var(--parchment)'
+                        }
+                      }, activeSpotlight.pairing)
+                    ),
+                    h('div', { className: 'spotlight-tabs', role: 'tablist', 'aria-label': 'Hero Spotlights' },
+                      DATA.heroSpotlights.map((sp, idx) =>
+                        h('button', {
+                          key: sp.id,
+                          type: 'button',
+                          className: `spotlight-dot ${idx === activeSpotlightIdx ? 'active' : ''}`,
+                          onClick: () => setActiveSpotlightIdx(idx),
+                          title: sp.name,
+                          'aria-label': sp.name
+                        })
+                      )
+                    )
+                  )
                 )
               ),
-              h('div', { className: 'hero-spotlight-tabs' },
+              h('div', {
+                style: {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  marginTop: '0.75rem',
+                  flexWrap: 'wrap'
+                }
+              },
                 DATA.heroSpotlights.map((sp, idx) =>
                   h('button', {
                     key: sp.id,
                     type: 'button',
-                    className: `spotlight-tab ${idx === spotlightIdx ? 'active' : ''}`,
-                    onClick: () => setSpotlightIdx(idx)
-                  }, sp.name)
+                    onClick: () => setActiveSpotlightIdx(idx),
+                    style: {
+                      background: idx === activeSpotlightIdx ? 'var(--crimson)' : 'rgba(246,243,227,0.1)',
+                      color: 'var(--parchment)',
+                      border: '1px solid rgba(246,243,227,0.22)',
+                      padding: '0.28rem 0.65rem',
+                      borderRadius: '4px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }
+                  }, sp.name.split('&')[0].trim())
                 )
               )
             )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // EMBEDDED TABLE & BAR SEAT QUICK-RESERVE CONCIERGE BAR
+      // ======================================================================
+      h('div', { className: 'container booking-bar-wrapper' },
+        h('div', { className: 'booking-bar' },
+          h('div', { className: 'booking-bar-header' },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } },
+              h(Icon, { name: 'calendar', size: 18, color: '#C53627' }),
+              h('strong', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.3rem', textTransform: 'uppercase' } },
+                'Instant Table & Martini Bar Reservations'
+              ),
+              h('span', { className: 'badge-pill navy' }, 'SevenRooms Synchronised')
+            ),
+            h('span', { style: { fontSize: '0.78rem', color: 'var(--ink-secondary)' } },
+              'Walk-ins always welcome at the bar · Reservations up to 16 guests online'
+            )
           ),
 
-          // Post-Audit Addition: 10-Second Commuter Express Order Bar
-          h('div', { className: 'quick-order-bar' },
-            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } },
-              h(Icon, { name: 'clock', size: 20, color: '#D4A359' }),
-              h('div', null,
-                h('div', { style: { fontWeight: 700, fontSize: '0.88rem', color: '#fff' } }, '10-Second Commuter Reorder'),
-                h('div', { style: { fontSize: '0.73rem', color: 'var(--text-on-dark-muted)' } }, `Pickup at ${currentStore.name.split('—')[0]}`)
-              )
-            ),
-            h('div', { className: 'quick-order-field' },
-              h('label', null, '1. Select Handcrafted Drink'),
+          h('div', { className: 'booking-bar-grid' },
+            h('div', { className: 'field-group' },
+              h('label', { className: 'field-label', htmlFor: 'res-guests' }, 'Party Size'),
               h('select', {
-                className: 'quick-order-select',
-                value: expressDrinkId,
-                onChange: (e) => setExpressDrinkId(e.target.value)
+                id: 'res-guests',
+                className: 'field-control',
+                value: resGuests,
+                onChange: (e) => setResGuests(e.target.value)
               },
-                DATA.menuItems.slice(0, 7).map((m) =>
-                  h('option', { key: m.id, value: m.id }, `${m.name} (${formatPrice(m.basePrice)})`)
-                )
+                [
+                  '1 Guest (Bar Counter)',
+                  '2 Guests',
+                  '3 Guests',
+                  '4 Guests',
+                  '5 Guests',
+                  '6 Guests',
+                  '7 Guests',
+                  '8–16 Guests (£75pp Feasting)'
+                ].map((opt) => h('option', { key: opt, value: opt }, opt))
               )
             ),
-            h('div', { className: 'quick-order-field' },
-              h('label', null, '2. Milk Choice (Free Plant Milk)'),
+
+            h('div', { className: 'field-group' },
+              h('label', { className: 'field-label', htmlFor: 'res-date' }, 'Preferred Date'),
+              h('input', {
+                id: 'res-date',
+                type: 'date',
+                className: 'field-control',
+                value: resDate,
+                onChange: (e) => setResDate(e.target.value)
+              })
+            ),
+
+            h('div', { className: 'field-group' },
+              h('label', { className: 'field-label', htmlFor: 'res-session' }, 'Sitting & Time'),
               h('select', {
-                className: 'quick-order-select',
-                value: expressMilk,
-                onChange: (e) => setExpressMilk(e.target.value)
+                id: 'res-session',
+                className: 'field-control',
+                value: resSession,
+                onChange: (e) => setResSession(e.target.value)
               },
-                ['Barista Oat (Free)', 'Whole Estate Milk', 'Skimmed Milk', 'Coconut Milk (Free)', 'Black / No Milk'].map((mk) =>
-                  h('option', { key: mk, value: mk }, mk)
-                )
+                [
+                  'Lunch · 12:15',
+                  'Lunch · 13:15',
+                  'Early Dinner · 17:45',
+                  'Prime Dinner · 19:45',
+                  'Late Dinner & Martinis · 21:15',
+                  'Sunday Service Prime Rib · 14:00'
+                ].map((opt) => h('option', { key: opt, value: opt }, opt))
               )
             ),
-            h('div', { className: 'quick-order-field' },
-              h('label', null, '3. Collection Window'),
+
+            h('div', { className: 'field-group' },
+              h('label', { className: 'field-label', htmlFor: 'res-zone' }, 'Seating Experience'),
               h('select', {
-                className: 'quick-order-select',
-                value: expressSlot,
-                onChange: (e) => setExpressSlot(e.target.value)
+                id: 'res-zone',
+                className: 'field-control',
+                value: resZone,
+                onChange: (e) => setResZone(e.target.value)
               },
-                ['ASAP (~4 mins)', 'In 10 mins', 'In 20 mins'].map((sl) =>
-                  h('option', { key: sl, value: sl }, sl)
-                )
+                [
+                  'Main Dining Room',
+                  'Mahogany Martini Bar Counter',
+                  'Window Table (Club Row View)',
+                  'Group Sharing Table (8–16pp)'
+                ].map((opt) => h('option', { key: opt, value: opt }, opt))
               )
             ),
+
             h('button', {
               type: 'button',
               className: 'btn-primary',
-              style: { padding: '0.75rem 1.25rem', fontSize: '0.82rem', whiteSpace: 'nowrap' },
-              onClick: () => {
-                const drink = DATA.menuItems.find((m) => m.id === expressDrinkId) || DATA.menuItems[0];
-                addToCart({
-                  id: drink.id,
-                  name: drink.name,
-                  details: `Regular · ${expressMilk} · Pickup ${expressSlot}`,
-                  unitPriceGBP: drink.basePrice,
-                  qty: 1,
-                  type: 'cafe'
-                }, true);
-                pushToast(`Express added ${drink.name} (${expressMilk}) + 1 Nero Stamp!`);
-              }
-            }, '+ Express Bag')
-          )
-        )
-      ),
-
-      // ======================================================================
-      // 4. INTERACTIVE MENU + POST-AUDIT ALLERGEN EXCLUSION MATRIX
-      // ======================================================================
-      h('section', { id: 'menuSection', className: 'section-pad' },
-        h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #2 · Allergen & Nutrition Matrix',
-            problem: 'Customers with allergies or dietary goals must leave the menu page and read static tables.',
-            advantage: 'Real-time React Allergen Exclusion Toggles (Dairy-Free, Gluten-Free, Nut-Free) + live calorie/caffeine recalculation.'
-          }),
-
-          h('div', { className: 'section-header' },
-            h('div', null,
-              h('span', { className: 'section-kicker' }, '01 · Interactive Digital Menu & Allergen Guard'),
-              h('h2', { className: 'section-title' }, 'Handcrafted Drinks & Artisanal Bakery')
-            ),
-            h('p', { className: 'section-desc' },
-              'Filter by category, toggle positive dietary badges, or exclude specific allergens with zero page reloads.'
+              style: { height: '43px' },
+              onClick: () => setReservationModalOpen(true)
+            },
+              h(Icon, { name: 'check', size: 15 }),
+              'Lock Table Pass'
             )
           ),
 
-          h('div', { className: 'menu-controls-bar' },
-            h('div', { className: 'menu-top-controls' },
-              h('div', { className: 'category-pills' },
-                [
-                  { id: 'all', label: 'All Offerings (12)' },
-                  { id: 'coffee', label: '01 Espresso & Hot Coffee' },
-                  { id: 'iced', label: '02 Iced & Cold Brew' },
-                  { id: 'pastry', label: '03 Morning Bakery' },
-                  { id: 'savoury', label: '04 Toasted Ciabattas' }
-                ].map((cat) =>
-                  h('button', {
-                    key: cat.id,
-                    type: 'button',
-                    className: `cat-pill ${menuCat === cat.id ? 'active' : ''}`,
-                    onClick: () => setMenuCat(cat.id)
-                  }, cat.label)
-                )
-              ),
-              h('div', { className: 'menu-search-wrap' },
-                h('span', { className: 'menu-search-icon' }, h(Icon, { name: 'search', size: 15 })),
-                h('input', {
-                  type: 'search',
-                  className: 'menu-search-input',
-                  placeholder: 'Search Cortado, Pistachio, Truffle, Vegan...',
-                  value: menuSearch,
-                  onChange: (e) => setMenuSearch(e.target.value)
-                })
-              )
+          // Live SevenRooms Time-Slot Pill Selector (1-Tap Mobile & Desktop Booking)
+          h('div', { className: 'slot-pills-row', role: 'group', 'aria-label': 'Instant Available Time Slots' },
+            h('span', { style: { fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-secondary)', marginRight: '0.25rem', flexShrink: 0 } },
+              'Live Sitting Slots:'
             ),
-
-            // Row 1: Dietary Lifestyle Filters
-            h('div', { className: 'dietary-filter-row' },
-              h('span', { className: 'dietary-label' }, 'Dietary Preferences:'),
-              [
-                { id: 'vegan', label: '100% Vegan' },
-                { id: 'oat-friendly', label: 'Free Barista Oat' },
-                { id: 'seasonal', label: 'Seasonal Limited' },
-                { id: 'low-cal', label: 'Under 200 kcal' },
-                { id: 'high-protein', label: 'High Protein (18g+)' }
-              ].map((d) => {
-                const isOn = activeDietary.includes(d.id);
-                return h('button', {
-                  key: d.id,
-                  type: 'button',
-                  className: `diet-chip ${isOn ? 'active' : ''}`,
-                  onClick: () =>
-                    setActiveDietary((prev) =>
-                      prev.includes(d.id) ? prev.filter((x) => x !== d.id) : [...prev, d.id]
-                    )
-                },
-                  h(Icon, { name: isOn ? 'check' : 'leaf', size: 12 }),
-                  d.label
-                );
-              }),
-
-              h('span', { className: 'dietary-label', style: { marginLeft: '1rem' } }, 'Exclude Allergens:'),
-              [
-                { id: 'milk', label: 'No Dairy' },
-                { id: 'gluten', label: 'No Gluten' },
-                { id: 'nuts', label: 'No Tree Nuts' },
-                { id: 'eggs', label: 'No Eggs' }
-              ].map((alg) => {
-                const isEx = excludedAllergens.includes(alg.id);
-                return h('button', {
-                  key: alg.id,
-                  type: 'button',
-                  className: `allergen-chip ${isEx ? 'active' : ''}`,
-                  onClick: () =>
-                    setExcludedAllergens((prev) =>
-                      prev.includes(alg.id) ? prev.filter((x) => x !== alg.id) : [...prev, alg.id]
-                    )
-                },
-                  h(Icon, { name: 'shield', size: 12 }),
-                  alg.label
-                );
-              }),
-
-              h('span', {
-                style: { marginLeft: 'auto', fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }
-              }, `${filteredMenu.length} items match`)
-            )
-          ),
-
-          filteredMenu.length === 0
-            ? h('div', {
-                style: {
-                  textAlign: 'center',
-                  padding: '3rem',
-                  background: 'var(--bg-oat)',
-                  borderRadius: 'var(--radius-md)'
+            (DATA.venue.liveTimeSlots || []).map((slot) =>
+              h('button', {
+                key: slot.time,
+                type: 'button',
+                className: `slot-pill-btn ${resSession === slot.label ? 'active' : ''}`,
+                onClick: () => {
+                  setResSession(slot.label);
+                  setResZone(slot.zone);
+                  setReservationModalOpen(true);
                 }
               },
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.6rem', marginBottom: '0.4rem' } },
-                  'No menu items match all active filters'
-                ),
-                h('p', { style: { color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9rem' } },
-                  'Try relaxing an allergen or dietary filter to view more handcrafted options.'
-                ),
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  onClick: () => {
-                    setMenuCat('all');
-                    setMenuSearch('');
-                    setActiveDietary([]);
-                    setExcludedAllergens([]);
-                  }
-                }, 'Reset All Filters')
-              )
-            : h('div', { className: 'menu-grid' },
-                filteredMenu.map((item) =>
-                  h('article', { key: item.id, className: 'menu-card' },
-                    h('div', { className: 'menu-card-img' },
-                      h('img', { src: item.image, alt: item.name, loading: 'lazy' }),
-                      h('div', { className: 'card-badges' },
-                        item.badges.map((b) => {
-                          let cls = 'badge-signature';
-                          if (b.toLowerCase().includes('vegan') || b.toLowerCase().includes('oat')) cls = 'badge-vegan';
-                          if (b.toLowerCase().includes('seasonal')) cls = 'badge-seasonal';
-                          return h('span', { key: b, className: `badge-pill ${cls}` }, b);
-                        })
-                      ),
-                      h('span', { className: 'macro-pill' },
-                        item.caffeine > 0
-                          ? `${item.kcal} kcal · ${item.caffeine}mg caf`
-                          : `${item.kcal} kcal · ${item.protein}g protein`
-                      )
-                    ),
-                    h('div', { className: 'menu-card-body' },
-                      h('div', { className: 'menu-card-top' },
-                        h('h3', { className: 'menu-card-title' }, item.name),
-                        h('span', { className: 'menu-card-price' }, formatPrice(item.basePrice))
-                      ),
-                      h('p', { className: 'menu-card-desc' }, item.desc),
-                      h('div', { className: 'menu-card-notes' },
-                        item.notes.map((n) => h('span', { key: n, className: 'note-tag' }, n))
-                      ),
-                      h('div', { className: 'menu-card-actions' },
-                        h('button', {
-                          type: 'button',
-                          className: 'btn-customize',
-                          onClick: () => openDrinkCustomizer(item)
-                        },
-                          h(Icon, { name: 'sliders', size: 14 }),
-                          item.category === 'coffee' || item.category === 'iced' ? 'Customize Drink' : 'Warm / Options'
-                        ),
-                        h('button', {
-                          type: 'button',
-                          className: 'btn-quick-add',
-                          onClick: () => {
-                            addToCart({
-                              id: item.id,
-                              name: item.name,
-                              details: 'Standard Barista Recipe',
-                              unitPriceGBP: item.basePrice,
-                              qty: 1,
-                              type: 'cafe'
-                            }, item.category === 'coffee' || item.category === 'iced');
-                            pushToast(`Added ${item.name} to Click & Collect bag!`);
-                          }
-                        }, '+ Add')
-                      )
-                    )
-                  )
-                )
-              )
-        )
-      ),
-
-      // ======================================================================
-      // 5. POST-AUDIT SECTION: INTERACTIVE BARISTA TASTE MATCHMAKER
-      // ======================================================================
-      h('section', { id: 'matchmakerSection', className: 'section-pad', style: { paddingTop: '1rem' } },
-        h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #3 · Guided Product Discovery',
-            problem: 'New visitors are overwhelmed by espresso terminology and roast intensities.',
-            advantage: 'Interactive 3-step React Barista Matchmaker Quiz that pairs palate preferences with either an in-store drink or at-home bean subscription.'
-          }),
-
-          h('div', { className: 'matchmaker-card' },
-            h('div', null,
-              h('span', { className: 'eyebrow-tag' },
-                h(Icon, { name: 'sparkle', size: 13 }),
-                h('span', null, '02 · Interactive Barista Sommelier')
-              ),
-              h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.2rem', marginBottom: '0.5rem' } },
-                'Not Sure What to Order? Find Your Signature Nero Match.'
-              ),
-              h('p', { style: { color: 'var(--text-on-dark-muted)', fontSize: '0.9rem', marginBottom: '1.25rem' } },
-                'Select your texture, flavour profile, and setting below—our React sommelier engine computes your ideal beverage or roast in real time.'
-              ),
-
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--gold)' } }, 'Step 1 · Texture & Style'),
-              h('div', { className: 'quiz-options-row' },
-                [
-                  { id: 'milky', label: 'Velvety & Textured Milk' },
-                  { id: 'black', label: 'Pure & Intense Espresso' },
-                  { id: 'iced', label: 'Chilled & Over Ice' }
-                ].map((opt) =>
-                  h('button', {
-                    key: opt.id,
-                    type: 'button',
-                    className: `quiz-pill ${quizStyle === opt.id ? 'selected' : ''}`,
-                    onClick: () => setQuizStyle(opt.id)
-                  }, opt.label)
-                )
-              ),
-
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--gold)' } }, 'Step 2 · Flavour Notes'),
-              h('div', { className: 'quiz-options-row' },
-                [
-                  { id: 'chocolate', label: 'Dark Chocolate & Caramel' },
-                  { id: 'nutty', label: 'Roasted Pistachio, Hazelnut & Sea Salt' },
-                  { id: 'fruity', label: 'Single Origin Berry & Citrus' }
-                ].map((opt) =>
-                  h('button', {
-                    key: opt.id,
-                    type: 'button',
-                    className: `quiz-pill ${quizNote === opt.id ? 'selected' : ''}`,
-                    onClick: () => setQuizNote(opt.id)
-                  }, opt.label)
-                )
-              ),
-
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--gold)' } }, 'Step 3 · Where Are You Enjoying It?'),
-              h('div', { className: 'quiz-options-row', style: { marginBottom: 0 } },
-                [
-                  { id: 'cafe', label: 'In-Store Click & Collect (Now)' },
-                  { id: 'home', label: 'Brewing at Home (Beans / Pods)' }
-                ].map((opt) =>
-                  h('button', {
-                    key: opt.id,
-                    type: 'button',
-                    className: `quiz-pill ${quizMoment === opt.id ? 'selected' : ''}`,
-                    onClick: () => setQuizMoment(opt.id)
-                  }, opt.label)
-                )
-              )
-            ),
-
-            // Computed Match Card
-            h('div', { className: 'match-result-box' },
-              h('div', { style: { fontSize: '0.72rem', fontWeight: 700, color: '#4ADE80', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' } },
-                matchedRecommendation.tag
-              ),
-              h('div', { style: { height: '165px', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.9rem' } },
-                h('img', { src: matchedRecommendation.image, alt: matchedRecommendation.title, style: { width: '100%', height: '100%', objectFit: 'cover' } })
-              ),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.55rem', marginBottom: '0.25rem' } },
-                matchedRecommendation.title
-              ),
-              h('div', { style: { fontSize: '0.76rem', color: 'var(--gold)', marginBottom: '0.45rem' } },
-                matchedRecommendation.notes
-              ),
-              h('p', { style: { fontSize: '0.83rem', color: 'var(--text-on-dark-muted)', marginBottom: '1rem' } },
-                matchedRecommendation.desc
-              ),
-              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
-                h('strong', { style: { fontSize: '1.3rem', color: 'var(--gold)' } }, formatPrice(matchedRecommendation.priceGBP)),
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  style: { padding: '0.6rem 1.15rem', fontSize: '0.82rem' },
-                  onClick: () => {
-                    if (matchedRecommendation.isRetail) {
-                      addToCart({
-                        id: matchedRecommendation.item.id,
-                        name: matchedRecommendation.item.name,
-                        details: 'Matched Roastery Subscription (15% Off)',
-                        unitPriceGBP: matchedRecommendation.priceGBP,
-                        qty: 1,
-                        type: 'retail'
-                      }, false);
-                      pushToast(`Added ${matchedRecommendation.title} to your bag!`);
-                    } else {
-                      openDrinkCustomizer(matchedRecommendation.item);
-                    }
-                  }
-                }, matchedRecommendation.isRetail ? '+ Add Matched Roast' : 'Customize Match →')
+                h('span', null, slot.label),
+                h('span', { className: 'slot-pill-tag' }, slot.tag)
               )
             )
           )
@@ -999,718 +787,90 @@
       ),
 
       // ======================================================================
-      // 6. INTERACTIVE 9-STAMP DIGITAL WALLET + IN-STORE QR PASS FLIP
+      // POST-AUDIT SECTION 0: THE STORY & HERITAGE OF 1 CLUB ROW (/about Upgrade)
       // ======================================================================
-      h('section', { id: 'loyaltySection', className: 'section-pad loyalty-section' },
+      h('section', { id: 'storySection', className: 'section-block warm-theme', style: { paddingTop: '2.5rem' } },
         h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #4 · Interactive Wallet & QR Pass',
-            problem: 'caffenero.com only shows a static image of the loyalty app.',
-            advantage: 'Interactive 9-Stamp Digital Wallet that flips between the Stamp Card and an In-Store Payment QR Scanner, syncing free drink rewards directly into the web checkout.'
-          }),
-
-          h('div', { className: 'loyalty-grid' },
-            h('div', null,
-              h('span', { className: 'eyebrow-tag' },
-                h(Icon, { name: 'award', size: 14 }),
-                h('span', null, '03 · The Famous Caffè Nero Stamp Card')
-              ),
-              h('h2', { className: 'section-title', style: { color: '#fff', marginBottom: '1rem' } },
-                'Collect 9 Stamps. Your 10th Barista Drink is Always Free.'
-              ),
-              h('p', { style: { color: 'var(--text-on-dark-muted)', marginBottom: '1.35rem', fontSize: '0.96rem' } },
-                'Every coffee ordered on the web or scanned in-store adds an artisanal gold stamp to your pass. Bring a reusable cup for +1 bonus stamp, or link your myWaitrose and Octopus Electroverse accounts for partner treats.'
-              ),
-              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.75rem' } },
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  onClick: () => {
-                    if (stamps < 9) {
-                      const next = stamps + 1;
-                      setStamps(next);
-                      pushToast(next === 9
-                        ? '9/9 Stamps Collected! Free Barista Drink unlocked in your bag!'
-                        : `Stamp #${next} pressed! Only ${9 - next} more for a free drink.`);
-                    } else {
-                      setCartOpen(true);
-                    }
-                  }
-                },
-                  h(Icon, { name: 'coffee', size: 16 }),
-                  stamps < 9 ? 'Simulate Buying a Coffee (+1 Stamp)' : 'Redeem Free 10th Drink in Bag →'
-                ),
-                h('button', {
-                  type: 'button',
-                  className: 'btn-secondary-light',
-                  onClick: () => setWalletFlipped((f) => !f)
-                },
-                  h(Icon, { name: 'qr', size: 16 }),
-                  walletFlipped ? 'Show 9-Stamp Card View' : 'Flip to In-Store QR Payment Pass'
-                ),
-                stamps > 7 && h('button', {
-                  type: 'button',
-                  className: 'btn-secondary-light',
-                  onClick: () => {
-                    setStamps(7);
-                    setFreeDrinkApplied(false);
-                  }
-                }, 'Reset Demo (7/9)')
-              )
-            ),
-
-            // Right: Interactive Wallet Card (Stamp View OR QR Scanner View)
-            h('div', { className: 'stamp-card-widget' },
-              h('div', { className: 'stamp-card-header' },
-                h('div', null,
-                  h('div', { className: 'stamp-card-brand' }, 'CAFFÈ NERO · DIGITAL WALLET'),
-                  h('div', { style: { fontSize: '0.78rem', color: 'var(--text-on-dark-muted)' } },
-                    stamps >= 9
-                      ? '9/9 Stamps Collected — Free Barista Drink Unlocked!'
-                      : `${stamps}/9 Stamps Collected — ${9 - stamps} more until your free drink`
-                  )
-                ),
-                h('button', {
-                  type: 'button',
-                  className: 'pitch-toggle-btn',
-                  onClick: () => setWalletFlipped((f) => !f)
-                },
-                  h(Icon, { name: 'qr', size: 13 }),
-                  walletFlipped ? 'View Stamps' : 'In-Store QR'
-                )
-              ),
-
-              !walletFlipped
-                ? h(Fragment, null,
-                    h('div', { className: 'stamp-slots-grid' },
-                      [1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
-                        const isStamped = num <= stamps;
-                        return h('div', {
-                          key: num,
-                          className: `stamp-slot ${isStamped ? 'stamped' : ''}`,
-                          onClick: () => setStamps(num),
-                          title: `Set stamps to ${num}/9`
-                        },
-                          h(Icon, { name: isStamped ? 'coffee' : 'award', size: 20 }),
-                          h('span', { className: 'stamp-slot-num' }, `STAMP ${num}`)
-                        );
-                      }),
-                      h('div', {
-                        className: `stamp-slot reward-slot ${stamps >= 9 ? 'unlocked' : ''}`,
-                        onClick: () => {
-                          if (stamps >= 9) {
-                            setFreeDrinkApplied(true);
-                            setCartOpen(true);
-                          }
-                        }
-                      },
-                        h(Icon, { name: 'sparkle', size: 20 }),
-                        h('span', { className: 'stamp-slot-num' }, '10TH FREE')
-                      )
-                    ),
-                    stamps >= 9 && h('div', { className: 'reward-banner' },
-                      h('div', null,
-                        h('strong', null, 'Free Handcrafted Barista Drink Unlocked!'),
-                        h('div', { style: { fontSize: '0.76rem', opacity: 0.9 } }, 'Automatically deducts 1 drink from your Click & Collect bag.')
-                      ),
-                      h('button', {
-                        type: 'button',
-                        className: 'pitch-deck-btn',
-                        onClick: () => {
-                          setFreeDrinkApplied(true);
-                          setCartOpen(true);
-                        }
-                      }, 'Open Bag →')
-                    )
-                  )
-                : h('div', {
-                    style: {
-                      background: 'rgba(11, 9, 8, 0.55)',
-                      padding: '1.5rem',
-                      borderRadius: '14px',
-                      textAlign: 'center',
-                      border: '1px solid rgba(212, 163, 89, 0.3)'
-                    }
-                  },
-                    h('div', { style: { fontSize: '0.74rem', color: 'var(--gold)', fontFamily: 'var(--font-mono)', marginBottom: '0.6rem' } },
-                      'SINGLE-SCAN PAYMENT & LOYALTY PASS · VISA •••• 4821'
-                    ),
-                    h('div', {
-                      style: {
-                        background: '#fff',
-                        color: '#110D0B',
-                        padding: '1.1rem',
-                        borderRadius: '10px',
-                        maxWidth: '240px',
-                        margin: '0 auto 0.75rem',
-                        fontFamily: 'var(--font-mono)',
-                        fontWeight: 700,
-                        letterSpacing: '0.15em'
-                      }
-                    }, '[ ▀▄▀ NERO-PAY-8492 ▄▀▄ ]'),
-                    h('p', { style: { fontSize: '0.8rem', color: 'var(--text-on-dark-muted)' } },
-                      'Scan at any Caffè Nero till to pay and collect your stamp in a single tap.'
-                    )
-                  )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // 7. STORE LOCATOR + ARCHITECTURAL SVG RADAR MAP
-      // ======================================================================
-      h('section', { id: 'storeSection', className: 'section-pad' },
-        h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #5 · Workspace & Amenity Telemetry',
-            problem: 'caffenero.com store pages only show static opening hours without Wi-Fi speed, plug sockets, or booth availability.',
-            advantage: 'Interactive SVG Radar Map with live booth occupancy %, Wi-Fi Mbps, power socket counts, and 1-click pickup store selection.'
-          }),
-
           h('div', { className: 'section-header' },
-            h('div', null,
-              h('span', { className: 'section-kicker' }, '04 · Live Store Telemetry & Co-Working Finder'),
-              h('h2', { className: 'section-title' }, 'Find Your Local Coffee House')
-            ),
-            h('p', { className: 'section-desc' },
-              'Filter over 1,000 coffee houses by high-speed Wi-Fi, heated outdoor terraces, dog hospitality, and live seating availability.'
+            h('span', { className: 'section-kicker' }, 'The Story of 1 Club Row'),
+            h('h2', { className: 'section-title' }, 'Victorian Grandeur, Reborn for Shoreditch Nights'),
+            h('p', { className: 'section-subtitle' },
+              'Replacing the bare 3-sentence "/about/" page with an interactive three-chapter chronicle of our Grade II listed building, our kitchen, and the legendary upstairs apartment.'
             )
           ),
 
-          h('div', { className: 'store-locator-wrap' },
-            h('div', { className: 'store-filter-bar' },
-              h('div', { className: 'menu-search-wrap', style: { maxWidth: '320px' } },
-                h('span', { className: 'menu-search-icon' }, h(Icon, { name: 'pin', size: 15 })),
-                h('input', {
-                  type: 'search',
-                  className: 'menu-search-input',
-                  placeholder: 'Search London, Soho, Manchester, Boston, Dublin...',
-                  value: storeSearch,
-                  onChange: (e) => setStoreSearch(e.target.value)
-                })
-              ),
-              h('div', { className: 'store-amenity-chips' },
-                [
-                  { id: 'all', label: 'All Flagships', icon: 'pin' },
-                  { id: 'open-now', label: 'Open Now', icon: 'clock' },
-                  { id: 'wifi', label: 'Fast Co-Working Wi-Fi', icon: 'wifi' },
-                  { id: 'outdoor', label: 'Outdoor Terrace', icon: 'sun' },
-                  { id: 'dog-friendly', label: 'Dog Friendly', icon: 'check' },
-                  { id: 'step-free', label: 'Step-Free Access', icon: 'shield' }
-                ].map((am) =>
-                  h('button', {
-                    key: am.id,
-                    type: 'button',
-                    className: `amenity-chip ${storeAmenity === am.id ? 'active' : ''}`,
-                    onClick: () => setStoreAmenity(am.id)
-                  },
-                    h(Icon, { name: am.icon, size: 13 }),
-                    am.label
-                  )
-                )
-              )
-            ),
-
-            h('div', { className: 'store-split-grid' },
-              // Left: Store Cards List
-              h('div', { className: 'store-list-pane' },
-                filteredStores.map((st) => {
-                  const isSel = st.id === currentStore.id;
-                  return h('div', {
-                    key: st.id,
-                    className: `store-item-card ${isSel ? 'selected' : ''}`,
-                    onClick: () => setSelectedStoreId(st.id)
-                  },
-                    h('div', { className: 'store-item-top' },
-                      h('h4', { className: 'store-item-name' }, st.name),
-                      h('span', { className: 'store-distance-badge' }, st.distance)
-                    ),
-                    h('p', { style: { fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.45rem' } }, st.address),
-                    h('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem' } },
-                      h('span', { style: { color: 'var(--green-vegan)', fontWeight: 700 } }, `● Open (${st.hours})`),
-                      h('span', { style: { color: 'var(--text-muted)' } }, `${st.occupancyPct}% Full · ${st.wifiSpeed}`)
-                    )
-                  );
-                })
-              ),
-
-              // Right: Interactive Architectural SVG Radar Map + Store Telemetry Card
-              h('div', { className: 'store-visual-pane' },
-                h('div', { className: 'svg-radar-canvas' },
-                  h('svg', { width: '100%', height: '100%', viewBox: '0 0 600 220', preserveAspectRatio: 'xMidYMid slice' },
-                    // Architectural Grid & Thames / Street Vector Lines
-                    h('defs', null,
-                      h('pattern', { id: 'neroGrid', width: 40, height: 40, patternUnits: 'userSpaceOnUse' },
-                        h('path', { d: 'M 40 0 L 0 0 0 40', fill: 'none', stroke: 'rgba(255,255,255,0.05)', strokeWidth: 1 })
-                      )
-                    ),
-                    h('rect', { width: 600, height: 220, fill: 'url(#neroGrid)' }),
-                    h('path', { d: 'M 0 155 Q 180 120 340 165 T 600 130', fill: 'none', stroke: 'rgba(27, 54, 93, 0.55)', strokeWidth: 14 }),
-                    h('circle', { cx: 300, cy: 110, r: 85, fill: 'none', stroke: 'rgba(212, 163, 89, 0.16)', strokeDasharray: '4 4' }),
-                    h('circle', { cx: 300, cy: 110, r: 145, fill: 'none', stroke: 'rgba(212, 163, 89, 0.1)', strokeDasharray: '4 4' }),
-
-                    // Interactive Store Pins
-                    filteredStores.map((st) => {
-                      const cx = (st.mapX / 100) * 540 + 30;
-                      const cy = (st.mapY / 100) * 170 + 25;
-                      const active = st.id === currentStore.id;
-                      return h('g', {
-                        key: st.id,
-                        style: { cursor: 'pointer' },
-                        onClick: () => setSelectedStoreId(st.id)
-                      },
-                        active && h('circle', { cx, cy, r: 18, fill: 'rgba(196, 125, 78, 0.3)' }),
-                        h('circle', {
-                          cx,
-                          cy,
-                          r: active ? 8 : 6,
-                          fill: active ? '#D4A359' : '#C47D4E',
-                          stroke: '#fff',
-                          strokeWidth: 2
-                        }),
-                        h('text', {
-                          x: cx + 12,
-                          y: cy + 4,
-                          fill: active ? '#D4A359' : 'rgba(255,255,255,0.78)',
-                          fontSize: active ? '12' : '10',
-                          fontWeight: active ? '700' : '500',
-                          fontFamily: 'Plus Jakarta Sans, sans-serif'
-                        }, st.name.split('—')[0].trim())
-                      );
-                    })
-                  )
-                ),
-
-                h('div', { className: 'store-detail-card' },
-                  h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.65rem' } },
-                    h('div', null,
-                      h('span', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--gold)', fontWeight: 700 } },
-                        'Selected Flagship Coffee House'
-                      ),
-                      h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.7rem', color: '#fff' } }, currentStore.name)
-                    ),
-                    h('span', {
-                      style: {
-                        background: 'rgba(74, 222, 128, 0.18)',
-                        border: '1px solid #4ADE80',
-                        color: '#86EFAC',
-                        padding: '0.28rem 0.75rem',
-                        borderRadius: '99px',
-                        fontSize: '0.74rem',
-                        fontWeight: 700
-                      }
-                    }, `Express Pickup ~${currentStore.waitMins} mins`)
-                  ),
-
-                  h('p', { style: { fontSize: '0.84rem', color: 'var(--text-on-dark-muted)', marginBottom: '0.8rem' } },
-                    `${currentStore.address} · Hours: ${currentStore.hours}`
-                  ),
-
-                  // Workspace & Occupancy Telemetry Strip
-                  h('div', { className: 'store-telemetry-grid' },
-                    h('div', null,
-                      h('span', { style: { color: 'var(--text-on-dark-muted)', display: 'block' } }, 'Live Occupancy'),
-                      h('strong', { style: { color: '#4ADE80' } }, `${currentStore.occupancyPct}% (${currentStore.occupancy.split('·')[0]})`)
-                    ),
-                    h('div', null,
-                      h('span', { style: { color: 'var(--text-on-dark-muted)', display: 'block' } }, 'Co-Working Wi-Fi'),
-                      h('strong', { style: { color: '#fff' } }, currentStore.wifiSpeed)
-                    ),
-                    h('div', null,
-                      h('span', { style: { color: 'var(--text-on-dark-muted)', display: 'block' } }, 'Power Outlets'),
-                      h('strong', { style: { color: 'var(--gold)' } }, `${currentStore.powerSockets} Booth Sockets`)
-                    )
-                  ),
-
-                  h('p', { style: { fontSize: '0.8rem', fontStyle: 'italic', color: 'var(--text-on-dark-muted)', marginBottom: '1rem' } },
-                    `"${currentStore.baristaNote}"`
-                  ),
-
-                  h('div', { style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap' } },
-                    h('button', {
-                      type: 'button',
-                      className: 'btn-primary',
-                      style: { padding: '0.65rem 1.25rem', fontSize: '0.82rem' },
-                      onClick: () => pushToast(`Pickup location confirmed: ${currentStore.name}`)
-                    },
-                      h(Icon, { name: 'check', size: 15 }),
-                      'Confirmed as Pickup Store'
-                    ),
-                    h('a', {
-                      href: '#menuSection',
-                      className: 'btn-secondary-light',
-                      style: { padding: '0.65rem 1.15rem', fontSize: '0.82rem' }
-                    }, 'Order From This Store →')
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // 8. "COFFEE AT HOME" ROASTERY & SUBSCRIPTION CONFIGURATOR
-      // ======================================================================
-      h('section', { id: 'roasterySection', className: 'section-pad roastery-section' },
-        h('div', { className: 'container' },
-          h(PitchCallout, {
-            visible: pitchMode,
-            badge: 'Audit Fix #6 · D2C Subscription Configurator',
-            problem: 'Coffee at Home pages lack grind customization, per-cup cost framing, and native subscription toggles.',
-            advantage: 'Interactive Grind Selector + Subscribe & Save 15% calculator showing exact cost-per-cup (from £0.31/cup).'
-          }),
-
-          h('div', { className: 'section-header' },
-            h('div', null,
-              h('span', { className: 'section-kicker' }, '05 · Master Roastery Direct to Your Door'),
-              h('h2', { className: 'section-title' }, 'Coffee At Home Subscriptions')
-            ),
-            h('p', { className: 'section-desc' },
-              'Freshly roasted at our London & Milan master roasteries. Subscribe to save 15%, enjoy free doorstep delivery, and earn Double App Stamps on every bag.'
-            )
-          ),
-
-          h('div', { className: 'roast-toolbar' },
-            h('div', { className: 'category-pills' },
-              [
-                { id: 'all', label: 'All Roastery Formats' },
-                { id: 'beans', label: 'Whole Coffee Beans' },
-                { id: 'ground', label: 'Cafetière & Filter Ground' },
-                { id: 'pods', label: 'Nespresso® Compatible Pods' }
-              ].map((rf) =>
-                h('button', {
-                  key: rf.id,
-                  type: 'button',
-                  className: `cat-pill ${retailFormat === rf.id ? 'active' : ''}`,
-                  onClick: () => setRetailFormat(rf.id)
-                }, rf.label)
-              )
-            ),
-
-            h('label', { className: 'sub-toggle-box', style: { cursor: 'pointer' } },
-              h('input', {
-                type: 'checkbox',
-                checked: isSubscription,
-                onChange: (e) => setIsSubscription(e.target.checked),
-                style: { width: '17px', height: '17px', accentColor: 'var(--copper)' }
-              }),
-              h('span', { style: { fontSize: '0.84rem', fontWeight: 700, color: 'var(--gold)' } },
-                'Subscribe & Save 15% (Free Delivery + +2 Bonus Stamps)'
-              )
-            )
-          ),
-
-          h('div', { className: 'retail-grid' },
-            filteredRetail.map((prod) => {
-              const finalGBP = isSubscription ? prod.basePrice * 0.85 : prod.basePrice;
-              const perCupGBP = finalGBP / (prod.cupsPerPack || 18);
-              const grindChoice = selectedGrinds[prod.id] || (prod.format === 'pods' ? 'Nespresso® Original Capsules' : 'Whole Beans');
-
-              return h('article', { key: prod.id, className: 'retail-card' },
-                h('div', { className: 'retail-img-wrap' },
-                  h('img', { src: prod.image, alt: prod.name, loading: 'lazy' }),
-                  h('span', { className: 'badge-pill badge-signature', style: { position: 'absolute', top: '0.65rem', left: '0.65rem' } },
-                    prod.formatLabel
-                  ),
-                  isSubscription && h('span', { className: 'badge-pill badge-vegan', style: { position: 'absolute', top: '0.65rem', right: '0.65rem' } },
-                    `${formatPrice(perCupGBP)} / cup`
-                  )
-                ),
-                h('div', { style: { fontSize: '0.74rem', color: 'var(--gold)', fontWeight: 600 } }, prod.notes),
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: '#fff', margin: '0.25rem 0' } }, prod.name),
-                h('p', { style: { fontSize: '0.82rem', color: 'var(--text-on-dark-muted)', marginBottom: '0.6rem', flex: 1 } }, prod.desc),
-
-                h('div', { style: { fontSize: '0.74rem', color: 'var(--text-on-dark-muted)' } },
-                  `Roast Intensity: ${prod.intensity}/10`,
-                  h('div', { className: 'intensity-bar' },
-                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((dot) =>
-                      h('span', { key: dot, className: `intensity-dot ${dot <= prod.intensity ? 'filled' : ''}` })
-                    )
-                  )
-                ),
-
-                prod.format !== 'pods' && h('select', {
-                  className: 'grind-select',
-                  value: grindChoice,
-                  onChange: (e) => setSelectedGrinds((prev) => ({ ...prev, [prod.id]: e.target.value }))
-                },
-                  ['Whole Beans', 'Espresso Fine Grind', 'Cafetière Coarse Grind', 'V60 / Filter Medium Grind', 'Moka Pot Stovetop'].map((g) =>
-                    h('option', { key: g, value: g }, `Brew Preparation: ${g}`)
-                  )
-                ),
-
-                h('div', {
-                  style: {
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: '1rem',
-                    paddingTop: '0.85rem',
-                    borderTop: '1px solid var(--border-dark)'
-                  }
-                },
-                  h('div', null,
-                    h('span', { style: { fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)' } }, formatPrice(finalGBP)),
-                    isSubscription && h('span', {
-                      style: { fontSize: '0.76rem', textDecoration: 'line-through', color: 'var(--text-on-dark-muted)', marginLeft: '0.35rem' }
-                    }, formatPrice(prod.basePrice)),
-                    h('span', { style: { display: 'block', fontSize: '0.68rem', color: 'var(--text-on-dark-muted)' } },
-                      isSubscription ? 'Delivered every 2 weeks · Cancel anytime' : 'One-time home delivery'
-                    )
-                  ),
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-primary',
-                    style: { padding: '0.58rem 1.05rem', fontSize: '0.8rem' },
-                    onClick: () => {
-                      addToCart({
-                        id: prod.id,
-                        name: prod.name,
-                        details: `${grindChoice} · ${isSubscription ? 'Subscribe & Save (15% Off)' : 'One-Time Purchase'}`,
-                        unitPriceGBP: finalGBP,
-                        qty: 1,
-                        type: 'retail'
-                      }, isSubscription);
-                      pushToast(`Added ${prod.name} (${grindChoice}) to your bag!`);
-                    }
-                  }, '+ Add to Bag')
-                )
-              );
-            })
-          )
-        )
-      ),
-
-      // ======================================================================
-      // 9. FOOTER
-      // ======================================================================
-      h('footer', { className: 'site-footer' },
-        h('div', { className: 'container' },
-          h('div', { className: 'footer-grid' },
-            h('div', null,
-              h('div', { className: 'brand-wordmark', style: { color: '#fff', marginBottom: '0.4rem' } }, 'CAFFÈ NERO'),
-              h('p', { style: { fontSize: '0.85rem', maxWidth: '330px', marginBottom: '1.25rem' } },
-                'Award-winning Italian coffee, warm neighbourhood coffee houses, and seamless React-powered Click & Collect ordering.'
-              ),
+          h('div', { className: 'story-chapter-tabs', role: 'tablist', 'aria-label': 'Venue Story Chapters' },
+            (DATA.venue.storyChapters || []).map((chap) =>
               h('button', {
+                key: chap.id,
                 type: 'button',
-                className: 'pitch-deck-btn',
-                onClick: () => setPitchModalOpen(true)
+                role: 'tab',
+                'aria-selected': activeStoryId === chap.id,
+                className: `story-tab-btn ${activeStoryId === chap.id ? 'active' : ''}`,
+                onClick: () => setActiveStoryId(chap.id)
               },
-                h(Icon, { name: 'chart', size: 14 }),
-                'Open Executive UX Audit Scorecard'
-              )
-            ),
-            h('div', { className: 'footer-col' },
-              h('h4', null, 'Our Menus & Shop'),
-              h('ul', null,
-                h('li', null, h('a', { href: '#menuSection' }, 'Espresso & Hot Coffee')),
-                h('li', null, h('a', { href: '#menuSection' }, 'Iced Latte & Cold Brew')),
-                h('li', null, h('a', { href: '#menuSection' }, 'Interactive Allergen Guard')),
-                h('li', null, h('a', { href: '#roasterySection' }, 'Coffee At Home Subscriptions'))
-              )
-            ),
-            h('div', { className: 'footer-col' },
-              h('h4', null, 'Digital Experience'),
-              h('ul', null,
-                h('li', null, h('a', { href: '#loyaltySection' }, '9-Stamp Digital Wallet')),
-                h('li', null, h('a', { href: '#matchmakerSection' }, 'Barista Taste Matchmaker')),
-                h('li', null, h('a', { href: '#storeSection' }, 'Store Occupancy & Wi-Fi Radar'))
-              )
-            ),
-            h('div', { className: 'footer-col' },
-              h('h4', null, 'Ethical Sourcing'),
-              h('ul', null,
-                h('li', null, h('a', { href: '#roasterySection' }, '100% Rainforest Alliance Certified')),
-                h('li', null, h('a', { href: '#roasterySection' }, 'Master Roastery Heritage')),
-                h('li', null, h('a', { href: '#storeSection' }, 'Sustainability & Reusable Cup Perks'))
+                h('div', { style: { fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--crimson)', marginBottom: '0.2rem' } },
+                  chap.kicker
+                ),
+                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink-primary)' } },
+                  chap.title
+                )
               )
             )
-          ),
-          h('div', {
-            style: {
-              paddingTop: '1.5rem',
-              borderTop: '1px solid var(--border-dark)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '1rem',
-              fontSize: '0.78rem'
-            }
-          },
-            h('span', null, '© 2026 The Nero Group Ltd · Built with React 18 Component Architecture.'),
-            h('span', null, 'Designed for High Conversion, Allergen Transparency & Omnichannel Loyalty.')
-          )
-        )
-      ),
-
-      // ======================================================================
-      // FLOATING PITCH CONTROLS
-      // ======================================================================
-      h('div', { className: 'pitch-floating-bar' },
-        h('span', null, h('strong', null, 'Client Pitch Mode:')),
-        h('button', {
-          type: 'button',
-          className: `pitch-toggle-btn ${pitchMode ? 'active' : ''}`,
-          onClick: () => setPitchMode((p) => !p)
-        },
-          h(Icon, { name: 'sliders', size: 13 }),
-          pitchMode ? 'Audit Callouts: ON' : 'Audit Callouts: OFF'
-        ),
-        h('button', {
-          type: 'button',
-          className: 'pitch-deck-btn',
-          onClick: () => setPitchModalOpen(true)
-        },
-          h(Icon, { name: 'chart', size: 13 }),
-          'UX Audit Scorecard'
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 1: BARISTA DRINK CUSTOMIZER
-      // ======================================================================
-      customizerItem && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setCustomizerItem(null); }
-      },
-        h('div', { className: 'modal-dialog' },
-          h('div', { className: 'modal-header' },
-            h('div', null,
-              h('span', { className: 'section-kicker' }, 'React Barista Customizer · Live Macros'),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.75rem' } }, customizerItem.name),
-              h('p', { style: { fontSize: '0.84rem', color: 'var(--text-secondary)' } }, customizerItem.desc)
-            ),
-            h('button', {
-              type: 'button',
-              className: 'close-btn',
-              onClick: () => setCustomizerItem(null)
-            }, h(Icon, { name: 'close', size: 16 }))
           ),
 
           (() => {
-            const isDrink = customizerItem.category === 'coffee' || customizerItem.category === 'iced';
-            const totalGBP =
-              customizerItem.basePrice +
-              custSize.priceMod +
-              custBean.priceMod +
-              (custExtraShot ? 0.65 : 0) +
-              (custSyrup !== 'None' ? 0.55 : 0);
-            const kcal = Math.max(5, Math.round(customizerItem.kcal * custSize.calMod + (isDrink ? custMilk.calMod : 0) + (custSyrup !== 'None' ? 42 : 0)));
-            const caf = Math.round((customizerItem.caffeine + (custExtraShot ? 75 : 0)) * (custBean.label.includes('Decaf') ? 0.05 : 1));
-            const prot = (customizerItem.protein * custSize.calMod).toFixed(1);
-            const sug = (customizerItem.sugar * custSize.calMod + (custSyrup !== 'None' ? 9.5 : 0)).toFixed(1);
-
-            return h(Fragment, null,
-              h('div', { className: 'nutrition-live-box' },
-                h('div', null, h('strong', null, `${kcal} kcal`), h('span', null, 'Energy')),
-                h('div', null, h('strong', null, `${caf} mg`), h('span', null, 'Caffeine')),
-                h('div', null, h('strong', null, `${prot} g`), h('span', null, 'Protein')),
-                h('div', null, h('strong', null, `${sug} g`), h('span', null, 'Sugar'))
-              ),
-
-              isDrink && h(Fragment, null,
-                h('div', { className: 'customizer-group' },
-                  h('label', null, '1. Cup Size'),
-                  h('div', { className: 'option-grid' },
-                    [
-                      { label: 'Piccolo (8oz)', priceMod: -0.25, calMod: 0.75 },
-                      { label: 'Regular (12oz)', priceMod: 0, calMod: 1.0 },
-                      { label: 'Grande (16oz)', priceMod: 0.40, calMod: 1.3 }
-                    ].map((sz) =>
-                      h('button', {
-                        key: sz.label,
-                        type: 'button',
-                        className: `opt-btn ${custSize.label === sz.label ? 'selected' : ''}`,
-                        onClick: () => setCustSize(sz)
-                      }, sz.label)
-                    )
+            const chap = (DATA.venue.storyChapters || []).find((c) => c.id === activeStoryId) || DATA.venue.storyChapters[0];
+            if (!chap) return null;
+            return h('div', { className: 'story-grid' },
+              h('div', {
+                style: {
+                  background: 'var(--parchment-card)',
+                  border: '1px solid var(--border-parchment)',
+                  borderLeft: '4px solid var(--crimson)',
+                  padding: '2rem',
+                  borderRadius: '8px',
+                  boxShadow: 'var(--shadow-sm)'
+                }
+              },
+                h('span', { className: 'badge-pill', style: { marginBottom: '0.6rem', display: 'inline-block' } }, chap.kicker),
+                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, lineHeight: 1.12, marginBottom: '0.85rem' } },
+                  chap.title
+                ),
+                h('blockquote', {
+                  style: {
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    fontSize: '1.22rem',
+                    color: 'var(--club-navy-surface)',
+                    background: 'var(--parchment-warm)',
+                    padding: '1rem 1.2rem',
+                    borderRadius: '6px',
+                    marginBottom: '1rem'
+                  }
+                },
+                  chap.quote,
+                  h('footer', { style: { fontFamily: 'var(--font-sans)', fontStyle: 'normal', fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--crimson)', marginTop: '0.4rem' } },
+                    `— ${chap.source}`
                   )
                 ),
-
-                h('div', { className: 'customizer-group' },
-                  h('label', null, '2. Espresso Roast Selection'),
-                  h('div', { className: 'option-grid' },
-                    [
-                      { label: 'Signature Classico', priceMod: 0 },
-                      { label: 'Single Origin Colombia (+40p)', priceMod: 0.40 },
-                      { label: 'Swiss Water Decaf', priceMod: 0 }
-                    ].map((bn) =>
-                      h('button', {
-                        key: bn.label,
-                        type: 'button',
-                        className: `opt-btn ${custBean.label === bn.label ? 'selected' : ''}`,
-                        onClick: () => setCustBean(bn)
-                      }, bn.label)
-                    )
-                  )
+                h('p', { style: { fontSize: '0.94rem', color: 'var(--ink-secondary)', marginBottom: '1.35rem', lineHeight: 1.7 } },
+                  chap.body
                 ),
-
-                h('div', { className: 'customizer-group' },
-                  h('label', null, '3. Milk & Plant Alternatives (Zero Plant Surcharge)'),
-                  h('div', { className: 'option-grid' },
-                    [
-                      { label: 'Barista Oat (Free)', calMod: -12 },
-                      { label: 'Whole Estate Milk', calMod: 0 },
-                      { label: 'Skimmed Milk', calMod: -35 },
-                      { label: 'Coconut Milk (Free)', calMod: -25 }
-                    ].map((mk) =>
-                      h('button', {
-                        key: mk.label,
-                        type: 'button',
-                        className: `opt-btn ${custMilk.label === mk.label ? 'selected' : ''}`,
-                        onClick: () => setCustMilk(mk)
-                      }, mk.label)
-                    )
-                  )
-                ),
-
-                h('div', { className: 'customizer-group' },
-                  h('label', null, '4. Extra Espresso Shot & Syrups'),
-                  h('div', { className: 'option-grid' },
-                    h('button', {
-                      type: 'button',
-                      className: `opt-btn ${custExtraShot ? 'selected' : ''}`,
-                      onClick: () => setCustExtraShot((s) => !s)
-                    }, '+1 Ristretto Shot (+65p)'),
-                    ['None', 'Madagascan Vanilla', 'Roasted Hazelnut'].map((syr) =>
-                      h('button', {
-                        key: syr,
-                        type: 'button',
-                        className: `opt-btn ${custSyrup === syr ? 'selected' : ''}`,
-                        onClick: () => setCustSyrup(syr)
-                      }, syr === 'None' ? 'No Syrup' : `${syr} (+55p)`)
+                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
+                  (chap.stats || []).map((st) =>
+                    h('div', { key: st.label },
+                      h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', fontWeight: 700 } }, st.label),
+                      h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--club-navy-surface)' } }, st.value)
                     )
                   )
                 )
               ),
 
-              h('button', {
-                type: 'button',
-                className: 'btn-primary',
-                style: { width: '100%', justifyContent: 'space-between' },
-                onClick: () => {
-                  const details = isDrink
-                    ? `${custSize.label} · ${custBean.label} · ${custMilk.label}${custExtraShot ? ' · +1 Shot' : ''}${custSyrup !== 'None' ? ' · ' + custSyrup : ''}`
-                    : 'Warmed in Stone Deck Oven · Express Pickup';
-                  addToCart({
-                    id: customizerItem.id,
-                    name: customizerItem.name,
-                    details,
-                    unitPriceGBP: totalGBP,
-                    qty: 1,
-                    type: 'cafe'
-                  }, isDrink);
-                  setCustomizerItem(null);
-                  pushToast(`Added customized ${customizerItem.name} to your Click & Collect bag!`);
-                }
-              },
-                h('span', null, 'Add to Click & Collect Order (+1 Stamp)'),
-                h('strong', null, formatPrice(totalGBP))
+              h('div', { className: 'ocr-art-frame', style: { background: 'var(--club-navy-surface)' } },
+                h('div', { className: 'ocr-art-inner', style: { aspectRatio: '4 / 3.4' } },
+                  h('img', { src: chap.image, alt: chap.title, loading: 'lazy' })
+                )
               )
             );
           })()
@@ -1718,335 +878,1778 @@
       ),
 
       // ======================================================================
-      // MODAL 2: EXECUTIVE UX AUDIT SCORECARD & PITCH MODAL
+      // SECTION 1: INTERACTIVE BRASSERIE MENUS, ALLERGEN MATRIX & WINE CELLAR
       // ======================================================================
-      pitchModalOpen && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setPitchModalOpen(false); }
-      },
-        h('div', { className: 'modal-dialog', style: { maxWidth: '840px' } },
-          h('div', { className: 'modal-header' },
+      h('section', { id: 'menuSection', className: 'section-block' },
+        h('div', { className: 'container' },
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #02'),
             h('div', null,
-              h('span', { className: 'section-kicker', style: { color: '#4F46E5' } },
-                'Post-Audit Executive Proposal · React 18 Architecture'
-              ),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem' } },
-                'UX Audit Scorecard: Current caffenero.com vs. Our React Product'
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'close-btn',
-              onClick: () => setPitchModalOpen(false)
-            }, h(Icon, { name: 'close', size: 16 }))
+              h('strong', null, 'Cleaned Canva/PDF HTML Pollution + Added Live Allergen Exclusion Matrix & Sommelier Filters: '),
+              'On oneclubrow.com/menus/, all 5 Bootstrap tabs share duplicate id="pills-home-tab" attributes and the wine list contains raw <div class="page" title="Page 2"><div class="layoutArea"> wrappers pasted from a PDF. Below is the complete, authentic One Club Row menu with 1-click dietary filtering, sommelier pairings, and pre-order planning.'
+            )
           ),
 
-          h('div', { style: { display: 'grid', gap: '0.75rem', marginBottom: '1.25rem' } },
-            DATA.auditFindings.map((af) =>
-              h('div', {
-                key: af.id,
+          h('div', { className: 'section-header' },
+            h('span', { className: 'section-kicker' }, '01 · Culinary & Cellar Programme'),
+            h('h2', { className: 'section-title' }, 'Menus, Martinis & Old-World Cellar'),
+            h('p', { className: 'section-subtitle' },
+              'Inspired by the brasseries of Paris and the taverns of New York. Filter any menu by dietary requirement or explore sommelier wine pairings.'
+            )
+          ),
+
+          // Menu Category Tabs
+          h('div', { className: 'menu-tabs-bar', role: 'tablist', 'aria-label': 'One Club Row Menus' },
+            DATA.menuCategories.map((cat) =>
+              h('button', {
+                key: cat.id,
+                type: 'button',
+                role: 'tab',
+                'aria-selected': activeMenuTab === cat.id,
+                className: `menu-tab-btn ${activeMenuTab === cat.id ? 'active' : ''}`,
+                onClick: () => setActiveMenuTab(cat.id)
+              }, cat.label)
+            )
+          ),
+
+          // Allergen & Dietary Exclusion Matrix + Search Bar
+          activeMenuTab !== 'festive_feasting' && h('div', { className: 'allergen-matrix-bar' },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' } },
+              h('span', {
                 style: {
-                  background: '#fff',
-                  border: '1px solid var(--border-warm)',
-                  borderRadius: '10px',
-                  padding: '0.95rem 1.1rem'
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--club-navy-surface)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
                 }
               },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' } },
-                  h('strong', { style: { fontSize: '0.92rem' } }, af.area),
-                  h('div', { style: { display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.75rem', fontWeight: 700 } },
-                    h('span', { style: { background: '#FEE2E2', color: '#991B1B', padding: '0.18rem 0.55rem', borderRadius: '99px' } }, `Current Site: ${af.currentScore}`),
-                    h('span', { style: { background: '#DCFCE7', color: '#166534', padding: '0.18rem 0.55rem', borderRadius: '99px' } }, `Our React Build: ${af.remakeScore}`),
-                    h('span', { style: { background: '#EEF2FF', color: '#4F46E5', padding: '0.18rem 0.6rem', borderRadius: '99px' } }, af.impact)
-                  )
-                ),
-                h('div', { className: 'audit-comparison-grid' },
-                  h('div', null, h('strong', { style: { color: '#991B1B' } }, 'Bottleneck: '), af.problem),
-                  h('div', null, h('strong', { style: { color: '#166534' } }, 'React Solution: '), af.solution)
-                )
-              )
-            )
-          ),
-
-          h('div', {
-            style: {
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              background: 'var(--bg-oat)',
-              padding: '0.9rem 1.15rem',
-              borderRadius: '10px'
-            }
-          },
-            h('span', { style: { fontSize: '0.82rem', fontWeight: 600 } },
-              'Toggle Audit Callouts ON to highlight each of these 6 revenue drivers directly on the page during your demo.'
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-primary',
-              style: { padding: '0.55rem 1.1rem', fontSize: '0.8rem' },
-              onClick: () => {
-                setPitchMode(true);
-                setPitchModalOpen(false);
-              }
-            }, 'Enable Live On-Page Callouts')
-          )
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 3: ORDER CONFIRMATION & EXPRESS PICKUP PASS
-      // ======================================================================
-      orderSuccessOpen && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setOrderSuccessOpen(false); }
-      },
-        h('div', { className: 'modal-dialog', style: { maxWidth: '470px', textAlign: 'center' } },
-          h('div', {
-            style: {
-              width: '56px',
-              height: '56px',
-              borderRadius: '50%',
-              background: 'var(--green-bg)',
-              color: 'var(--green-vegan)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '0.85rem'
-            }
-          }, h(Icon, { name: 'check', size: 28 })),
-          h('span', { className: 'section-kicker' }, 'Express Click & Collect Confirmed'),
-          h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem', marginBottom: '0.4rem' } },
-            'Order #CN-8492 Sent to Espresso Bar!'
-          ),
-          h('p', { style: { fontSize: '0.86rem', color: 'var(--text-secondary)', marginBottom: '1.15rem' } },
-            `Skip the queue at ${currentStore.name}. Pickup slot: ${pickupSlot}.`
-          ),
-          h('div', {
-            style: {
-              background: 'var(--bg-espresso)',
-              color: '#fff',
-              padding: '1.2rem',
-              borderRadius: '12px',
-              marginBottom: '1.2rem'
-            }
-          },
-            h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--gold)', marginBottom: '0.5rem' } },
-              'EXPRESS COLLECTION QR PASS · +1 STAMP EARNED'
-            ),
-            h('div', {
-              style: {
-                background: '#fff',
-                color: '#000',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
-                letterSpacing: '0.18em',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                marginBottom: '0.45rem'
-              }
-            }, '[ ▀▄▀ CN-8492-NERO ▄▀▄ ]'),
-            h('div', { style: { fontSize: '0.75rem', color: 'var(--text-on-dark-muted)' } },
-              `Barista Status: Grinding fresh Classico beans (${currentStore.waitMins} mins)`
-            )
-          ),
-          h('button', {
-            type: 'button',
-            className: 'btn-primary',
-            style: { width: '100%' },
-            onClick: () => setOrderSuccessOpen(false)
-          }, 'Return to Caffè Nero')
-        )
-      ),
-
-      // ======================================================================
-      // SLIDE-OVER CLICK & COLLECT CART DRAWER
-      // ======================================================================
-      cartOpen && h('div', {
-        className: 'cart-drawer-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setCartOpen(false); }
-      },
-        h('aside', { className: 'cart-drawer' },
-          h('div', { className: 'cart-drawer-header' },
-            h('div', null,
-              h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.4rem', fontWeight: 700 } }, 'Click & Collect Bag'),
-              h('div', { style: { fontSize: '0.75rem', color: 'var(--gold)' } },
-                `${currentStore.name} (~${currentStore.waitMins} mins)`
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'close-btn',
-              style: { background: 'rgba(255,255,255,0.14)', color: '#fff' },
-              onClick: () => setCartOpen(false)
-            }, h(Icon, { name: 'close', size: 16 }))
-          ),
-
-          h('div', {
-            style: {
-              background: 'var(--savoy-blue)',
-              color: '#fff',
-              padding: '0.6rem 1.5rem',
-              fontSize: '0.78rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }
-          },
-            h('span', null, 'Collection Window:'),
-            h('select', {
-              value: pickupSlot,
-              onChange: (e) => setPickupSlot(e.target.value),
-              style: {
-                background: 'rgba(255,255,255,0.15)',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '6px',
-                padding: '0.2rem 0.5rem',
-                fontSize: '0.75rem'
-              }
-            },
-              ['ASAP (In ~4 mins)', 'In 15 minutes', 'In 30 minutes'].map((s) =>
-                h('option', { key: s, value: s, style: { color: '#000' } }, s)
-              )
-            )
-          ),
-
-          h('div', { className: 'cart-drawer-body' },
-            cart.length === 0
-              ? h('div', { style: { textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)' } },
-                  h(Icon, { name: 'coffee', size: 32, color: '#C47D4E' }),
-                  h('h4', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: '0.5rem 0 0.3rem' } }, 'Your Bag is Empty'),
-                  h('p', { style: { fontSize: '0.84rem' } }, 'Add handcrafted espresso drinks, warm pastries, or Coffee at Home blends.')
-                )
-              : cart.map((item) =>
-                  h('div', { key: item.uid, className: 'cart-item' },
-                    h('div', { style: { flex: 1 } },
-                      h('div', { style: { fontWeight: 700, fontSize: '0.9rem' } }, item.name),
-                      h('div', { style: { fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0.5rem' } }, item.details),
-                      h('div', {
-                        style: {
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.55rem',
-                          background: 'var(--bg-oat)',
-                          padding: '0.15rem 0.55rem',
-                          borderRadius: '6px'
-                        }
+                h(Icon, { name: 'shield', size: 15, color: '#236B42' }),
+                'Dietary & Allergen Filter:'
+              ),
+              activeMenuTab !== 'wine'
+                ? h('div', { className: 'dietary-chips' },
+                    [
+                      { key: 'vegetarian', label: 'Vegetarian' },
+                      { key: 'gluten-free', label: 'Gluten-Free' },
+                      { key: 'dairy-free', label: 'Dairy-Free' },
+                      { key: 'nut-free', label: 'Nut-Free' },
+                      { key: 'shellfish-free', label: 'Shellfish-Free' }
+                    ].map((f) =>
+                      h('button', {
+                        key: f.key,
+                        type: 'button',
+                        className: `dietary-chip ${activeDietaryFilters.includes(f.key) ? 'active' : ''}`,
+                        onClick: () => toggleDietaryFilter(f.key)
                       },
-                        h('button', {
-                          type: 'button',
-                          style: { border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 700 },
-                          onClick: () =>
-                            setCart((prev) =>
-                              prev
-                                .map((c) => (c.uid === item.uid ? { ...c, qty: c.qty - 1 } : c))
-                                .filter((c) => c.qty > 0)
-                            )
-                        }, '−'),
-                        h('span', { style: { fontSize: '0.78rem', fontWeight: 700 } }, item.qty),
-                        h('button', {
-                          type: 'button',
-                          style: { border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 700 },
-                          onClick: () =>
-                            setCart((prev) =>
-                              prev.map((c) => (c.uid === item.uid ? { ...c, qty: c.qty + 1 } : c))
-                            )
-                        }, '+')
+                        activeDietaryFilters.includes(f.key) && h(Icon, { name: 'check', size: 12 }),
+                        f.label
                       )
                     ),
-                    h('div', { style: { textAlign: 'right' } },
-                      h('div', { style: { fontWeight: 700, color: 'var(--copper)' } }, formatPrice(item.unitPriceGBP * item.qty)),
+                    activeDietaryFilters.length > 0 && h('button', {
+                      type: 'button',
+                      className: 'dietary-chip',
+                      style: { color: 'var(--crimson)', borderColor: 'var(--crimson)' },
+                      onClick: () => setActiveDietaryFilters([])
+                    }, 'Reset Filters')
+                  )
+                : h('div', { className: 'dietary-chips' },
+                    ['All', 'Sparkling', 'White', 'Rosé & Skin Contact', 'Red'].map((st) =>
                       h('button', {
+                        key: st,
                         type: 'button',
-                        style: { border: 'none', background: 'transparent', color: 'var(--text-muted)', fontSize: '0.72rem', cursor: 'pointer', marginTop: '0.4rem' },
-                        onClick: () => setCart((prev) => prev.filter((c) => c.uid !== item.uid))
-                      }, 'Remove')
+                        className: `dietary-chip ${wineStyleFilter === st ? 'active' : ''}`,
+                        onClick: () => setWineStyleFilter(st)
+                      }, st)
+                    ),
+                    h('button', {
+                      type: 'button',
+                      className: `dietary-chip ${wineByGlassOnly ? 'active' : ''}`,
+                      onClick: () => setWineByGlassOnly(!wineByGlassOnly)
+                    }, 'By The Glass Only')
+                  )
+            ),
+
+            h('div', { style: { position: 'relative', minWidth: '250px' } },
+              h('input', {
+                type: 'search',
+                className: 'field-control',
+                placeholder: activeMenuTab === 'wine' ? 'Search Burgundy, Champagne, grape...' : 'Search steak tartare, schnitzel, martini...',
+                value: menuSearch,
+                onChange: (e) => setMenuSearch(e.target.value),
+                style: { paddingLeft: '2.1rem' }
+              }),
+              h('span', { style: { position: 'absolute', left: '0.7rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-muted)' } },
+                h(Icon, { name: 'search', size: 15 })
+              )
+            )
+          ),
+
+          // TAB VIEW A: LUNCH & DINNER / SUNDAY SERVICE / DRINKS
+          (activeMenuTab === 'lunch_dinner' || activeMenuTab === 'sunday_service' || activeMenuTab === 'drinks') && (
+            groupedCourses.length === 0
+              ? h('div', {
+                  style: {
+                    textAlign: 'center',
+                    padding: '3rem 1rem',
+                    background: 'var(--parchment-card)',
+                    border: '1px solid var(--border-parchment)',
+                    borderRadius: '8px'
+                  }
+                },
+                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.5rem', marginBottom: '0.5rem' } },
+                    'No dishes match all selected dietary exclusions'
+                  ),
+                  h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
+                    'Our kitchen prepares every plate fresh to order and can adapt sauces on request.'
+                  ),
+                  h('button', {
+                    type: 'button',
+                    className: 'btn-outline-navy',
+                    onClick: () => { setActiveDietaryFilters([]); setMenuSearch(''); }
+                  }, 'Show Full Menu')
+                )
+              : groupedCourses.map(([courseName, items]) =>
+                  h('div', { key: courseName, className: 'menu-course-group' },
+                    h('div', { className: 'course-heading' },
+                      h('span', null, courseName),
+                      h('span', { style: { fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: 'var(--ink-secondary)' } },
+                        `${items.length} ${items.length === 1 ? 'Plate' : 'Plates'}`
+                      )
+                    ),
+                    h('div', { className: 'menu-grid' },
+                      items.map((item) =>
+                        h('article', { key: item.id, className: 'dish-card' },
+                          item.image && h('img', {
+                            src: item.image,
+                            alt: item.name,
+                            className: 'dish-thumb',
+                            loading: 'lazy'
+                          }),
+                          h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } },
+                            h('div', null,
+                              h('div', { className: 'dish-title-row' },
+                                h('h3', { className: 'dish-name' }, item.name),
+                                h('span', { className: 'dish-price' }, item.priceDisplay)
+                              ),
+                              h('p', { className: 'dish-desc' }, item.desc)
+                            ),
+                            h('div', { className: 'dish-meta-row' },
+                              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.35rem' } },
+                                (item.badges || []).map((b) =>
+                                  h('span', { key: b, className: 'badge-pill' }, b)
+                                ),
+                                item.pairing && h('span', { className: 'badge-pill navy', title: 'Sommelier Recommendation' },
+                                  `🍷 ${item.pairing}`
+                                )
+                              ),
+                              h('div', { style: { display: 'flex', gap: '0.4rem', flexWrap: 'wrap' } },
+                                h('button', {
+                                  type: 'button',
+                                  className: 'btn-outline-navy',
+                                  style: { padding: '0.3rem 0.6rem', fontSize: '0.68rem', borderColor: 'var(--border-parchment)' },
+                                  onClick: () => setInspectedDish(item)
+                                }, 'Allergens & Info'),
+                                h('button', {
+                                  type: 'button',
+                                  className: 'btn-outline-navy',
+                                  style: { padding: '0.3rem 0.65rem', fontSize: '0.7rem' },
+                                  onClick: () =>
+                                    addToBag({
+                                      uid: item.id,
+                                      name: item.name,
+                                      category: item.course,
+                                      details: item.pairing ? `Sommelier note: ${item.pairing}` : item.course,
+                                      unitPrice: item.price
+                                    })
+                                }, '+ Table Plan')
+                              )
+                            )
+                          )
+                        )
+                      )
                     )
                   )
                 )
           ),
 
-          h('div', { className: 'cart-drawer-footer' },
-            h('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '0.84rem', marginBottom: '0.35rem' } },
-              h('span', null, 'Subtotal'),
-              h('strong', null, formatPrice(subtotalGBP))
+          // TAB VIEW B: CURATED WINE CELLAR
+          activeMenuTab === 'wine' && h('div', { className: 'wine-grid' },
+            filteredWines.map((wine) =>
+              h('div', { key: wine.id, className: 'wine-card' },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' } },
+                  h('div', null,
+                    h('span', { className: 'badge-pill navy', style: { marginBottom: '0.3rem', display: 'inline-block' } },
+                      `${wine.style} · ${wine.vintage}`
+                    ),
+                    h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.22rem', fontWeight: 700 } }, wine.name),
+                    h('div', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
+                      `${wine.region} — ${wine.grape}`
+                    )
+                  ),
+                  h('div', { style: { textAlign: 'right', fontFamily: 'var(--font-mono)', flexShrink: 0 } },
+                    wine.glassPrice && h('div', { style: { fontSize: '0.82rem', color: 'var(--crimson)', fontWeight: 700 } },
+                      `£${wine.glassPrice} Glass`
+                    ),
+                    h('div', { style: { fontSize: '0.88rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
+                      `£${wine.bottlePrice} Bottle`
+                    )
+                  )
+                ),
+                h('div', {
+                  style: {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingTop: '0.55rem',
+                    borderTop: '1px dashed var(--border-parchment)',
+                    marginTop: '0.35rem'
+                  }
+                },
+                  h('span', { style: { fontSize: '0.76rem', color: 'var(--emerald-ok)', fontWeight: 600 } },
+                    `Best Paired With: ${wine.pairingTag}`
+                  ),
+                  h('button', {
+                    type: 'button',
+                    className: 'btn-outline-navy',
+                    style: { padding: '0.26rem 0.6rem', fontSize: '0.68rem' },
+                    onClick: () =>
+                      addToBag({
+                        uid: wine.id,
+                        name: `${wine.vintage} ${wine.name} (Bottle)`,
+                        category: `Wine Cellar · ${wine.style}`,
+                        details: `${wine.region} (${wine.grape})`,
+                        unitPrice: wine.bottlePrice
+                      })
+                  }, '+ Reserve Bottle')
+                )
+              )
+            )
+          ),
+
+          // TAB VIEW C: £75pp GROUP & FESTIVE FEASTING CALCULATOR
+          activeMenuTab === 'festive_feasting' && h('div', {
+            style: {
+              background: 'var(--parchment-card)',
+              border: '2px solid var(--crimson)',
+              borderRadius: '10px',
+              padding: '2rem',
+              maxWidth: '880px',
+              margin: '0 auto'
+            }
+          },
+            h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-parchment)' } },
+              h('div', null,
+                h('span', { className: 'badge-pill' }, '8 – 16 Guests · Served Family-Style'),
+                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, marginTop: '0.3rem' } },
+                  'The One Club Row Sharing Feast (£75pp)'
+                ),
+                h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)' } },
+                  'Designed for celebratory long lunches and group tables of 8 to 16 guests. Every dish arrives generous and family-style for the table to share.'
+                )
+              ),
+              h('div', { style: { textAlign: 'right', background: 'var(--club-navy-surface)', color: 'var(--parchment)', padding: '0.9rem 1.25rem', borderRadius: '6px' } },
+                h('div', { style: { fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--brass-bright)' } }, 'Table Estimate'),
+                h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.55rem', fontWeight: 700 } }, `£${feastGuestCount * 75}`),
+                h('div', { style: { fontSize: '0.74rem' } }, `${feastGuestCount} Guests × £75pp`)
+              )
             ),
-            discountGBP > 0 && h('div', {
-              style: {
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '0.84rem',
-                color: 'var(--green-vegan)',
-                fontWeight: 700,
-                marginBottom: '0.35rem'
-              }
-            },
-              h('span', null, '9-Stamp Free Barista Drink Reward'),
-              h('span', null, `-${formatPrice(discountGBP)}`)
+
+            h('div', { style: { marginBottom: '1.5rem' } },
+              h('label', { className: 'field-label', style: { display: 'block', marginBottom: '0.4rem' } },
+                `Select Group Party Size: ${feastGuestCount} Guests`
+              ),
+              h('input', {
+                type: 'range',
+                min: 8,
+                max: 16,
+                value: feastGuestCount,
+                onChange: (e) => setFeastGuestCount(Number(e.target.value)),
+                style: { width: '100%', accentColor: 'var(--crimson)' }
+              })
             ),
+
+            h('div', { className: 'menu-grid', style: { marginBottom: '1.5rem' } },
+              [
+                { course: '01 · Arrival Snacks', items: 'Warm Pickled Jalapeño Gougères & House Sourdough with Cultured Salted Butter' },
+                { course: '02 · Table Starters', items: 'Leeks Vinaigrette with Spiced Hazelnuts · Pugliese Stracciatella & Delicata Squash' },
+                { course: '03 · Feasting Mains & Sides', items: 'Grass-Fed Sirloin of Beef with Sauce Au Poivre, Shoestring Fries & Club Row Aged Parmesan Caesar Salad (Vegetarian Rotisserie Cauliflower Chimichurri available individually)' },
+                { course: '04 · Finishing Dessert', items: 'Twice-Baked Valrhona Chocolate Cake with Cold Normandy Crème Fraîche' }
+              ].map((step) =>
+                h('div', { key: step.course, style: { background: '#fff', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-parchment)' } },
+                  h('div', { style: { fontWeight: 700, color: 'var(--crimson)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.25rem' } }, step.course),
+                  h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.12rem', fontWeight: 600 } }, step.items)
+                )
+              )
+            ),
+
+            h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' } },
+              h('span', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
+                'Need more than 16 guests? Hire "The Apartment" upstairs for up to 50 seated.'
+              ),
+              h('button', {
+                type: 'button',
+                className: 'btn-primary',
+                onClick: () => {
+                  setResGuests('8–16 Guests (£75pp Feasting)');
+                  setResZone('Group Sharing Table (8–16pp)');
+                  setReservationModalOpen(true);
+                }
+              }, `Book ${feastGuestCount}-Guest Feasting Table (£${feastGuestCount * 75})`)
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SECTION 2: THE CLUB ROW MARTINI ATELIER ("TELL US HOW YOU LIKE IT")
+      // ======================================================================
+      h('section', { id: 'martiniSection', className: 'section-block navy-theme' },
+        h('div', { className: 'container' },
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout', style: { background: 'rgba(19, 19, 51, 0.85)', borderColor: 'var(--brass-bright)' } },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #03'),
+            h('div', null,
+              h('strong', null, 'Turned "Chase Vodka or Tanqueray 10 – Tell Us How You Like It" Into an Interactive Bar Conversion Engine: '),
+              'One Club Row’s biggest press hook is its sub-zero martinis and mahogany bar counter, yet their current website buries cocktails in plain text. This interactive Martini Atelier lets guests dial in their exact pour and lock in bar seating.'
+            )
+          ),
+
+          h('div', { className: 'section-header' },
+            h('span', { className: 'section-kicker' }, '02 · “Tell Us How You Like It”'),
+            h('h2', { className: 'section-title' }, 'The Club Row Martini Atelier'),
+            h('p', { className: 'section-subtitle' },
+              'Kept at -18°C in our bar freezers and stirred over crystal block ice. Configure your bespoke house pour and reserve a stool at the mahogany bar.'
+            )
+          ),
+
+          h('div', { className: 'martini-atelier-grid' },
+            // Left: 3-Step Interactive Builder
+            h('div', { className: 'atelier-steps-card' },
+              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
+                'Step 01 · Choose Your Freezer-Chilled Base Spirit'
+              ),
+              h('div', { className: 'option-cards-grid' },
+                DATA.martiniConfig.spirits.map((sp) =>
+                  h('button', {
+                    key: sp.id,
+                    type: 'button',
+                    className: `atelier-option-btn ${martiniSpiritId === sp.id ? 'active' : ''}`,
+                    onClick: () => setMartiniSpiritId(sp.id)
+                  },
+                    h('div', { style: { fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.2rem' } }, sp.name),
+                    h('div', { style: { fontSize: '0.75rem', color: 'var(--text-cream-muted)' } }, sp.note)
+                  )
+                )
+              ),
+
+              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
+                'Step 02 · Select Vermouth & Dilution Style'
+              ),
+              h('div', { className: 'option-cards-grid' },
+                DATA.martiniConfig.styles.map((st) =>
+                  h('button', {
+                    key: st.id,
+                    type: 'button',
+                    className: `atelier-option-btn ${martiniStyleId === st.id ? 'active' : ''}`,
+                    onClick: () => setMartiniStyleId(st.id)
+                  },
+                    h('div', { style: { fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.2rem' } }, st.name),
+                    h('div', { style: { fontSize: '0.75rem', color: 'var(--text-cream-muted)' } }, st.desc)
+                  )
+                )
+              ),
+
+              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
+                'Step 03 · Finishing Garnish'
+              ),
+              h('div', { className: 'option-cards-grid', style: { marginBottom: 0 } },
+                DATA.martiniConfig.garnishes.map((gar) =>
+                  h('button', {
+                    key: gar.id,
+                    type: 'button',
+                    className: `atelier-option-btn ${martiniGarnishId === gar.id ? 'active' : ''}`,
+                    onClick: () => setMartiniGarnishId(gar.id)
+                  },
+                    h('div', { style: { fontWeight: 700, fontSize: '0.9rem' } }, gar.name)
+                  )
+                )
+              )
+            ),
+
+            // Right: Live Bartender Spec Ticket
+            h('div', { className: 'martini-preview-card' },
+              h('div', null,
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--club-navy-surface)', paddingBottom: '0.75rem', marginBottom: '1rem' } },
+                  h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } },
+                    h(Icon, { name: 'martini', size: 20, color: '#C53627' }),
+                    h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase' } },
+                      '1CR Bar Docket · -18°C Service'
+                    )
+                  ),
+                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.35rem', fontWeight: 700, color: 'var(--crimson)' } },
+                    `£${customMartiniPrice}`
+                  )
+                ),
+
+                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.5rem' } },
+                  `${selectedSpirit.name.split(' ')[0]} ${selectedStyle.name.split('(')[0].trim()} Martini`
+                ),
+                h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '1.15rem' } },
+                  `${selectedSpirit.name} · ${selectedStyle.desc} · Finished with ${selectedGarnish.name}.`
+                ),
+
+                h('div', { style: { background: 'var(--parchment-warm)', padding: '0.95rem', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.82rem' } },
+                  h('div', { style: { fontWeight: 700, color: 'var(--club-navy-surface)', marginBottom: '0.3rem' } },
+                    'Recommended Bar Pairing:'
+                  ),
+                  h('div', null, 'Warm Pickled Jalapeño Gougères (£9) + Cornish Crab Toast (£5 ea)')
+                )
+              ),
+
+              h('div', { style: { display: 'flex', flexDirection: 'column', gap: '0.65rem' } },
+                h('button', {
+                  type: 'button',
+                  className: 'btn-primary',
+                  style: { width: '100%' },
+                  onClick: () => {
+                    addToBag({
+                      uid: `martini-${martiniSpiritId}-${martiniStyleId}-${martiniGarnishId}`,
+                      name: `Bespoke ${selectedStyle.name.split('(')[0].trim()} Martini`,
+                      category: 'Martini Bar Docket',
+                      details: `${selectedSpirit.name} · ${selectedGarnish.name}`,
+                      unitPrice: customMartiniPrice
+                    });
+                  }
+                }, `Add Bespoke Martini to Evening Plan (£${customMartiniPrice})`),
+
+                h('button', {
+                  type: 'button',
+                  className: 'btn-outline-navy',
+                  style: { width: '100%' },
+                  onClick: () => {
+                    setResZone('Mahogany Martini Bar Counter');
+                    setResSpecialNotes(`Martini Spec on Arrival: ${selectedSpirit.name}, ${selectedStyle.name}, ${selectedGarnish.name}`);
+                    setReservationModalOpen(true);
+                  }
+                }, 'Reserve Mahogany Bar Stool With This Pour')
+              )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SECTION 3: "THE APARTMENT" UPSTAIRS PRIVATE DINING & PARTY CONFIGURATOR
+      // ======================================================================
+      h('section', { id: 'apartmentSection', className: 'section-block warm-theme' },
+        h('div', { className: 'container' },
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #05'),
+            h('div', null,
+              h('strong', null, 'Replaced Static PDF + Clunky 15-Field Gravity Form With an Interactive Event Configurator: '),
+              'On oneclubrow.com/private-dining/, hosts face an unstyled 15-field form where time dropdowns start at "12:00am", "12:30am", "1:00am" with zero room capacity or package pricing guidance. Our configurator lets corporate & private hosts compare 50-seat dinners vs. 60-guest cocktail parties and calculate budgets instantaneously.'
+            )
+          ),
+
+          h('div', { className: 'section-header' },
+            h('span', { className: 'section-kicker' }, '03 · Upstairs at 1 Club Row'),
+            h('h2', { className: 'section-title' }, '“The Apartment” Private Dining & Parties'),
+            h('p', { className: 'section-subtitle' },
+              'Above our restaurant are a series of grand private rooms in the former apartment of the previous owners—once known for particularly raucous Shoreditch house parties, now hosting private feasts, cocktail receptions, and post-dinner shows.'
+            )
+          ),
+
+          // 3 Room Layout Mode Cards
+          h('div', { className: 'layout-selector-grid' },
+            DATA.apartmentPackages.layouts.map((lay) =>
+              h('button', {
+                key: lay.id,
+                type: 'button',
+                className: `layout-tab-card ${activeLayoutId === lay.id ? 'active' : ''}`,
+                onClick: () => {
+                  setActiveLayoutId(lay.id);
+                  setEventGuests(lay.defaultGuests);
+                }
+              },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' } },
+                  h('span', { className: 'badge-pill' }, lay.badge),
+                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
+                    `From £${lay.basePricePerHead}pp`
+                  )
+                ),
+                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.25rem' } },
+                  lay.name
+                ),
+                h('p', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } }, lay.capacityRange)
+              )
+            )
+          ),
+
+          h('div', { className: 'apartment-grid' },
+            // Left: Room Preview + Guest & Add-on Controls
             h('div', {
               style: {
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '1.12rem',
-                fontWeight: 700,
-                paddingTop: '0.55rem',
-                borderTop: '1px solid var(--border-warm)',
-                marginBottom: '0.95rem'
+                background: 'var(--parchment-card)',
+                border: '1px solid var(--border-parchment)',
+                borderRadius: '8px',
+                padding: '1.6rem'
               }
             },
-              h('span', null, 'Total to Pay'),
-              h('span', { style: { color: 'var(--copper)' } }, formatPrice(finalTotalGBP))
+              h('div', { style: { display: 'grid', gridTemplateColumns: '140px 1fr', gap: '1.2rem', alignItems: 'center', marginBottom: '1.35rem' } },
+                h('img', {
+                  src: activeApartmentLayout.image,
+                  alt: activeApartmentLayout.name,
+                  style: { width: '140px', height: '165px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--crimson)' }
+                }),
+                h('div', null,
+                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.65rem', fontWeight: 700, marginBottom: '0.35rem' } },
+                    activeApartmentLayout.name
+                  ),
+                  h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '0.7rem' } },
+                    activeApartmentLayout.desc
+                  ),
+                  h('ul', { style: { listStyle: 'none', display: 'grid', gap: '0.3rem', fontSize: '0.8rem' } },
+                    activeApartmentLayout.highlights.map((hl) =>
+                      h('li', { key: hl, style: { display: 'flex', alignItems: 'center', gap: '0.45rem' } },
+                        h(Icon, { name: 'check', size: 14, color: '#236B42' }),
+                        hl
+                      )
+                    )
+                  )
+                )
+              ),
+
+              h('div', { style: { marginBottom: '1.3rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' } },
+                  h('label', { className: 'field-label' }, 'Number of Guests'),
+                  h('span', { style: { fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--crimson)' } },
+                    `${apartmentTotalEstimate.guests} Guests (${activeApartmentLayout.capacityRange})`
+                  )
+                ),
+                h('input', {
+                  type: 'range',
+                  min: activeApartmentLayout.minGuests,
+                  max: activeApartmentLayout.maxGuests,
+                  value: apartmentTotalEstimate.guests,
+                  onChange: (e) => setEventGuests(Number(e.target.value)),
+                  style: { width: '100%', accentColor: 'var(--crimson)' }
+                })
+              ),
+
+              h('div', null,
+                h('div', { className: 'field-label', style: { marginBottom: '0.55rem' } },
+                  'Curated Enhancements & Post-Dinner Entertainment'
+                ),
+                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' } },
+                  DATA.apartmentPackages.addons.map((addon) => {
+                    const checked = selectedEventAddons.includes(addon.id);
+                    return h('button', {
+                      key: addon.id,
+                      type: 'button',
+                      onClick: () =>
+                        setSelectedEventAddons((prev) =>
+                          prev.includes(addon.id) ? prev.filter((x) => x !== addon.id) : [...prev, addon.id]
+                        ),
+                      style: {
+                        textAlign: 'left',
+                        padding: '0.7rem 0.85rem',
+                        borderRadius: '6px',
+                        border: checked ? '1.5px solid var(--crimson)' : '1px solid var(--border-parchment)',
+                        background: checked ? 'var(--crimson-soft)' : '#fff',
+                        cursor: 'pointer'
+                      }
+                    },
+                      h('div', { style: { fontWeight: 700, fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between' } },
+                        h('span', null, addon.name),
+                        h('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--crimson)' } },
+                          addon.pricePerHead > 0 ? `+£${addon.pricePerHead}pp` : `+£${addon.flatFee}`
+                        )
+                      )
+                    );
+                  })
+                )
+              )
+            ),
+
+            // Right: Live Event Brief & Tripleseat Express Submission
+            h('div', { className: 'event-summary-box' },
+              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.9rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-navy-light)' } },
+                h('div', null,
+                  h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)' } },
+                    'Instant Tripleseat Event Estimate'
+                  ),
+                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.55rem' } }, 'Private Hire Proposal')
+                ),
+                h('a', {
+                  href: DATA.venue.brochurePdfUrl,
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                  className: 'btn-outline-cream',
+                  style: { padding: '0.38rem 0.7rem', fontSize: '0.7rem' }
+                },
+                  h(Icon, { name: 'external', size: 13 }),
+                  'Official PDF Brochure'
+                )
+              ),
+
+              h('div', { className: 'floorplan-card' },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--brass-bright)' } },
+                  h('span', null, 'LIVE ARCHITECTURAL FLOORPLAN'),
+                  h('span', null, `${apartmentTotalEstimate.guests} GUESTS CONFIGURED`)
+                ),
+                h(ApartmentFloorplanSvg, { layoutId: activeLayoutId, guests: apartmentTotalEstimate.guests })
+              ),
+
+              h('div', { style: { background: 'rgba(19, 19, 51, 0.55)', padding: '1rem', borderRadius: '6px', marginBottom: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' } },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' } },
+                  h('span', null, `${apartmentTotalEstimate.guests} Guests × £${apartmentTotalEstimate.perHead}/head`),
+                  h('span', null, `£${(apartmentTotalEstimate.guests * apartmentTotalEstimate.perHead).toLocaleString()}`)
+                ),
+                apartmentTotalEstimate.flat > 0 && h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem', color: 'var(--brass-bright)' } },
+                  h('span', null, 'Late-Night Pianist / Entertainment'),
+                  h('span', null, `+£${apartmentTotalEstimate.flat}`)
+                ),
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', paddingTop: '0.5rem', borderTop: '1px solid var(--border-navy-light)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--brass-bright)' } },
+                  h('span', null, 'Estimated Event Total'),
+                  h('span', null, `£${apartmentTotalEstimate.total.toLocaleString()}`)
+                )
+              ),
+
+              eventBriefSubmitted
+                ? h('div', { style: { background: 'rgba(52, 211, 153, 0.14)', border: '1px solid #34D399', padding: '1.1rem', borderRadius: '6px', textAlign: 'center' } },
+                    h('strong', { style: { color: '#34D399', display: 'block', marginBottom: '0.3rem' } },
+                      '✓ Private Event Brief Logged for The Apartment'
+                    ),
+                    h('p', { style: { fontSize: '0.8rem', color: 'var(--parchment)', marginBottom: '0.75rem' } },
+                      `Our Events Manager will reply to ${eventEmail || 'your email'} within 2 business hours with date holds for ${eventDate}.`
+                    ),
+                    h('button', {
+                      type: 'button',
+                      className: 'btn-outline-cream',
+                      onClick: () => setEventBriefSubmitted(false)
+                    }, 'Modify Event Configuration')
+                  )
+                : h('form', {
+                    onSubmit: (e) => {
+                      e.preventDefault();
+                      setEventBriefSubmitted(true);
+                      pushToast('Private Dining & Events enquiry sent to One Club Row Events Team.');
+                    },
+                    style: { display: 'grid', gap: '0.7rem' }
+                  },
+                    h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' } },
+                      h('input', {
+                        type: 'date',
+                        className: 'field-control',
+                        value: eventDate,
+                        onChange: (e) => setEventDate(e.target.value),
+                        required: true
+                      }),
+                      h('select', {
+                        className: 'field-control',
+                        value: eventTimeWindow,
+                        onChange: (e) => setEventTimeWindow(e.target.value)
+                      },
+                        [
+                          'Long Lunch Hire (12:00 – 16:30)',
+                          'Evening Reception & Dinner (18:30 – 23:30)',
+                          'Late Cocktail Party & Piano (19:30 – 01:00)'
+                        ].map((w) => h('option', { key: w, value: w }, w))
+                      )
+                    ),
+                    h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' } },
+                      h('input', {
+                        type: 'text',
+                        className: 'field-control',
+                        placeholder: 'Your Name *',
+                        value: eventHostName,
+                        onChange: (e) => setEventHostName(e.target.value),
+                        required: true
+                      }),
+                      h('input', {
+                        type: 'text',
+                        className: 'field-control',
+                        placeholder: 'Company / Occasion *',
+                        value: eventCompany,
+                        onChange: (e) => setEventCompany(e.target.value),
+                        required: true
+                      })
+                    ),
+                    h('input', {
+                      type: 'email',
+                      className: 'field-control',
+                      placeholder: 'Work or Personal Email *',
+                      value: eventEmail,
+                      onChange: (e) => setEventEmail(e.target.value),
+                      required: true
+                    }),
+                    h('button', { type: 'submit', className: 'btn-primary', style: { width: '100%' } },
+                      'Request Hold for The Apartment'
+                    )
+                  )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SECTION 4: NATIVE GIFT VOUCHER STUDIO (Replaces Empty /gift-cards/)
+      // ======================================================================
+      h('section', { id: 'vouchersSection', className: 'section-block' },
+        h('div', { className: 'container' },
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #06A'),
+            h('div', null,
+              h('strong', null, 'Turned Empty "/gift-cards/" Sitemap Page Into a Native Experience Voucher Studio: '),
+              'Currently, oneclubrow.com/gift-cards/ is an empty page while the menu bounces users to an external giftpro.co.uk subdomain. Our native studio lets guests personalize a wax-sealed One Club Row gift card and check out without leaving the site.'
+            )
+          ),
+
+          h('div', { className: 'section-header' },
+            h('span', { className: 'section-kicker' }, '04 · Give The Gift of Club Row'),
+            h('h2', { className: 'section-title' }, 'Dining & Martini Gift Vouchers'),
+            h('p', { className: 'section-subtitle' },
+              'Treat friends, colleagues, or fellow martini lovers to a long lunch, an 800g Côte de Boeuf feast, or late-night cocktails in Shoreditch.'
+            )
+          ),
+
+          h('div', { className: 'apartment-grid' },
+            h('div', { className: 'vouchers-grid' },
+              DATA.giftVouchers.map((gv) =>
+                h('div', { key: gv.id, className: 'voucher-card' },
+                  h('div', null,
+                    h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' } },
+                      h('span', { className: 'badge-pill' }, gv.badge),
+                      h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--crimson)' } },
+                        `£${gv.price}`
+                      )
+                    ),
+                    h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.35rem' } },
+                      gv.title
+                    ),
+                    h('p', { style: { fontSize: '0.84rem', color: 'var(--ink-secondary)', marginBottom: '0.75rem' } },
+                      gv.desc
+                    )
+                  ),
+                  h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.65rem', borderTop: '1px solid var(--border-parchment)' } },
+                    h('span', { style: { fontSize: '0.72rem', color: 'var(--ink-muted)' } }, gv.validity),
+                    h('button', {
+                      type: 'button',
+                      className: 'btn-outline-navy',
+                      style: { padding: '0.38rem 0.75rem', fontSize: '0.72rem' },
+                      onClick: () =>
+                        addToBag({
+                          uid: `${gv.id}-${voucherRecipient}`,
+                          name: `Gift Voucher: ${gv.title}`,
+                          category: `For: ${voucherRecipient} (${voucherDelivery})`,
+                          details: `Note: "${voucherMessage}"`,
+                          unitPrice: gv.price
+                        })
+                    }, '+ Add Gift Card')
+                  )
+                )
+              )
+            ),
+
+            // Live Wax-Sealed Gift Card Personalizer
+            h('div', {
+              style: {
+                background: 'var(--club-navy-surface)',
+                color: 'var(--parchment)',
+                border: '3px double var(--brass)',
+                borderRadius: '10px',
+                padding: '1.75rem',
+                boxShadow: 'var(--shadow-lg)'
+              }
+            },
+              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' } },
+                h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.55rem' } },
+                  h(BirdCrest, { size: 22, color: '#DFB973' }),
+                  h('span', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.2rem', letterSpacing: '0.06em', textTransform: 'uppercase' } },
+                    'One Club Row · Gift Bespoke Preview'
+                  )
+                ),
+                h('span', { className: 'badge-pill', style: { background: 'var(--crimson)', color: '#fff' } }, 'Wax-Sealed')
+              ),
+
+              h('div', {
+                style: {
+                  background: 'var(--parchment-card)',
+                  color: 'var(--ink-primary)',
+                  padding: '1.25rem',
+                  borderRadius: '6px',
+                  border: '1.5px solid var(--crimson)',
+                  marginBottom: '1.15rem'
+                }
+              },
+                h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--crimson)', fontWeight: 700 } },
+                  `Presented To: ${voucherRecipient || 'Your Guest'}`
+                ),
+                h('p', { style: { fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.18rem', margin: '0.45rem 0' } },
+                  `“${voucherMessage}”`
+                ),
+                h('div', { style: { fontSize: '0.72rem', color: 'var(--ink-secondary)', display: 'flex', justifyContent: 'space-between' } },
+                  h('span', null, '1 Club Row, Shoreditch, E1 6JX'),
+                  h('span', null, voucherDelivery)
+                )
+              ),
+
+              h('div', { style: { display: 'grid', gap: '0.65rem' } },
+                h('div', null,
+                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Recipient Name'),
+                  h('input', {
+                    type: 'text',
+                    className: 'field-control',
+                    value: voucherRecipient,
+                    onChange: (e) => setVoucherRecipient(e.target.value)
+                  })
+                ),
+                h('div', null,
+                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Personal Card Message'),
+                  h('input', {
+                    type: 'text',
+                    className: 'field-control',
+                    value: voucherMessage,
+                    onChange: (e) => setVoucherMessage(e.target.value)
+                  })
+                ),
+                h('div', null,
+                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Delivery Format'),
+                  h('select', {
+                    className: 'field-control',
+                    value: voucherDelivery,
+                    onChange: (e) => setVoucherDelivery(e.target.value)
+                  },
+                    [
+                      'Digital Apple/Google Wallet Pass (Instant Email)',
+                      'Heavyweight Cream Card with Crimson Wax Seal (+£4 Post)'
+                    ].map((d) => h('option', { key: d, value: d }, d))
+                  )
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SECTION 5: CATEGORIZED PHOTOGRAPHY GALLERY (Justin De Souza & Beca B. Jones)
+      // ======================================================================
+      h('section', { id: 'gallerySection', className: 'section-block warm-theme' },
+        h('div', { className: 'container' },
+          h('div', { className: 'section-header' },
+            h('span', { className: 'section-kicker' }, '05 · Inside 1 Club Row'),
+            h('h2', { className: 'section-title' }, 'The Dining Room, The Bar & The Apartment'),
+            h('p', { className: 'section-subtitle' },
+              'Photography by Justin De Souza and Beca B. Jones. Filter by space or click any frame to inspect in full resolution.'
+            )
+          ),
+
+          h('div', { className: 'menu-tabs-bar' },
+            [
+              { id: 'all', label: 'All Spaces & Plates' },
+              { id: 'dining_room', label: 'The Dining Room' },
+              { id: 'martinis_bar', label: 'The Martini Bar' },
+              { id: 'dishes', label: 'Brasserie Plates' },
+              { id: 'the_apartment', label: 'Upstairs at The Apartment' }
+            ].map((tab) =>
+              h('button', {
+                key: tab.id,
+                type: 'button',
+                className: `menu-tab-btn ${galleryFilter === tab.id ? 'active' : ''}`,
+                onClick: () => setGalleryFilter(tab.id)
+              }, tab.label)
+            )
+          ),
+
+          h('div', { className: 'gallery-grid' },
+            visibleGallery.map((photo) =>
+              h('div', {
+                key: photo.id,
+                className: 'gallery-item',
+                onClick: () => setLightboxPhoto(photo)
+              },
+                h('div', { className: 'gallery-img-wrap' },
+                  h('img', { src: photo.src, alt: photo.title, loading: 'lazy' }),
+                  h('div', {
+                    style: {
+                      position: 'absolute',
+                      inset: 'auto 0 0 0',
+                      background: 'linear-gradient(to top, rgba(19,19,51,0.92), transparent)',
+                      color: 'var(--parchment)',
+                      padding: '1.2rem 0.9rem 0.75rem'
+                    }
+                  },
+                    h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700 } }, photo.title),
+                    h('div', { style: { fontSize: '0.74rem', color: 'var(--text-cream-muted)' } }, photo.caption)
+                  )
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SECTION 6: SECRET DOORWAY ARRIVAL GUIDE, FIXED CONTACT & CAREERS
+      // ======================================================================
+      h('section', { id: 'visitSection', className: 'section-block' },
+        h('div', { className: 'container' },
+          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
+            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #06B'),
+            h('div', null,
+              h('strong', null, 'Fixed Broken Contact Link + Added "Secret Staircase" Arrival Wayfinding: '),
+              'On oneclubrow.com/contact/, clicking hello@oneclubrow.com mistakenly links back to href="https://oneclubrow.com/home/" instead of opening an email client! First-time guests also frequently walk into The Knave of Clubs pub downstairs by mistake. Our arrival card solves both.'
+            )
+          ),
+
+          h('div', { className: 'wayfinding-grid' },
+            // Left: How to Find the Secret Doorway
+            h('div', {
+              style: {
+                background: 'var(--club-navy-surface)',
+                color: 'var(--parchment)',
+                border: '2px solid var(--crimson)',
+                borderRadius: '10px',
+                padding: '2rem'
+              }
+            },
+              h('div', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.45rem', color: 'var(--brass-bright)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.5rem' } },
+                h(Icon, { name: 'key', size: 15 }),
+                'Arrival & Wayfinding Guide'
+              ),
+              h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.2rem', marginBottom: '0.75rem' } },
+                'How to Find Our Door on Club Row'
+              ),
+              h('p', { style: { fontSize: '0.92rem', color: 'var(--text-cream-muted)', marginBottom: '1.25rem' } },
+                'We sit on the first floor above The Knave of Clubs pub on the corner of Bethnal Green Road and Club Row. Look for the discreet entrance doorway at 1 Club Row—climb the Victorian staircase straight up into the dining room and bar.'
+              ),
+
+              h('div', { style: { display: 'grid', gap: '0.75rem', background: 'rgba(19,19,51,0.55)', padding: '1.15rem', borderRadius: '6px', marginBottom: '1.35rem', fontSize: '0.85rem' } },
+                h('div', null,
+                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Address: '),
+                  '1 Club Row, Shoreditch, London E1 6JX (2 mins from Shoreditch High Street Overground / 8 mins from Liverpool Street)'
+                ),
+                h('div', null,
+                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Lunch & Dinner Hours: '),
+                  'Tuesday – Saturday: 12:00pm – 2:00pm & 5:30pm – 10:00pm · Sunday: 12:00pm – 2:00pm & 5:30pm – 9:00pm'
+                ),
+                h('div', null,
+                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Direct Concierge Email (Fixed mailto:): '),
+                  h('a', {
+                    href: `mailto:${DATA.venue.email}`,
+                    style: { textDecoration: 'underline', color: '#fff', fontWeight: 700 }
+                  }, DATA.venue.email)
+                )
+              ),
+
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.75rem' } },
+                h('a', {
+                  href: DATA.venue.googleMapsUrl,
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                  className: 'btn-primary'
+                },
+                  h(Icon, { name: 'pin', size: 15 }),
+                  'Open in Google Maps'
+                ),
+                h('a', {
+                  href: `mailto:${DATA.venue.email}?subject=Enquiry%20for%20One%20Club%20Row`,
+                  className: 'btn-outline-cream'
+                },
+                  h(Icon, { name: 'mail', size: 15 }),
+                  'Email hello@oneclubrow.com'
+                )
+              )
+            ),
+
+            // Right: Careers & Join Our Brigade
+            h('div', {
+              style: {
+                background: 'var(--parchment-card)',
+                border: '1.5px solid var(--border-parchment)',
+                borderRadius: '10px',
+                padding: '2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }
+            },
+              h('div', null,
+                h('span', { className: 'section-kicker' }, 'Join The Brigade'),
+                h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.1rem', marginBottom: '0.5rem' } },
+                  'Careers at One Club Row'
+                ),
+                h('p', { style: { fontSize: '0.9rem', color: 'var(--ink-secondary)', marginBottom: '1.25rem' } },
+                  'Our team is the most important part of our restaurant and we are always looking for fun, enthusiastic, and hard-working hospitality professionals to join us.'
+                ),
+
+                h('div', { style: { display: 'grid', gap: '0.85rem', marginBottom: '1.35rem' } },
+                  DATA.careers.map((job) =>
+                    h('div', {
+                      key: job.id,
+                      style: {
+                        background: '#fff',
+                        border: '1px solid var(--border-parchment)',
+                        borderLeft: '4px solid var(--crimson)',
+                        padding: '1rem 1.15rem',
+                        borderRadius: '6px'
+                      }
+                    },
+                      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' } },
+                        h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.3rem', fontWeight: 700 } }, job.role),
+                        h('span', { className: 'badge-pill navy' }, job.department)
+                      ),
+                      h('p', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)', marginBottom: '0.6rem' } }, job.summary),
+                      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                        h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, color: 'var(--emerald-ok)' } },
+                          job.compensation
+                        ),
+                        h('a', {
+                          href: job.specUrl,
+                          target: '_blank',
+                          rel: 'noopener noreferrer',
+                          style: { fontSize: '0.76rem', fontWeight: 700, color: 'var(--crimson)', textDecoration: 'underline' }
+                        }, 'Read Role Specification →')
+                      )
+                    )
+                  )
+                )
+              ),
+
+              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
+                h('span', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)' } },
+                  'Send your CV directly to ',
+                  h('a', { href: `mailto:${DATA.venue.careersEmail}`, style: { fontWeight: 700, textDecoration: 'underline' } }, DATA.venue.careersEmail)
+                ),
+                h('a', {
+                  href: `mailto:${DATA.venue.careersEmail}?subject=Application%20—%20One%20Club%20Row`,
+                  className: 'btn-outline-navy'
+                }, 'Apply in 1 Click')
+              )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // FOOTER
+      // ======================================================================
+      h('footer', { className: 'site-footer' },
+        h('div', { className: 'container', style: { textAlign: 'center' } },
+          h('div', { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: 'var(--crimson)', border: '2px solid var(--brass)', marginBottom: '1rem' } },
+            h(BirdCrest, { size: 30, color: '#F6F3E3' })
+          ),
+          h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.2rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '0.35rem' } },
+            'One Club Row'
+          ),
+          h('p', { style: { fontSize: '0.88rem', color: 'var(--text-cream-muted)', maxWidth: '520px', margin: '0 auto 1.5rem' } },
+            '1 Club Row, Shoreditch, London E1 6JX · Inspired by the taverns of New York and the bistros of Paris.'
+          ),
+          h('div', { style: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2rem', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em' } },
+            h('a', { href: DATA.venue.instagram, target: '_blank', rel: 'noopener noreferrer', style: { color: 'var(--brass-bright)' } }, 'Instagram (@oneclubrow)'),
+            h('a', { href: DATA.venue.sevenRoomsReserveUrl, target: '_blank', rel: 'noopener noreferrer' }, 'SevenRooms Reservations'),
+            h('a', { href: DATA.venue.brochurePdfUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Private Dining Brochure'),
+            h('a', { href: `mailto:${DATA.venue.email}` }, 'hello@oneclubrow.com'),
+            h('button', {
+              type: 'button',
+              onClick: () => setNewsletterModalOpen(true),
+              style: { background: 'none', border: 'none', color: 'var(--brass-bright)', fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.09em', cursor: 'pointer', textDecoration: 'underline' }
+            }, 'Join Club Row Society (Newsletter)')
+          ),
+          h('div', { style: { fontSize: '0.74rem', color: 'var(--text-cream-muted)', opacity: 0.75 } },
+            '© One Club Row Shoreditch · Post-UX Audit Digital Flagship Remake'
+          )
+        )
+      ),
+
+      // ======================================================================
+      // FLOATING PITCH INSIGHTS SWITCH (Bottom Left)
+      // ======================================================================
+      h('div', { className: 'pitch-floating-bar' },
+        h('div', {
+          className: 'pitch-toggle-switch',
+          onClick: () => setPitchAnnotationsOn(!pitchAnnotationsOn)
+        },
+          h('span', { className: `pitch-toggle-dot ${pitchAnnotationsOn ? 'active' : ''}` }),
+          h('span', null, pitchAnnotationsOn ? 'Pitch Callouts: ON' : 'Pitch Callouts: OFF')
+        ),
+        h('span', { style: { opacity: 0.3 } }, '|'),
+        h('button', {
+          type: 'button',
+          onClick: () => setPitchModalOpen(true),
+          style: { background: 'none', border: 'none', color: 'var(--brass-bright)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline' }
+        }, 'Open Full 6-Point Audit')
+      ),
+
+      // ======================================================================
+      // MODAL 1: EXECUTIVE UX AUDIT PITCH MODAL (For Presenting to Customer)
+      // ======================================================================
+      pitchModalOpen && h('div', {
+        className: 'modal-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setPitchModalOpen(false); }
+      },
+        h('div', { className: 'modal-card wide' },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '2px solid var(--club-navy-surface)' } },
+            h('div', null,
+              h('span', { className: 'badge-pill' }, 'Customer Pitch Deck · Forensic Code Audit'),
+              h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.1rem', fontWeight: 700, marginTop: '0.25rem' } },
+                'Why Replace oneclubrow.com With This Flagship?'
+              ),
+              h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)' } },
+                'We audited the live WordPress/Pinegrow website across all 8 pages. Here are the 6 high-impact conversion & UX upgrades built into this new product:'
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-outline-navy',
+              onClick: () => setPitchModalOpen(false)
+            }, h(Icon, { name: 'close', size: 16 }))
+          ),
+
+          h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' } },
+            DATA.auditFindings.map((f) =>
+              h('div', {
+                key: f.id,
+                style: {
+                  background: '#fff',
+                  border: '1px solid var(--border-parchment)',
+                  borderTop: '4px solid var(--crimson)',
+                  borderRadius: '6px',
+                  padding: '1.1rem'
+                }
+              },
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' } },
+                  h('strong', { style: { fontSize: '0.82rem', color: 'var(--club-navy-surface)' } }, f.area),
+                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, background: 'var(--emerald-bg)', color: 'var(--emerald-ok)', padding: '0.15rem 0.45rem', borderRadius: '4px' } },
+                    `${f.currentScore} → ${f.remakeScore}`
+                  )
+                ),
+                h('p', { style: { fontSize: '0.78rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' } },
+                  h('strong', { style: { color: 'var(--crimson)' } }, 'Live Defect: '),
+                  f.problem
+                ),
+                h('p', { style: { fontSize: '0.78rem', color: 'var(--ink-primary)', marginBottom: '0.55rem' } },
+                  h('strong', { style: { color: 'var(--emerald-ok)' } }, 'Our Solution: '),
+                  f.solution
+                ),
+                h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
+                  `Projected Impact: ${f.impact}`
+                )
+              )
+            )
+          ),
+
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' } },
+            h('span', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
+              'Tip: Toggle "Pitch Callouts" in the bottom-left bar when demonstrating live to the client.'
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-primary',
+              onClick: () => setPitchModalOpen(false)
+            }, 'Return to Interactive Product Demo')
+          )
+        )
+      ),
+
+      // ======================================================================
+      // MODAL 2: NATIVE TABLE & BAR RESERVATION CONCIERGE PASS
+      // ======================================================================
+      reservationModalOpen && h('div', {
+        className: 'modal-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setReservationModalOpen(false); }
+      },
+        h('div', { className: 'modal-card' },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '2px solid var(--club-navy-surface)' } },
+            h('div', null,
+              h('span', { className: 'badge-pill' }, '1 Club Row, Shoreditch · E1 6JX'),
+              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.85rem', fontWeight: 700 } },
+                confirmedReservation ? 'Table & Bar Pass Confirmed' : 'Complete Your Reservation'
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-outline-navy',
+              onClick: () => {
+                setReservationModalOpen(false);
+                setConfirmedReservation(null);
+              }
+            }, h(Icon, { name: 'close', size: 16 }))
+          ),
+
+          confirmedReservation
+            ? h('div', null,
+                h('div', {
+                  style: {
+                    background: 'var(--club-navy-surface)',
+                    color: 'var(--parchment)',
+                    padding: '1.35rem',
+                    borderRadius: '8px',
+                    border: '2px solid var(--brass)',
+                    marginBottom: '1.25rem'
+                  }
+                },
+                  h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: 'var(--brass-bright)' } },
+                    h('span', null, `REF: ${confirmedReservation.code}`),
+                    h('span', null, 'STATUS: CONFIRMED')
+                  ),
+                  h('h4', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.55rem', marginBottom: '0.35rem' } },
+                    `${confirmedReservation.guests} · ${confirmedReservation.zone}`
+                  ),
+                  h('div', { style: { fontSize: '0.86rem', marginBottom: '0.65rem' } },
+                    `Date: ${confirmedReservation.date} · Sitting: ${confirmedReservation.session}`
+                  ),
+                  confirmedReservation.notes && h('div', { style: { fontSize: '0.78rem', background: 'rgba(255,255,255,0.08)', padding: '0.5rem 0.75rem', borderRadius: '4px' } },
+                    `Concierge Note: ${confirmedReservation.notes}`
+                  )
+                ),
+                h('p', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
+                  'Arrival Note: Enter via the street doorway at 1 Club Row directly beside The Knave of Clubs pub and head up the stairs.'
+                ),
+                h('div', { style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap' } },
+                  h('button', {
+                    type: 'button',
+                    className: 'btn-primary',
+                    onClick: () => {
+                      setReservationModalOpen(false);
+                      setConfirmedReservation(null);
+                    }
+                  }, 'Done'),
+                  h('a', {
+                    href: DATA.venue.sevenRoomsReserveUrl,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    className: 'btn-outline-navy'
+                  }, 'Also Open Live SevenRooms Portal ↗')
+                )
+              )
+            : h('form', {
+                onSubmit: (e) => {
+                  e.preventDefault();
+                  setConfirmedReservation({
+                    code: '1CR-' + Math.floor(100000 + Math.random() * 900000),
+                    guests: resGuests,
+                    date: resDate,
+                    session: resSession,
+                    zone: resZone,
+                    name: resGuestName || 'VIP Guest',
+                    notes: resSpecialNotes
+                  });
+                  pushToast(`Reservation Pass issued for ${resGuests} (${resZone}).`);
+                },
+                style: { display: 'grid', gap: '0.85rem' }
+              },
+                h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' } },
+                  h('div', { className: 'field-group' },
+                    h('label', { className: 'field-label' }, 'Party Size'),
+                    h('input', { type: 'text', className: 'field-control', value: resGuests, onChange: (e) => setResGuests(e.target.value) })
+                  ),
+                  h('div', { className: 'field-group' },
+                    h('label', { className: 'field-label' }, 'Seating Zone'),
+                    h('input', { type: 'text', className: 'field-control', value: resZone, onChange: (e) => setResZone(e.target.value) })
+                  )
+                ),
+                h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' } },
+                  h('div', { className: 'field-group' },
+                    h('label', { className: 'field-label' }, 'Guest Full Name *'),
+                    h('input', {
+                      type: 'text',
+                      className: 'field-control',
+                      placeholder: 'e.g. Eleanor Vance',
+                      value: resGuestName,
+                      onChange: (e) => setResGuestName(e.target.value),
+                      required: true
+                    })
+                  ),
+                  h('div', { className: 'field-group' },
+                    h('label', { className: 'field-label' }, 'Email for Pass *'),
+                    h('input', {
+                      type: 'email',
+                      className: 'field-control',
+                      placeholder: 'guest@domain.com',
+                      value: resGuestEmail,
+                      onChange: (e) => setResGuestEmail(e.target.value),
+                      required: true
+                    })
+                  )
+                ),
+                h('div', { className: 'field-group' },
+                  h('label', { className: 'field-label' }, 'Dietary Notes or Martini Arrival Spec'),
+                  h('input', {
+                    type: 'text',
+                    className: 'field-control',
+                    placeholder: 'e.g. Two sub-zero Tanqueray 10 Dry Martinis on arrival, 1 gluten-free guest',
+                    value: resSpecialNotes,
+                    onChange: (e) => setResSpecialNotes(e.target.value)
+                  })
+                ),
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.5rem' } },
+                  h('a', {
+                    href: DATA.venue.sevenRoomsReserveUrl,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    style: { fontSize: '0.78rem', color: 'var(--club-navy-surface)', textDecoration: 'underline', fontWeight: 600 }
+                  }, 'Or continue on SevenRooms ↗'),
+                  h('button', { type: 'submit', className: 'btn-primary' }, 'Confirm Instant Booking Pass')
+                )
+              )
+        )
+      ),
+
+      // ======================================================================
+      // MODAL 3: GALLERY HIGH-RES LIGHTBOX
+      // ======================================================================
+      lightboxPhoto && h('div', {
+        className: 'modal-backdrop',
+        onClick: () => setLightboxPhoto(null)
+      },
+        h('div', {
+          className: 'modal-card',
+          style: { maxWidth: '580px', textAlign: 'center' },
+          onClick: (e) => e.stopPropagation()
+        },
+          h('img', {
+            src: lightboxPhoto.src,
+            alt: lightboxPhoto.title,
+            style: { width: '100%', maxHeight: '68vh', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--crimson)', marginBottom: '0.9rem' }
+          }),
+          h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 700 } }, lightboxPhoto.title),
+          h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } }, lightboxPhoto.caption),
+          h('button', { type: 'button', className: 'btn-outline-navy', onClick: () => setLightboxPhoto(null) }, 'Close Frame')
+        )
+      ),
+
+      // ======================================================================
+      // MODAL 4: DISH & 14-ALLERGEN MATRIX INSPECTOR MODAL (Post-Audit Section)
+      // ======================================================================
+      inspectedDish && h('div', {
+        className: 'modal-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setInspectedDish(null); }
+      },
+        h('div', { className: 'modal-card' },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem', paddingBottom: '0.85rem', borderBottom: '2px solid var(--club-navy-surface)' } },
+            h('div', null,
+              h('span', { className: 'badge-pill' }, `${inspectedDish.section} · Allergen & Sommelier Guide`),
+              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem', fontWeight: 700, marginTop: '0.2rem' } },
+                inspectedDish.name
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-outline-navy',
+              onClick: () => setInspectedDish(null)
+            }, h(Icon, { name: 'close', size: 16 }))
+          ),
+
+          h('p', { style: { fontSize: '0.9rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
+            inspectedDish.desc
+          ),
+
+          h('div', { style: { marginBottom: '1.15rem' } },
+            h('div', { style: { fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--club-navy-surface)', marginBottom: '0.45rem' } },
+              'Kitchen Allergen Matrix (Live Audit Upgrade — Replaces Unindexed Menu Text)'
+            ),
+            h('div', { className: 'allergen-grid-14' },
+              ['gluten', 'dairy', 'egg', 'fish', 'shellfish', 'molluscs', 'nuts', 'mustard', 'sulphites'].map((alg) => {
+                const present = (inspectedDish.allergens || []).includes(alg);
+                return h('div', {
+                  key: alg,
+                  className: `allergen-status-cell ${present ? 'contains' : 'free'}`
+                },
+                  h('span', null, present ? '●' : '✓'),
+                  h('span', { style: { textTransform: 'capitalize' } }, `${alg}: ${present ? 'Contains' : 'Free'}`)
+                );
+              })
+            )
+          ),
+
+          h('div', {
+            style: {
+              background: 'var(--parchment-warm)',
+              border: '1px solid var(--border-parchment)',
+              borderLeft: '3px solid var(--crimson)',
+              borderRadius: '6px',
+              padding: '0.85rem 1rem',
+              marginBottom: '1.2rem',
+              fontSize: '0.82rem'
+            }
+          },
+            h('strong', { style: { color: 'var(--club-navy-surface)', display: 'block', marginBottom: '0.2rem' } },
+              'Sommelier & Bar Pairing Note:'
+            ),
+            inspectedDish.category === 'raw-snacks' || inspectedDish.allergens?.includes('shellfish') || inspectedDish.allergens?.includes('fish')
+              ? 'Pairs with Jacquesson Cuvée No. 746 (£24 gls) or Txakoli Ameztoi Getariako (£10 gls) for crisp mineral acidity.'
+              : inspectedDish.category === 'mains'
+                ? 'Pairs with Bachelet-Monnot Maranges 1er Cru La Fussière 2022 (£22 gls) or ask our sommelier for our Coravin rare pours.'
+                : 'Pairs with our House Sub-Zero Tanqueray 10 Dry Martini (£14) or ratafia service.'
+          ),
+
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' } },
+            h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--crimson)' } },
+              `£${inspectedDish.price}`
+            ),
+            h('div', { style: { display: 'flex', gap: '0.6rem' } },
+              h('button', {
+                type: 'button',
+                className: 'btn-outline-navy',
+                onClick: () => setInspectedDish(null)
+              }, 'Close'),
+              h('button', {
+                type: 'button',
+                className: 'btn-primary',
+                onClick: () => {
+                  addToEveningBag({
+                    uid: `dish-${inspectedDish.id}`,
+                    name: inspectedDish.name,
+                    category: inspectedDish.section,
+                    unitPrice: inspectedDish.price,
+                    details: inspectedDish.desc
+                  });
+                  setInspectedDish(null);
+                }
+              }, '+ Add to Evening Plan')
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // MODAL 5: CLUB ROW SOCIETY & NEWSLETTER MODAL (Replaces 820px iframe)
+      // ======================================================================
+      newsletterModalOpen && h('div', {
+        className: 'modal-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setNewsletterModalOpen(false); }
+      },
+        h('div', { className: 'modal-card' },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '2px solid var(--club-navy-surface)' } },
+            h('div', null,
+              h('span', { className: 'badge-pill' }, 'Post-Audit Fix · Native React Society Card'),
+              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.85rem', fontWeight: 700 } },
+                'Join the One Club Row Society'
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-outline-navy',
+              onClick: () => setNewsletterModalOpen(false)
+            }, h(Icon, { name: 'close', size: 16 }))
+          ),
+          newsletterDone
+            ? h('div', { style: { textAlign: 'center', padding: '1.25rem 0' } },
+                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--emerald-ok)', marginBottom: '0.4rem' } },
+                  'Welcome to 1 Club Row'
+                ),
+                h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
+                  'You are on the priority list for live pianist nights, seasonal menus by Chef Patrick Powell, and private dining invitations.'
+                ),
+                h('button', {
+                  type: 'button',
+                  className: 'btn-primary',
+                  onClick: () => {
+                    setNewsletterDone(false);
+                    setNewsletterModalOpen(false);
+                  }
+                }, 'Done')
+              )
+            : h('form', {
+                onSubmit: (e) => {
+                  e.preventDefault();
+                  setNewsletterDone(true);
+                  pushToast('Subscribed to the One Club Row Society.');
+                },
+                style: { display: 'grid', gap: '0.85rem' }
+              },
+                h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)' } },
+                  'Receive priority invitations to late-night piano lock-ins, rare wine cellars, and seasonal menu launches above The Knave of Clubs.'
+                ),
+                h('div', { className: 'field-group' },
+                  h('label', { className: 'field-label' }, 'Full Name *'),
+                  h('input', {
+                    type: 'text',
+                    className: 'field-control',
+                    placeholder: 'Your Name',
+                    value: newsletterName,
+                    onChange: (e) => setNewsletterName(e.target.value),
+                    required: true
+                  })
+                ),
+                h('div', { className: 'field-group' },
+                  h('label', { className: 'field-label' }, 'Email Address *'),
+                  h('input', {
+                    type: 'email',
+                    className: 'field-control',
+                    placeholder: 'guest@domain.com',
+                    value: newsletterEmail,
+                    onChange: (e) => setNewsletterEmail(e.target.value),
+                    required: true
+                  })
+                ),
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.35rem' } },
+                  h('a', {
+                    href: DATA.venue.sevenRoomsSubscriptionUrl,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    style: { fontSize: '0.76rem', color: 'var(--club-navy-surface)', textDecoration: 'underline', fontWeight: 600 }
+                  }, 'Official SevenRooms List ↗'),
+                  h('button', { type: 'submit', className: 'btn-primary' }, 'Join the Society')
+                )
+              )
+        )
+      ),
+
+      // ======================================================================
+      // MOBILE & TABLET SLIDE-OVER NAVIGATION DRAWER (Multi-Device UX)
+      // ======================================================================
+      mobileNavOpen && h('div', {
+        className: 'drawer-backdrop mobile-nav-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setMobileNavOpen(false); }
+      },
+        h('aside', { className: 'mobile-nav-drawer' },
+          h('div', { className: 'mobile-nav-header' },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
+              h('div', { className: 'brand-crest-badge', style: { width: '38px', height: '38px' } },
+                h(BirdCrest, { size: 20, color: '#F6F3E3' })
+              ),
+              h('div', null,
+                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--parchment)' } },
+                  'One Club Row'
+                ),
+                h('div', { style: { fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--brass-bright)' } },
+                  'Shoreditch · Est. 1 Club Row'
+                )
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'mobile-nav-close',
+              'aria-label': 'Close Menu',
+              onClick: () => setMobileNavOpen(false)
+            }, h(Icon, { name: 'close', size: 18, color: '#F6F3E3' }))
+          ),
+          h('div', { className: 'mobile-nav-body' },
+            h('nav', { className: 'mobile-nav-links' },
+              [
+                { href: '#storySection', num: '01', label: 'The Story & The Trio' },
+                { href: '#menuSection', num: '02', label: 'Culinary Menus & Cellar' },
+                { href: '#martiniSection', num: '03', label: 'Bespoke Martini Ritual' },
+                { href: '#apartmentSection', num: '04', label: 'The Apartment (Private Dining)' },
+                { href: '#vouchersSection', num: '05', label: 'Personalized Gift Vouchers' },
+                { href: '#gallerySection', num: '06', label: 'Editorial Gallery' },
+                { href: '#visitSection', num: '07', label: 'Hours, Location & Entrance' }
+              ].map((nav) =>
+                h('a', {
+                  key: nav.href,
+                  href: nav.href,
+                  className: 'mobile-nav-item',
+                  onClick: () => setMobileNavOpen(false)
+                },
+                  h('span', { className: 'mobile-nav-num' }, nav.num),
+                  h('span', { className: 'mobile-nav-text' }, nav.label),
+                  h(Icon, { name: 'arrowRight', size: 14, color: 'var(--brass-bright)' })
+                )
+              )
+            ),
+            h('div', { className: 'mobile-nav-actions' },
+              h('button', {
+                type: 'button',
+                className: 'btn-primary',
+                style: { width: '100%', height: '46px', fontSize: '0.84rem' },
+                onClick: () => {
+                  setMobileNavOpen(false);
+                  setReservationModalOpen(true);
+                }
+              },
+                h(Icon, { name: 'calendar', size: 16 }),
+                'Reserve a Table (SevenRooms)'
+              ),
+              h('button', {
+                type: 'button',
+                className: 'btn-outline-cream',
+                style: { width: '100%', height: '44px', fontSize: '0.82rem' },
+                onClick: () => {
+                  setMobileNavOpen(false);
+                  setDrawerOpen(true);
+                }
+              },
+                h(Icon, { name: 'bag', size: 16 }),
+                `Your Evening Plan (${totalBagCount} items)`
+              )
+            ),
+            h('div', { className: 'mobile-nav-info' },
+              h('div', { className: 'mobile-info-row' },
+                h('strong', null, 'Address: '),
+                '1 Club Row, London E1 6JX (Above The Knave of Clubs)'
+              ),
+              h('div', { className: 'mobile-info-row' },
+                h('strong', null, 'Hours: '),
+                'Tue–Sun · 12:00pm – Late (Closed Mon)'
+              ),
+              h('div', { style: { display: 'flex', gap: '0.6rem', marginTop: '0.65rem' } },
+                h('button', {
+                  type: 'button',
+                  className: 'mobile-audit-btn',
+                  onClick: () => {
+                    setMobileNavOpen(false);
+                    setPitchModalOpen(true);
+                  }
+                },
+                  h(Icon, { name: 'sparkle', size: 13, color: '#DFB973' }),
+                  'Open 6-Point UX Audit Pitch Deck'
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      // ======================================================================
+      // SLIDE-OVER EVENING PLAN & GIFT VOUCHER CONCIERGE DRAWER
+      // ======================================================================
+      drawerOpen && h('div', {
+        className: 'drawer-backdrop',
+        onClick: (e) => { if (e.target === e.currentTarget) setDrawerOpen(false); }
+      },
+        h('aside', { className: 'concierge-drawer' },
+          h('div', { className: 'drawer-header' },
+            h('div', null,
+              h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.45rem', fontWeight: 700 } },
+                'One Club Row Evening Plan'
+              ),
+              h('div', { style: { fontSize: '0.75rem', color: 'var(--brass-bright)' } },
+                'Table Pre-Orders, Bespoke Martinis & Gift Vouchers'
+              )
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-outline-cream',
+              style: { padding: '0.35rem 0.6rem' },
+              onClick: () => setDrawerOpen(false)
+            }, h(Icon, { name: 'close', size: 15 }))
+          ),
+
+          h('div', { className: 'drawer-body' },
+            bagItems.length === 0
+              ? h('div', { style: { textAlign: 'center', padding: '3rem 1rem', color: 'var(--ink-secondary)' } },
+                  h(Icon, { name: 'martini', size: 32, color: '#C53627' }),
+                  h('h4', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: '0.5rem 0' } },
+                    'Your Evening Plan is Empty'
+                  ),
+                  h('p', { style: { fontSize: '0.84rem' } },
+                    'Add plates from Lunch & Dinner, configure a bespoke Martini, or personalize a Gift Voucher.'
+                  )
+                )
+              : bagItems.map((item) =>
+                  h('div', {
+                    key: item.uid,
+                    style: {
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: '0.85rem',
+                      padding: '0.9rem 0',
+                      borderBottom: '1px solid var(--border-parchment)'
+                    }
+                  },
+                    h('div', null,
+                      h('span', { className: 'badge-pill navy', style: { marginBottom: '0.2rem', display: 'inline-block' } }, item.category),
+                      h('div', { style: { fontWeight: 700, fontSize: '0.92rem' } }, item.name),
+                      h('div', { style: { fontSize: '0.76rem', color: 'var(--ink-secondary)', marginBottom: '0.4rem' } }, item.details),
+                      h('div', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--parchment-warm)', padding: '0.15rem 0.55rem', borderRadius: '4px' } },
+                        h('button', {
+                          type: 'button',
+                          style: { border: 'none', background: 'none', fontWeight: 700, cursor: 'pointer' },
+                          onClick: () =>
+                            setBagItems((prev) =>
+                              prev
+                                .map((p) => (p.uid === item.uid ? { ...p, qty: p.qty - 1 } : p))
+                                .filter((p) => p.qty > 0)
+                            )
+                        }, '−'),
+                        h('span', { style: { fontSize: '0.78rem', fontWeight: 700 } }, item.qty),
+                        h('button', {
+                          type: 'button',
+                          style: { border: 'none', background: 'none', fontWeight: 700, cursor: 'pointer' },
+                          onClick: () =>
+                            setBagItems((prev) =>
+                              prev.map((p) => (p.uid === item.uid ? { ...p, qty: p.qty + 1 } : p))
+                            )
+                        }, '+')
+                      )
+                    ),
+                    h('div', { style: { textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--crimson)' } },
+                      `£${(item.unitPrice * item.qty).toFixed(2).replace(/\.00$/, '')}`
+                    )
+                  )
+                )
+          ),
+
+          h('div', { className: 'drawer-footer' },
+            h('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.85rem' } },
+              h('span', null, 'Estimated Total'),
+              h('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--crimson)' } },
+                `£${totalBagValue.toFixed(2).replace(/\.00$/, '')}`
+              )
             ),
             h('button', {
               type: 'button',
               className: 'btn-primary',
               style: { width: '100%' },
               onClick: () => {
-                if (cart.length === 0) {
-                  pushToast('Add a drink or pastry first to complete checkout.');
-                  return;
-                }
-                setCartOpen(false);
-                setOrderSuccessOpen(true);
+                setDrawerOpen(false);
+                setResSpecialNotes(
+                  `Pre-selected items (${totalBagCount}): ` +
+                    bagItems.map((b) => `${b.qty}x ${b.name}`).join(', ')
+                );
+                setReservationModalOpen(true);
               }
-            }, 'Complete Express Checkout (Apple Pay / Card)')
+            }, 'Attach to Table Reservation / Checkout')
           )
         )
       ),
 
       // ======================================================================
-      // NATIVE SMARTPHONE BOTTOM TAB BAR (Sticky Thumb-Zone Navigation)
+      // SMARTPHONE STICKY BOTTOM TAB BAR (Fixes hidden knave.js mobile footer)
       // ======================================================================
-      h('nav', { className: 'mobile-bottom-nav', 'aria-label': 'Smartphone Quick Navigation' },
+      h('nav', { className: 'mobile-bottom-nav', 'aria-label': 'Mobile Quick Actions' },
         h('a', { href: '#menuSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'coffee', size: 18 }),
-          h('span', null, 'Menu')
+          h(Icon, { name: 'utensils', size: 18 }),
+          h('span', null, 'Menus')
         ),
-        h('a', { href: '#matchmakerSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'sparkle', size: 18 }),
-          h('span', null, 'Match')
+        h('a', { href: '#martiniSection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'martini', size: 18 }),
+          h('span', null, 'Martinis')
         ),
-        h('a', { href: '#loyaltySection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'award', size: 18 }),
-          h('span', null, `${stamps}/9 Stamps`)
+        h('a', { href: '#apartmentSection', className: 'mobile-tab-item' },
+          h(Icon, { name: 'users', size: 18 }),
+          h('span', null, 'Apartment')
         ),
-        h('a', { href: '#storeSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'pin', size: 18 }),
-          h('span', null, 'Stores')
+        h('button', {
+          type: 'button',
+          className: 'mobile-tab-item',
+          onClick: () => setDrawerOpen(true),
+          'aria-label': 'Open Evening Plan'
+        },
+          h(Icon, { name: 'bag', size: 18 }),
+          h('span', null, 'Plan'),
+          totalBagCount > 0 && h('span', { className: 'mobile-tab-badge' }, totalBagCount)
         ),
         h('button', {
           type: 'button',
           className: 'mobile-tab-item highlight-tab',
-          onClick: () => setCartOpen(true)
+          onClick: () => setReservationModalOpen(true),
+          'aria-label': 'Reserve a Table'
         },
-          h(Icon, { name: 'bag', size: 18 }),
-          h('span', null, `Bag (${totalCartCount})`)
+          h('span', { className: 'highlight-tab-inner' },
+            h(Icon, { name: 'calendar', size: 16 }),
+            h('span', null, 'Reserve')
+          )
         )
       ),
 
-      // Toast Stack
+      // Toast Notifications
       h('div', { className: 'toast-container', 'aria-live': 'polite' },
         toasts.map((t) => h('div', { key: t.id, className: 'toast' }, t.text))
       )
@@ -2058,7 +2661,7 @@
     const rootEl = document.getElementById('root');
     if (rootEl && createRoot) {
       const root = createRoot(rootEl);
-      root.render(h(CaffeNeroApp));
+      root.render(h(OneClubRowApp));
     }
   });
 })();

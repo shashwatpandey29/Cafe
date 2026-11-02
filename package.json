@@ -1,7 +1,7 @@
 {
-  "name": "caffe-nero-react-flagship",
+  "name": "one-club-row-react-flagship",
   "version": "2.0.0",
-  "description": "Caffè Nero (caffenero.com) Post-Audit React 18 Digital Flagship Remake",
+  "description": "One Club Row (oneclubrow.com) Post-Audit React 18 Digital Flagship Remake — Shoreditch Tavern & Parisian Brasserie",
   "scripts": {
     "start": "python -m http.server 8080",
     "preview": "npx serve -l 8080"
