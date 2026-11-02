@@ -1,1118 +1,1555 @@
 /* ==========================================================================
-   ONE CLUB ROW (oneclubrow.com) — ENTERPRISE REACT 18 FLAGSHIP DATASET
-   1 Club Row, Shoreditch, London E1 6JX · Above The Knave of Clubs
-   Inspired by the Taverns of New York & the Brasseries of Paris
+   YEAH MAN CARIBBEAN — Authentic Jamaican Kitchen & Jerk Grill
+   63 Norway Street, Stretford, Manchester M32 0JN · 0161 864 3259
+   Core Data Model, Menu Inventory (80 Items), Operating Hours & Postcodes
    ========================================================================== */
 
-window.OCR_DATA = {
-  venue: {
-    name: 'One Club Row',
-    tagline: 'A Shoreditch Tavern & Parisian Brasserie',
-    subTagline: 'Set in the faded grandeur of a Grade II listed Victorian building above The Knave of Clubs. Built for long lunches, late dinners, dining at the bar, and one too many martinis.',
-    address: '1 Club Row, Shoreditch, London, E1 6JX',
-    landmark: 'Enter via the secret doorway on Club Row, directly beside The Knave of Clubs pub (2 mins from Shoreditch High Street Overground).',
-    hoursSummary: 'Tue – Sat: 12:00 – 14:00 & 17:30 – 22:00 · Sun: 12:00 – 14:00 & 17:30 – 21:00 (Closed Mon)',
-    email: 'hello@oneclubrow.com',
-    careersEmail: 'careers@oneclubrow.com',
-    instagram: 'https://www.instagram.com/oneclubrow/',
-    sevenRoomsReserveUrl: 'https://www.sevenrooms.com/explore/oneclubrow/reservations/create/search',
-    sevenRoomsNewsletterUrl: 'https://www.sevenrooms.com/explore/oneclubrow/subscription',
-    giftProUrl: 'https://oneclubrow.giftpro.co.uk/vouchers/gift-voucher/',
-    brochurePdfUrl: 'https://oneclubrow.com/wp-content/uploads/2026/09/OCR-Private-Dining-Brochure-1.pdf',
-    googleMapsUrl: 'https://www.google.com/maps/place/One+Club+Row/@51.5240027,-0.074219,17z',
-    founders: 'Patrick Powell, James Dye & Benjy Leibowitz',
-    accolades: [
-      { label: 'Michelin Guide', detail: 'Selected London Dining Room' },
-      { label: 'Grade II Listed', detail: '1880s Victorian Landmark' },
-      { label: 'The Apartment', detail: 'Up to 60 Guests Private Hire' }
-    ],
-    liveTimeSlots: [
-      { time: '12:15', label: '12:15 · Lunch', zone: 'Main Dining Room', tag: 'Available' },
-      { time: '13:15', label: '13:15 · Long Lunch', zone: 'Window Table (Club Row View)', tag: '2 Tables Left' },
-      { time: '17:45', label: '17:45 · Early Evening', zone: 'Main Dining Room', tag: 'Available' },
-      { time: '19:00', label: '19:00 · Bar Counter', zone: 'Mahogany Martini Bar Counter', tag: '4 Stools Left' },
-      { time: '19:45', label: '19:45 · Prime Dinner', zone: 'Main Dining Room', tag: 'Last Table' },
-      { time: '21:15', label: '21:15 · Late Dinner & Piano', zone: 'Main Dining Room', tag: 'Available' }
-    ],
-    storyChapters: [
+(function (root, factory) {
+  'use strict';
+  if (typeof module === 'object' && typeof module.exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.YEAHMAN_DATA = factory();
+  }
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+
+  var YEAHMAN_DATA = {
+    // ------------------------------------------------------------------------
+    // 1. BRAND IDENTITY & CORE BUSINESS METADATA
+    // ------------------------------------------------------------------------
+    brand: {
+      name: 'YEAH MAN CARIBBEAN',
+      shortName: 'Yeah Man',
+      monogram: 'YM',
+      founder: 'Jamie',
+      cuisine: 'Authentic Jamaican & Caribbean Street Food',
+      tagline: 'Authentic Jamaican Soul Food & Charcoal Jerk Grill',
+      secondaryTagline: "Stretford's Home of Real Jerk Chicken, Slow-Braised Oxtail & Fried Splits",
+      valueProp: "Handcrafted in Stretford for over 12 years. Marinated for 48 hours, slow-smoked with Jamaican spices, and served fresh with rice & peas, callaloo, and authentic homemade sauces.",
+      establishedYear: 2012,
+      yearsInBusiness: 12,
+      phone: '0161 864 3259',
+      phoneDisplay: '0161 864 3259',
+      phoneDialer: '+441618643259',
+      whatsappNumber: '441618643259',
+      whatsappDisplay: '0161 864 3259',
+      email: 'orders@yeahmancaribbeanstretford.co.uk',
+      address: '63 Norway Street, Stretford, Manchester, M32 0JN',
+      street: '63 Norway Street',
+      area: 'Stretford',
+      city: 'Manchester',
+      postcode: 'M32 0JN',
+      country: 'United Kingdom',
+      coordinates: {
+        lat: 53.4542,
+        lng: -2.3087
+      },
+      googleMapsUrl: 'https://maps.google.com/?q=63+Norway+Street,+Stretford,+Manchester+M32+0JN',
+      rating: 4.8,
+      ratingMax: 5.0,
+      reviewCount: 2150,
+      pressHighlight: "Manchester's Finest: 'One of the most authentic, soulful Caribbean takeaways in Greater Manchester.'",
+      hygieneRating: '5 (Very Good - Food Hygiene Rating)'
+    },
+
+    // ------------------------------------------------------------------------
+    // 2. OPERATING & SERVICE HOURS (UK / Manchester Time)
+    // ------------------------------------------------------------------------
+    hours: {
+      collection: {
+        tue_sat: '11:00 – 22:30',
+        sun: '13:00 – 21:00',
+        mon: 'Closed'
+      },
+      delivery: {
+        tue_sat: '17:00 – 22:30',
+        sun: '17:00 – 21:00',
+        mon: 'Closed'
+      },
+      schedule: [
+        { day: 'Monday', collection: 'Closed', delivery: 'Closed', isOpen: false },
+        { day: 'Tuesday', collection: '11:00 – 22:30', delivery: '17:00 – 22:30', isOpen: true, collOpen: 11.0, collClose: 22.5, delOpen: 17.0, delClose: 22.5 },
+        { day: 'Wednesday', collection: '11:00 – 22:30', delivery: '17:00 – 22:30', isOpen: true, collOpen: 11.0, collClose: 22.5, delOpen: 17.0, delClose: 22.5 },
+        { day: 'Thursday', collection: '11:00 – 22:30', delivery: '17:00 – 22:30', isOpen: true, collOpen: 11.0, collClose: 22.5, delOpen: 17.0, delClose: 22.5 },
+        { day: 'Friday', collection: '11:00 – 22:30', delivery: '17:00 – 22:30', isOpen: true, collOpen: 11.0, collClose: 22.5, delOpen: 17.0, delClose: 22.5 },
+        { day: 'Saturday', collection: '11:00 – 22:30', delivery: '17:00 – 22:30', isOpen: true, collOpen: 11.0, collClose: 22.5, delOpen: 17.0, delClose: 22.5 },
+        { day: 'Sunday', collection: '13:00 – 21:00', delivery: '17:00 – 21:00', isOpen: true, collOpen: 13.0, collClose: 21.0, delOpen: 17.0, delClose: 21.0 }
+      ],
+      notice: 'Fresh batches cooked continuously throughout the day. Pre-orders welcome via phone or WhatsApp!'
+    },
+
+    // ------------------------------------------------------------------------
+    // 3. FULFILLMENT & POSTCODE DELIVERY ZONES
+    // ------------------------------------------------------------------------
+    fulfillment: {
+      collection: {
+        enabled: true,
+        fee: 0,
+        feeDisplay: 'FREE',
+        prepTime: '15 – 20 mins',
+        minOrder: 0
+      },
+      delivery: {
+        enabled: true,
+        fee: 3.00,
+        feeDisplay: '£3.00',
+        deliveryTime: '35 – 50 mins',
+        minOrder: 15.00,
+        minOrderDisplay: '£15.00'
+      },
+      postcodes: [
+        { code: 'M32', area: 'Stretford, Gorse Hill', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M16', area: 'Old Trafford, Firswood, Whalley Range', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M21', area: 'Chorlton-cum-Hardy', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M17', area: 'Trafford Park, The Trafford Centre', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M41', area: 'Urmston, Davyhulme', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M33', area: 'Sale, Brooklands', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M15', area: 'Hulme, Castlefield, Trinity', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M5', area: 'Ordsall, Salford', deliveryFee: '£3.00', minOrder: '£15.00' },
+        { code: 'M50', area: 'MediaCityUK, Salford Quays', deliveryFee: '£3.00', minOrder: '£15.00' }
+      ]
+    },
+
+    // ------------------------------------------------------------------------
+    // 4. MENU CATEGORIES (8 Total)
+    // ------------------------------------------------------------------------
+    menuCategories: [
+    {
+        "id": "mains",
+        "name": "Main Dishes",
+        "short": "Mains",
+        "icon": "🍗",
+        "description": "All dishes are served with plain rice, rice & peas & pumpkin rice or chips (except splits)"
+    },
+    {
+        "id": "sides",
+        "name": "Sides & Fritters",
+        "short": "Sides",
+        "icon": "🥟",
+        "description": ""
+    },
+    {
+        "id": "veg",
+        "name": "Vegetable & Vegan",
+        "short": "Vegetable",
+        "icon": "🌱",
+        "description": "All served with plain rice, rice & peas or pumpkin rice & chips (except omelettes)"
+    },
+    {
+        "id": "soups",
+        "name": "Traditional Soups",
+        "short": "Soups",
+        "icon": "🥣",
+        "description": ""
+    },
+    {
+        "id": "barms",
+        "name": "Jamaican Barms",
+        "short": "Barms",
+        "icon": "🥪",
+        "description": ""
+    },
+    {
+        "id": "drinks",
+        "name": "Tropical Drinks",
+        "short": "Drinks",
+        "icon": "🥤",
+        "description": ""
+    },
+    {
+        "id": "desserts",
+        "name": "Homemade Desserts",
+        "short": "Desserts",
+        "icon": "🍰",
+        "description": ""
+    },
+    {
+        "id": "icecream",
+        "name": "Ben & Jerry's Ice Cream",
+        "short": "Ice Cream",
+        "icon": "🍨",
+        "description": ""
+    }
+],
+
+    // ------------------------------------------------------------------------
+    // 5. COMPLETE MENU ITEMS (80 Total Authentic Items from Scraped Catalog)
+    // ------------------------------------------------------------------------
+    menuItems: [
+    {
+        "id": "ym_1",
+        "name": "Jerk Chicken",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Juicy chicken marinated in our home made Yeah Man jerk seasoning, and packed with a kick of heat. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas and Yeah Man sauce.",
+        "allergen": "",
+        "isSignature": true,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 1
+    },
+    {
+        "id": "ym_2",
+        "name": "Brown Stew Beef",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£12.00",
+        "priceNum": 12,
+        "description": "Beef cooked down in a thick, glossy brown gravy with fresh herbs, sweet peppers and authentic Jamaican spices. Bold, hearty and full of flavour. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_3",
+        "name": "Curry Goat",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Tender pieces of slow-cooked goat simmered in a rich, aromatic curry sauce with traditional spices. Full of deep flavour and perfectly spiced for a comforting, satisfying dish. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": true,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 1
+    },
+    {
+        "id": "ym_4",
+        "name": "Curry Chicken",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Tender pieces of slow-cooked chicken simmered in a rich, aromatic curry sauce with traditional spices. Full of deep flavour and perfectly spiced for a comforting, satisfying dish. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_5",
+        "name": "Fish Escovitch",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£12.50",
+        "priceNum": 12.5,
+        "description": "Crispy fried fish topped with a vibrant mix of pickled carrots, onions and peppers in a tangy, spicy vinegar dressing. A bold and refreshing Jamaican classic. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Fish, Wheat, Egg",
+        "isSignature": false,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_6",
+        "name": "Southern Fried Chicken",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Crispy, seasoned chicken with a crunchy coating and succulent centre. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Eggs, Wheat",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_7",
+        "name": "Brown Stew Chicken",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Chicken cooked down in a thick, glossy brown gravy with fresh herbs, sweet peppers and authentic Jamaican spices. Bold, hearty and full of flavour. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_8",
+        "name": "Jerk chicken split",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£5.50",
+        "priceNum": 5.5,
+        "description": "Jamaican dumpling stuffed with jerk chicken, topped with our authentic homemade Yeah Man sauce.",
+        "allergen": "Wheat",
+        "isSignature": true,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 1
+    },
+    {
+        "id": "ym_9",
+        "name": "Oxtail",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£12.50",
+        "priceNum": 12.5,
+        "description": "Slow-braised oxtail cooked until tender in a rich, savoury gravy with butter beans, fresh herbs and authentic Caribbean spices. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": true,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 1
+    },
+    {
+        "id": "ym_10",
+        "name": "Curry Mutton",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "Tender pieces of slow-cooked mutton simmered in a rich, aromatic curry sauce with traditional spices. Full of deep flavour and perfectly spiced for a comforting, satisfying dish. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_11",
+        "name": "Ackee & Salt Fish",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£12.00",
+        "priceNum": 12,
+        "description": "Saltfish and ackee lightly saut&#xE9;ed with herbs and peppers in authentic Jamaican style. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_12",
+        "name": "Fried Chicken Split",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£5.50",
+        "priceNum": 5.5,
+        "description": "Jamaican fried dumpling stuffed with fried chicken, topped with salad cream or mayo.",
+        "allergen": "Wheat, Eggs",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_13",
+        "name": "Steak",
+        "categoryId": "mains",
+        "categoryName": "Main Dishes",
+        "price": "£12.00",
+        "priceNum": 12,
+        "description": "Tender beef strips in a rich pepper sauce with onions and fresh peppers. Served with a choice of: plain rice, pumpkin rice, fries or rice and peas.",
+        "allergen": "Cereals",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 2
+    },
+    {
+        "id": "ym_14",
+        "name": "Breast",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "Fried chicken",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_15",
+        "name": "Drumsticks",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Fried chicken",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_16",
+        "name": "Dumplings",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£0.70",
+        "priceNum": 0.7,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_17",
+        "name": "Chips",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£2.80",
+        "priceNum": 2.8,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_18",
+        "name": "Patties",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Choose your flavour",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_19",
+        "name": "Plantain",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£1.00",
+        "priceNum": 1,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_20",
+        "name": "Thighs",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Fried chicken",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_21",
+        "name": "Yam",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£1.00",
+        "priceNum": 1,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_22",
+        "name": "Homemade Coleslaw",
+        "categoryId": "sides",
+        "categoryName": "Sides & Fritters",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "Finely shredded onions, carrots, cabbage mixed together with a creamy mayo",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 3
+    },
+    {
+        "id": "ym_23",
+        "name": "Callaloo with Pumpkin Rice",
+        "categoryId": "veg",
+        "categoryName": "Vegetable & Vegan",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "A flavourful and hearty Caribbean one-pot dish where a vibrant, seasoned rice dish is prepared with tender callaloo greens and sweet, rich pumpkin rice (pumpkin chunks, coconut cream, thyme, spring onion, seasoned to perfection)",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_24",
+        "name": "Ackee with Pumpkin Rice",
+        "categoryId": "veg",
+        "categoryName": "Vegetable & Vegan",
+        "price": "£10.00",
+        "priceNum": 10,
+        "description": "A flavourful and nourishing Jamaican one-pot dish where the national fruit, ackee, served with pumpkin rice (pumpkin chunks, coconut cream, thyme, spring onion, seasoned to perfection)",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_25",
+        "name": "Chicken Soup - Per Cup",
+        "categoryId": "soups",
+        "categoryName": "Traditional Soups",
+        "price": "£5.00",
+        "priceNum": 5,
+        "description": "Warming and delicious",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_26",
+        "name": "Beef Soup with Red Pea - Per Cup",
+        "categoryId": "soups",
+        "categoryName": "Traditional Soups",
+        "price": "£5.00",
+        "priceNum": 5,
+        "description": "Warming and delicious",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_27",
+        "name": "Fried Chicken Sandwich on Barm",
+        "categoryId": "barms",
+        "categoryName": "Jamaican Barms",
+        "price": "£5.00",
+        "priceNum": 5,
+        "description": "Crispy fried chicken",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_28",
+        "name": "Jerk Chicken Sandwich on Barm",
+        "categoryId": "barms",
+        "categoryName": "Jamaican Barms",
+        "price": "£5.00",
+        "priceNum": 5,
+        "description": "House Jerk spice blend",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": true,
+        "isVeg": false,
+        "isHalal": true,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_29",
+        "name": "Coconut Water",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml carton.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_30",
+        "name": "Coca-Cola Original Taste 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Sparkling Soft Drink with Vegetable Extracts",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_31",
+        "name": "Miranda",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "330ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_32",
+        "name": "Vimto Fizzy Original Cans 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Carbonated mixed fruit juice drink with flavourings, sugar and sweeteners.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_33",
+        "name": "Ting Carbonated Grapefruit Juice Drink 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Carbonated Grapefruit Juice Drink, with Sugar and Sweetener.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_34",
+        "name": "Diet Coke 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Low Calorie Soft Drink with Plant Extracts with Sweeteners. Diet Coke This is My Taste. Sparkling Low Calorie Soft Drink with Vegetable Extracts with Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_35",
+        "name": "Coca-Cola Lemon 330ml Can",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Lemon Flavour Soft Drink with Plant Extracts.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_36",
+        "name": "Rubicon Sparkling Mango 330ml Mango",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Mango Juice Soft Drink with Sugar and Sweetener",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_37",
+        "name": "Rubicon Sparkling Mango 330ml Passion",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Mango Juice Soft Drink with Sugar and Sweetener",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_38",
+        "name": "Lucozade",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_39",
+        "name": "Ribena Blackcurrant",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_40",
+        "name": "Sprite Zero Sugar Lemon Lime 330ml Can",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Low Calorie Lemon-Lime Flavour Soft Drink with Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_41",
+        "name": "Coca-Cola Zero Sugar 330ml Can",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Low Calorie Soft Drink with Plant Extracts with Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_42",
+        "name": "Irn-Bru 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Flavoured Soft Drink with Sugar and Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_43",
+        "name": "Rio Tropical 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Lightly Sparkling Tropical Fruit Juice Soft Drink with Sugar and Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_44",
+        "name": "Water",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.00",
+        "priceNum": 1,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_45",
+        "name": "Jamaican Soda Grape",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "330ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_46",
+        "name": "Jamaican Soda Pineapple",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "330ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_47",
+        "name": "Aloe Vera Juice",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_48",
+        "name": "Levi Roots Caribbean Crush",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_49",
+        "name": "Levi Roots Jamaican Sunset",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_50",
+        "name": "Levi Roots Tropical Punch",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_51",
+        "name": "Thirsty",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.00",
+        "priceNum": 1,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_52",
+        "name": "Jamaican Ginger Beer",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "330ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_53",
+        "name": "Tropical Rhythms - Fruit Punch",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£3.00",
+        "priceNum": 3,
+        "description": "Deliciously rich, refreshing and flavoursome drink made from a blend of Caribbean fruit.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_54",
+        "name": "Supermalt",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "330ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_55",
+        "name": "Sprite Lemon Lime 330ml Can",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Lemon-Lime Flavour Low Calorie Soft Drink with Sugar and Sweeteners",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_56",
+        "name": "Monster Energy Monster Energy Pipeline Punch",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_57",
+        "name": "Monster Energy The Original Green Monster Energy",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_58",
+        "name": "Monster Energy Monster Energy Aussie Style Lemonade",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml can.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_59",
+        "name": "Bigga Grape",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_60",
+        "name": "Bigga Pineapple",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_61",
+        "name": "Bigga Cola",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_62",
+        "name": "Bigga Fruit Punch",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_63",
+        "name": "Bigga Orange",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_64",
+        "name": "Bigga Cream Soda",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_65",
+        "name": "Bigga Apple",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.50",
+        "priceNum": 2.5,
+        "description": "500 ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_66",
+        "name": "Coca-Cola Original Taste 330ml Can",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Sparkling Soft Drink with Plant Extracts",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_67",
+        "name": "Tango Orange 330ml",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£1.50",
+        "priceNum": 1.5,
+        "description": "Carbonated Orange Soft Drink with Sugar and Sweeteners. A zesty burst of tang for an outrageous full throttle hit of real fruit intensity. This is the orange rush you&#x2019;ve been craving. You know when you've been Tango'd.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_68",
+        "name": "Ribena Strawberry",
+        "categoryId": "drinks",
+        "categoryName": "Tropical Drinks",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "500ml bottle.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_69",
+        "name": "Red Velvet Cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Served by the slice",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_70",
+        "name": "Carrot Cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Served by the slice",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_71",
+        "name": "Lemon Drizzle Cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Served by the slice",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_72",
+        "name": "Red Velvet cup cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£3.50",
+        "priceNum": 3.5,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_73",
+        "name": "Carrot Cake cup cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£3.50",
+        "priceNum": 3.5,
+        "description": "Authentic freshly prepared Jamaican street specialty.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_74",
+        "name": "Toffee Cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Served by the slice",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_75",
+        "name": "Double Chocolate Fudge Cake",
+        "categoryId": "desserts",
+        "categoryName": "Homemade Desserts",
+        "price": "£2.00",
+        "priceNum": 2,
+        "description": "Served by the slice",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_76",
+        "name": "Chilled Bundle",
+        "categoryId": "icecream",
+        "categoryName": "Ben & Jerry's Ice Cream",
+        "price": "£9.00",
+        "priceNum": 9,
+        "description": "Choose 4 flavours of 100ml Ben & Jerry's",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_77",
+        "name": "Ben & Jerry's Cookie Dough Ice Cream Tub 465ml",
+        "categoryId": "icecream",
+        "categoryName": "Ben & Jerry's Ice Cream",
+        "price": "£6.50",
+        "priceNum": 6.5,
+        "description": "Vanilla ice cream with chunks of chocolate chip cookie dough (16%) and chocolatey chunks (1.5%). Big delicious chunks of chocolate-chip cookie dough surrounded by creamy vanilla ice cream. It seems like such a no-brainer today, but in 1984 it was revolutionary. The Ben & Jerry's Cookie Dough ice cream tub you know and love started with a simple suggestion: What if you put chunks of chocolate-chip cookie dough into vanilla ice cream? That was the fantastic anonymous idea submitted way back in the early days of our first Burlington, Vermont, USA, Scoop Shop. We used to have a bulletin board where people could suggest new flavours for Jerry & Ben to make &#x2014; and this idea stood out. The folks at the Scoop Shop immediately went to work mixing up a batch of chocolate chip cookie dough. It was an instant hit. Initially, the flavour was only available at the Scoop Shop. When we decided to sell it in tubs as a frozen dessert, we had to figure out how to get that familiar cookie-dough taste, consistency and texture at ice cream temperatures. In 1991, Ben & Jerry's Chocolate Chip Cookie Dough ice cream tubs began appearing in freezer aisles everywhere. It has remained one of our most popular and beloved flavours ever since! If you can't get enough of our ice cream, why not try our other flavours? We've got Phish Food ice cream with gooey marshmallow swirls, caramel swirls & chocolatey fish or Chocolate Fudge Brownie with with gooey chunks of brownie goodness mixed into dark and rich chocolate ice cream. There are many more flavours of our ice cream tubs so give them all a try!",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_78",
+        "name": "Ben & Jerry's Strawberry Cheesecake Ice Cream 100ml",
+        "categoryId": "icecream",
+        "categoryName": "Ben & Jerry's Ice Cream",
+        "price": "£2.30",
+        "priceNum": 2.3,
+        "description": "Strawberry cheesecake ice cream with sweetened strawberry pieces and a cookie swirl (11%). Strawberry cheesecake ice cream with strawberries and a graham cracker swirl. If you can think of a more strawberry perfect flavour combination, let us know, because we think this is tough to beat. Think of your favourite creamy cheesecake, topped with sweet fruit (but not too sweet), backed by a light crust. Now, that's a heavenly dessert. And guess what? For strawberry cheesecake lovers who've always wanted to have their cheesecake and scoop it, too, we've created a flavour jam-packed with strawberry cheesecake-greatness and a fantastic graham-cracker swirl. It's everything you love about cheesecake and everything you love about Ben & Jerry's ice cream, combined. Strawberry Cheesecake routinely ranks among our top 10 flavours every year. Could it be the graham cracker swirl? That crunch is indeed the ideal complement to all that creamy ice cream. Or is it the strawberries? Bursting with fruity goodness, they somehow seem even more delicious in the middle of all that ice cream. Truth is, everybody probably has their own reason for loving Strawberry Cheesecake. And they're all exactly right. The cocoa, sugar, and vanilla in Ben & Jerry's ice cream comes from Fairtrade certified producers. Caring Dairy farmers supply us with all the milk and cream in our tubs. We only use cage-free eggs. And our packaging is always responsibly sourced.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_79",
+        "name": "Ben & Jerry's Chocolate Fudge Brownie Ice Cream Tub 100ml",
+        "categoryId": "icecream",
+        "categoryName": "Ben & Jerry's Ice Cream",
+        "price": "£2.30",
+        "priceNum": 2.3,
+        "description": "Chocolate ice cream with chocolate brownie pieces (17%). Ben & Jerry's Chocolate Fudge Brownie ice cream tub is a fudge-tastic phenomenon brimming with gooey chunks of brownie goodness mixed into rich chocolate ice cream. Sounds like a dream. At first, that's all it was. Long ago, we were making brownie ice cream sandwiches for sale in grocery stores. Sometimes there would be broken pieces in the brownie delivery, and we'd nab them for flavour experiments. What would brownie pieces taste like in chocolate ice cream? Pretty good, it turns out! That original experimental flavour eventually became the legendary ice cream concoction known as Chocolate Fudge Brownie. After about 25 batches of brownies and six months of work, the flavour finally debuted in 1991, and it's been a hit frozen dessert ever since. If you can't get enough of our delicious Chocolate Fudge Brownie ice cream, why not try our other flavours? We've got Phish Food ice cream with gooey marshmallow swirls, caramel swirls & chocolatey fish or Cookie Dough with vanilla ice cream and chunks of chocolate chip cookie dough. There are many more flavours of our ice cream tubs so give them all a try! This fudge-tastic phenomenon has been a part of our flavour family since 1991. Happy days!",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    },
+    {
+        "id": "ym_80",
+        "name": "Ben & Jerry's Cookie Dough Ice Cream Tub 100ml",
+        "categoryId": "icecream",
+        "categoryName": "Ben & Jerry's Ice Cream",
+        "price": "£2.30",
+        "priceNum": 2.3,
+        "description": "Vanilla ice cream with chunks of chocolate chip cookie dough (15%) and chocolatey chunks (4%). Big delicious chunks of chocolate-chip cookie dough surrounded by creamy vanilla ice cream. It seems like such a no-brainer today, but in 1984 it was revolutionary. The Ben & Jerry's Cookie Dough ice cream tub you know and love started with a simple suggestion: What if you put chunks of chocolate-chip cookie dough into vanilla ice cream? That was the fantastic anonymous idea submitted way back in the early days of our first Burlington, Vermont, USA, Scoop Shop. We used to have a bulletin board where people could suggest new flavours for Jerry & Ben to make &#x2014; and this idea stood out. The folks at the Scoop Shop immediately went to work mixing up a batch of chocolate chip cookie dough. It was an instant hit. Initially, the flavour was only available at the Scoop Shop. When we decided to sell it in tubs as a frozen dessert, we had to figure out how to get that familiar cookie-dough taste, consistency and texture at ice cream temperatures. We teamed up with local producer Rhino Foods and, over an incredible six-year journey, we perfected the cookie dough found in our tubs today. In 1991, Ben & Jerry's Chocolate Chip Cookie Dough ice cream tubs began appearing in freezer aisles everywhere. It has remained one of our most popular and beloved flavours ever since! We work with Fairtrade certified producers for cocoa, sugar and vanilla, and our caring dairy farmers produce the milk and cream in this tub sustainably. All of our ice cream is made with free-range eggs, and we use responsibly sourced packaging.",
+        "allergen": "",
+        "isSignature": false,
+        "isSpicy": false,
+        "isVeg": true,
+        "isHalal": false,
+        "popularRank": 4
+    }
+],
+
+    // ------------------------------------------------------------------------
+    // 6. SIGNATURE SPOTLIGHT DISHES (Chef Jamie's Top Specialties)
+    // ------------------------------------------------------------------------
+    signatureSpotlight: [
       {
-        id: 'chap-building',
-        kicker: 'Chapter I · The Architecture',
-        title: 'Faded Grandeur Above The Knave of Clubs',
-        quote: '“Entering via a discreet doorway on Club Row, you climb a narrow Victorian staircase into a glowing first-floor salon that feels like it has been pouring martinis since 1880.”',
-        source: 'Michelin Guide London Inspection',
-        body: 'Set in the faded grandeur of a Grade II listed Victorian landmark at 1 Club Row in Shoreditch, the building has anchored the historic bird-market street since the late 19th century. Tall sash windows flood the room with East London daylight for long lunches, while candlelit brass and bentwood chairs transform the space after dark.',
-        stats: [
-          { label: 'Heritage Status', value: 'Grade II Listed (1880)' },
-          { label: 'Entrance', value: 'Secret Staircase at 1 Club Row' }
-        ],
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/03/1cr2-843x1024.jpg'
+        id: 'ym_1',
+        name: 'Legendary Jerk Chicken',
+        price: '£10.00',
+        priceNum: 10.00,
+        tag: "Chef's #1 Specialty",
+        badge: 'Smoked Daily',
+        description: 'Juicy quarter-chicken marinated for 48 hours in our secret Yeah Man allspice, Scotch bonnet & thyme rub, grilled over coals. Served with authentic rice & peas, fried plantain, and our house glaze.',
+        heatLevel: 'Medium-Hot 🔥🔥',
+        prepNote: 'Smoked in traditional charcoal jerk drums on Norway Street'
       },
       {
-        id: 'chap-kitchen',
-        kicker: 'Chapter II · The Kitchen & Bar',
-        title: 'New York Taverns Meet Parisian Bistros',
-        quote: '“Built for dining at the bar, ordering pickled jalapeño gougères, splitting an 800g ribeye or cheeseburger au poivre, and having one too many sub-zero martinis.”',
-        source: 'Chef Patrick Powell & Founders',
-        body: 'Our menu bridges the bustling energy of downtown Manhattan taverns and the timeless generosity of Parisian brasseries. From hand-cut Steak Tartare with beef-dripping soldiers and Native Lobster Croquettes to Sunday Prime Rib with bone marrow jus, every dish is designed for conviviality.',
-        stats: [
-          { label: 'Martini Service', value: '-18°C Freezer House Pours' },
-          { label: 'Wine Cellar', value: '44 Old-World Benchmark Bottles' }
-        ],
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-72-703x1024.jpg'
+        id: 'ym_3',
+        name: 'Slow-Simmered Curry Goat',
+        price: '£10.00',
+        priceNum: 10.00,
+        tag: 'Heritage Classic',
+        badge: '4-Hour Braise',
+        description: 'Tender prime mutton pieces slow-simmered on the bone in toasted Betapac Jamaican curry, scotch bonnet peppers, garlic, ginger, and pimento. Comforting, aromatic, and deeply satisfying.',
+        heatLevel: 'Rich & Warm 🔥',
+        prepNote: 'Melt-in-your-mouth tender with golden gravy'
       },
       {
-        id: 'chap-apartment',
-        kicker: 'Chapter III · Upstairs in The Apartment',
-        title: 'A Return to Raucous Shoreditch House Parties',
-        quote: '“The former apartment of the previous owners was once notorious for some particularly raucous house parties—and true to history, those grand old rooms are hosting again.”',
-        source: 'One Club Row Archives',
-        body: 'Directly above the main restaurant sits The Apartment: a suite of private dining salons available Tuesday through Sunday for up to 50 guests seated or 60 standing for a cocktail party, complete with a private bar and the occasional post-dinner piano show.',
-        stats: [
-          { label: 'Seated Feasting', value: 'Up to 50 Guests (£75pp)' },
-          { label: 'Standing Parties', value: 'Up to 60 Guests + Live Piano' }
-        ],
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/09/1cr-pd-2-1024x917.jpg'
+        id: 'ym_9',
+        name: 'Slow-Braised Oxtail & Butter Beans',
+        price: '£12.50',
+        priceNum: 12.50,
+        tag: 'Customer Favorite',
+        badge: 'Rich Gravy',
+        description: 'Selected oxtail segments braised until falling off the bone in rich, gelatinous brown stew with plump butter beans, carrots, scallions, and fresh thyme.',
+        heatLevel: 'Mild-Medium 🔥',
+        prepNote: 'Served with your choice of rice & peas or seasoned chips'
+      },
+      {
+        id: 'ym_8',
+        name: 'The Original Jerk Chicken Split',
+        price: '£5.50',
+        priceNum: 5.50,
+        tag: 'Street Food Icon',
+        badge: 'Must Try',
+        description: 'Freshly fried Jamaican golden dumpling sliced open and generously stuffed with shredded jerk chicken, finished with a drizzle of tangy house jerk sauce and sweet coleslaw.',
+        heatLevel: 'Spicy Tang 🔥🔥',
+        prepNote: 'The ultimate Manchester on-the-go Caribbean lunch'
       }
-    ]
-  },
-
-  auditFindings: [
-    {
-      id: 'audit-1',
-      area: '01 · Entry Gate & Navigation Architecture',
-      currentScore: '38/100',
-      remakeScore: '98/100',
-      problem: 'Landing on oneclubrow.com/ traps visitors on a dead 1990s splash page with only a looping GIF, a broken "<title>One Club Row -</title>", and zero context. Clicking through to /home shows a single static photo with all navigation hidden inside a fullscreen burger modal (#modalmenu) even on desktop.',
-      solution: 'Direct-to-experience Editorial Hero with live service status, visible desktop & mobile wayfinding, and an embedded Table & Bar Seat Quick-Reserve Concierge right above the fold.',
-      impact: '+34% Lower Bounce Rate'
-    },
-    {
-      id: 'audit-2',
-      area: '02 · Brasserie Menus, Wine Cellar & Allergens',
-      currentScore: '44/100',
-      remakeScore: '99/100',
-      problem: 'The /menus/ page contains copy-pasted Canva/InDesign DOM wrappers (<div class="page" title="Page 2"><div class="layoutArea">) and duplicate id="pills-home-tab" attributes across all 5 tabs. Zero dietary/allergen filters, zero dish photos, and an unsearchable 45-bottle wine list.',
-      solution: 'Clean structured React Menu & Sommelier Cellar with 1-click Allergen Exclusion Matrix (Gluten-Free, Dairy-Free, Vegetarian, Shellfish-Free, Nut-Free), dish spotlights, and By-the-Glass / Food Pairing wine filters.',
-      impact: '-65% Time to Dish Decision'
-    },
-    {
-      id: 'audit-3',
-      area: '03 · Signature Martini & Bar Counter Experience',
-      currentScore: '40/100',
-      remakeScore: '97/100',
-      problem: 'One Club Row is famous for "dining at the bar, and one too many martinis" ("Chase Vodka or Tanqueray 10 – tell us how you like it"), yet cocktails are buried in a 15-line plain text tab with no storytelling or bar seat booking.',
-      solution: 'Interactive "Club Row Martini Atelier" where guests configure their bespoke Martini (Gin vs. Vodka, Wet/Dry/Dirty/Mint Olive Oil, Garnish) and reserve seats directly at the mahogany bar counter.',
-      impact: '+41% Bar & Late-Dinner Bookings'
-    },
-    {
-      id: 'audit-4',
-      area: '04 · Reservations & Group Feasting Flow',
-      currentScore: '52/100',
-      remakeScore: '98/100',
-      problem: 'Clicking "Reservations" bounces users out to an external SevenRooms tab with no pre-selected seating zone (Main Dining Room vs. Bar Counter vs. Sunday Prime Rib Service vs. £75pp Festive Feasting for 8–16 guests).',
-      solution: 'Native Table & Bar Reservation Concierge with real-time slot selection, seating zone preview, dietary pre-tagging, instant digital booking pass, and seamless SevenRooms handoff.',
-      impact: '+29% Reservation Completion'
-    },
-    {
-      id: 'audit-5',
-      area: '05 · "The Apartment" Upstairs Private Dining',
-      currentScore: '46/100',
-      remakeScore: '97/100',
-      problem: 'Upstairs private hire (up to 50 seated / 60 standing) relies on a static PDF link and an unstyled 15-field Gravity Form (#gform_2) where time dropdowns list 12:00am–11:30pm without capacity validation or package pricing.',
-      solution: 'Interactive "The Apartment" Event Configurator allowing hosts to toggle Seated Dinner (up to 50) vs. Standing Cocktail Party (up to 60), calculate per-head feasting & bar packages, and generate a Tripleseat-ready event brief.',
-      impact: '+48% Private Event Enquiries'
-    },
-    {
-      id: 'audit-6',
-      area: '06 · Gift Vouchers, Secret Entrance & Contact Bugs',
-      currentScore: '41/100',
-      remakeScore: '96/100',
-      problem: '/gift-cards/ is an empty page in the sitemap while the menu bounces out to giftpro.co.uk. On /contact/, hello@oneclubrow.com is mislinked to href="https://oneclubrow.com/home/" instead of mailto:, and guests struggle to find the unmarked street door.',
-      solution: 'Native Gift Voucher Studio (with live wax-sealed card preview & experience packages), interactive Secret Doorway Arrival Guide next to The Knave of Clubs, and verified 1-click contact & career portals.',
-      impact: '+36% Gift Voucher Revenue'
-    }
-  ],
-
-  heroSpotlights: [
-    {
-      id: 'spot-tartare',
-      tag: '01 · Signature Brasserie Plate',
-      name: 'Classic Steak Tartare & Beef Dripping Toast',
-      subtitle: 'Hand-cut grass-fed fillet, caper & cornichon emulsion, cured egg yolk, and warm beef-dripping soldiers.',
-      priceLabel: '£15 Starter / £26 Main',
-      pairing: 'Paired with 2022 Bourgogne Rouge ‘Le Mondelot’, Domaine Lacour (£14 gls)',
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/51608ff9bda5eb9b23d5fb90974d839e-733x1024.jpeg',
-      menuId: 'ld-steak-tartare'
-    },
-    {
-      id: 'spot-martini',
-      tag: '02 · House Housepour at The Bar',
-      name: 'The Club Row Martini & Pickled Jalapeño Gougères',
-      subtitle: 'Freezer-chilled Tanqueray No. Ten, Dolin Chambéryzette, Italicus bergamot rosolio & fragrant rosemary oil.',
-      priceLabel: '£14 Cocktail · £9 Warm Gougères',
-      pairing: 'Best enjoyed at the mahogany bar counter before a late 9:00pm table',
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-75-667x1024.jpg',
-      menuId: 'dr-club-row-martini'
-    },
-    {
-      id: 'spot-ribeye',
-      tag: '03 · For the Table to Share',
-      name: '800g Grass-Fed Ribeye & Beef Fat Béarnaise',
-      subtitle: 'Dry-aged on the bone, seared over charcoal crust, served with whipped beef-fat béarnaise and French fries & aioli.',
-      priceLabel: '£92 Sharing Cut',
-      pairing: 'Paired with 2015 Cru Bourgeois Exceptionnel, Château Arnauld Bordeaux (£110 btl)',
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-51-679x1024.jpg',
-      menuId: 'ld-ribeye-800'
-    },
-    {
-      id: 'spot-apartment',
-      tag: '04 · Upstairs in The Apartment',
-      name: 'Private Dining, Raucous Parties & Late-Night Piano',
-      subtitle: 'The former residence above the dining room: host up to 50 seated for a sharing feast or 60 standing for martinis.',
-      priceLabel: 'From £75pp Feasting',
-      pairing: 'Available Tuesday – Sunday for private lunches, dinners & post-dinner shows',
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/09/Club-Row_PV_Beca-B-Jones-Photo_5H8A9192-724x1024.jpg',
-      menuId: 'feast-sharing'
-    }
-  ],
-
-  menuCategories: [
-    { id: 'lunch_dinner', label: 'Lunch & Dinner', subtitle: 'Served Tue – Sat · 12:00–14:00 & 17:30–22:00' },
-    { id: 'sunday_service', label: 'Sunday Service', subtitle: 'Roasts, Prime Rib & Raw Bar · Sundays 12:00–21:00' },
-    { id: 'drinks', label: 'Martinis & Drinks', subtitle: 'Sharpeners, House Martinis & After-Dinner Digestifs' },
-    { id: 'wine', label: 'Wine Cellar', subtitle: '44 Benchmark Old-World Bottles & By-the-Glass Pours' },
-    { id: 'festive_feasting', label: 'Group Feasting (£75pp)', subtitle: 'For 8–16 Guests · Served Family-Style for the Table' }
-  ],
-
-  menuItems: [
-    // ================= LUNCH & DINNER: SNACKS =================
-    {
-      id: 'ld-sourdough',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'House Sourdough & Cultured Salted Butter',
-      price: 4,
-      priceDisplay: '£4',
-      desc: 'Warm crusty levain loaf baked daily, served with whipped Normandy sea-salt butter.',
-      allergens: ['gluten', 'dairy'],
-      dietary: ['vegetarian', 'nut-free', 'shellfish-free'],
-      badges: ['Table Essential'],
-      pairing: 'NV Crémant de Bourgogne No. 21 (£12 gls)'
-    },
-    {
-      id: 'ld-gougeres',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'Pickled Jalapeño Gougères',
-      price: 9,
-      priceDisplay: '£9',
-      desc: 'Warm airy choux pastry puffs baked with aged Comté cheese and bright pickled jalapeño heat.',
-      allergens: ['gluten', 'dairy', 'egg'],
-      dietary: ['vegetarian', 'nut-free', 'shellfish-free'],
-      badges: ['House Icon', 'Bar Favourite'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-20-730x1024.jpg',
-      pairing: 'Club Row Martini (£14)'
-    },
-    {
-      id: 'ld-anchovies',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'Cantabrian Anchovies & Marinated Red Pepper',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Plump hand-filleted Cantabrian Sea anchovies dressed in extra-virgin olive oil over sweet wood-roasted peppers.',
-      allergens: ['fish'],
-      dietary: ['gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Gluten-Free'],
-      pairing: 'Olive Oil Martini (£14)'
-    },
-    {
-      id: 'ld-crab-toast',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'Cornish Crab Toast',
-      price: 5,
-      priceDisplay: '£5 ea',
-      desc: 'Brioche soldier piled high with dressed white and brown Cornish crab, lemon zest, and tarragon.',
-      allergens: ['shellfish', 'gluten', 'dairy', 'egg'],
-      dietary: ['nut-free'],
-      badges: ['Chef Pick'],
-      pairing: 'NV Grand Réserve Brut, Devaux Champagne (£15 gls)'
-    },
-    {
-      id: 'ld-lobster-croquettes',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'Native Lobster Croquettes',
-      price: 5.5,
-      priceDisplay: '£5.5 ea',
-      desc: 'Crisp golden béchamel croquettes rich with sweet native lobster meat and cayenne bisque glaze.',
-      allergens: ['shellfish', 'gluten', 'dairy', 'egg'],
-      dietary: ['nut-free'],
-      badges: ['Bar Hit'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-44-759x1024.jpg',
-      pairing: '2024 Mâcon-Pierreclos Chardonnay (£11 gls)'
-    },
-    {
-      id: 'ld-scallop',
-      menuTab: 'lunch_dinner',
-      course: 'Snacks',
-      name: 'Roasted Hand-Dived Scallop, Confit Garlic Butter',
-      price: 10.5,
-      priceDisplay: '£10.5 ea',
-      desc: 'Roasted in the half-shell with bubbling confit garlic, parsley, and lemon herb butter.',
-      allergens: ['shellfish', 'dairy'],
-      dietary: ['gluten-free', 'nut-free'],
-      badges: ['Signature'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-27-661x1024.jpg',
-      pairing: '2024 Pouilly-Fumé ‘Roche Blanche’ (£15 gls)'
-    },
-
-    // ================= LUNCH & DINNER: STARTERS =================
-    {
-      id: 'ld-leeks',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Leeks Vinaigrette & Spiced Hazelnuts',
-      price: 13,
-      priceDisplay: '£13',
-      desc: 'Classic Parisian bistro tender baby leeks in Dijon shallot vinaigrette with toasted spiced Piedmont hazelnuts.',
-      allergens: ['nuts', 'mustard'],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'shellfish-free'],
-      badges: ['Parisian Classic'],
-      pairing: '2024 Les Vignes de L’Eglise Vermentino (£7.5 gls)'
-    },
-    {
-      id: 'ld-watermelon-feta',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Watermelon, Whipped Feta, Heritage Tomato & Basil',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Chilled compressed watermelon and ripe heritage tomatoes over airy whipped barrel-aged feta and basil oil.',
-      allergens: ['dairy'],
-      dietary: ['vegetarian', 'gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Fresh & Bright'],
-      pairing: '2025 Luberon Rosé Famille Perrin (£9 gls)'
-    },
-    {
-      id: 'ld-caesar',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Club Row Caesar Salad, 36-Month Aged Parmesan',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Crisp baby gem hearts, white anchovy emulsion, sourdough garlic croutons, and snowed Parmigiano Reggiano.',
-      allergens: ['gluten', 'dairy', 'egg', 'fish'],
-      dietary: ['nut-free', 'shellfish-free'],
-      badges: ['Tavern Staple'],
-      pairing: '2024 Rueda Verdejo, Bodegas Lan (£8.5 gls)'
-    },
-    {
-      id: 'ld-stracciatella',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Pugliese Stracciatella, Charred Courgette & Lemon',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Creamy artisanal stracciatella curds with ribbons of grilled courgette, mint, and Amalfi lemon zest.',
-      allergens: ['dairy'],
-      dietary: ['vegetarian', 'gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Vegetarian'],
-      pairing: 'NV Verdicchio Superiore DOC ‘KYPRA’ (£12.5 gls)'
-    },
-    {
-      id: 'ld-tuna-crudo',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Bluefin Tuna Crudo, Smoked Aubergine & Amalfi Lemon',
-      price: 16,
-      priceDisplay: '£16',
-      desc: 'Silky sashimi-grade tuna dressed with smoky roasted aubergine purée, cold-pressed olive oil, and sea salt.',
-      allergens: ['fish'],
-      dietary: ['gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Raw Bar'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-23-720x1024.jpg',
-      pairing: '2024 Feu Follet Skin Contact, Alsace (£12.5 gls)'
-    },
-    {
-      id: 'ld-steak-tartare',
-      menuTab: 'lunch_dinner',
-      course: 'Starters',
-      name: 'Classic Steak Tartare & Beef Dripping Toast',
-      price: 15,
-      priceDisplay: '£15 / £26 Main',
-      desc: 'Hand-cut grass-fed beef fillet seasoned to order with cognac, capers, shallots, and crispy beef-dripping toast.',
-      allergens: ['gluten', 'egg', 'mustard'],
-      dietary: ['dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Critic Favourite', 'Starter or Main'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/51608ff9bda5eb9b23d5fb90974d839e-733x1024.jpeg',
-      pairing: '2022 Bourgogne Rouge ‘Le Mondelot’ (£14 gls)'
-    },
-
-    // ================= LUNCH & DINNER: MAINS & GRILL =================
-    {
-      id: 'ld-ravioli',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'Pumpkin & Sheep’s Ricotta Ravioli, Wild Mushroom & Sage',
-      price: 23,
-      priceDisplay: '£23',
-      desc: 'Hand-rolled egg pasta parcels filled with roasted crown prince pumpkin and ricotta in brown-butter sage and wild girolles.',
-      allergens: ['gluten', 'dairy', 'egg'],
-      dietary: ['vegetarian', 'nut-free', 'shellfish-free'],
-      badges: ['Vegetarian'],
-      pairing: '2024 Mâcon-Pierreclos Chardonnay (£11 gls)'
-    },
-    {
-      id: 'ld-cauliflower',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'Roasted Cauliflower, Cavolo Nero & Green Chimichurri',
-      price: 23,
-      priceDisplay: '£23',
-      desc: 'Caramelized whole cauliflower steak roasted over coals with crispy Tuscan kale and vibrant herb chimichurri.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Plant-Based', 'Allergen-Friendly'],
-      pairing: '2023 Salicornio Moscatel Skin Contact (£11 gls)'
-    },
-    {
-      id: 'ld-cheeseburger',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'One Club Row Cheeseburger “Au Poivre”',
-      price: 23,
-      priceDisplay: '£23',
-      desc: 'Dry-aged chuck & rib cap patty, melted aged cheddar, cracked black peppercorn cognac sauce, and pickles in a toasted brioche bun.',
-      allergens: ['gluten', 'dairy', 'egg', 'mustard'],
-      dietary: ['nut-free', 'shellfish-free'],
-      badges: ['Famous Dish', 'NY Tavern Icon'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-56-683x1024.jpg',
-      pairing: '2024 Saint Joseph Syrah, Les Alexandrins (£15.5 gls)'
-    },
-    {
-      id: 'ld-schnitzel',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'Crispy Pork Schnitzel, Sauce Moutarde & Gorgonzola',
-      price: 28,
-      priceDisplay: '£28',
-      desc: 'Paper-thin heritage pork loin pan-fried in clarified butter with tangy wholegrain mustard cream and melted Gorgonzola.',
-      allergens: ['gluten', 'dairy', 'egg', 'mustard'],
-      dietary: ['nut-free', 'shellfish-free'],
-      badges: ['House Classic'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-78-744x1024.jpg',
-      pairing: '2021 Domaine Barmes-Buecher Riesling, Alsace (£71 btl)'
-    },
-    {
-      id: 'ld-bouillabaisse',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'Red Mullet Bouillabaisse with Mussels & Native Prawn',
-      price: 29,
-      priceDisplay: '£29',
-      desc: 'Crisp-skinned red mullet fillet in a saffron & fennel Marseille shellfish broth with Scottish mussels, king prawns, and rouille.',
-      allergens: ['fish', 'shellfish', 'gluten', 'egg'],
-      dietary: ['dairy-free', 'nut-free'],
-      badges: ['Bistro Special'],
-      pairing: '2023 ‘1769’ Rosé, Clos Venturi Corsica (£62 btl)'
-    },
-    {
-      id: 'ld-cod',
-      menuTab: 'lunch_dinner',
-      course: 'Mains',
-      name: 'Roasted Atlantic Cod, Brown Shrimp, Lemon & Capers',
-      price: 30,
-      priceDisplay: '£30',
-      desc: 'Pearly flake loin of line-caught cod basted in noisy brown butter with Morecambe Bay shrimp, Lilliput capers, and lemon.',
-      allergens: ['fish', 'shellfish', 'dairy'],
-      dietary: ['gluten-free', 'nut-free'],
-      badges: ['Gluten-Free'],
-      pairing: 'NV Blanc de Blancs, Charles Heidsieck (£22 gls)'
-    },
-    {
-      id: 'ld-sirloin',
-      menuTab: 'lunch_dinner',
-      course: 'Grill',
-      name: '300g Sirloin of Grass-Fed Beef, Sauce Au Poivre',
-      price: 38,
-      priceDisplay: '£38',
-      desc: '35-day dry-aged British grass-fed sirloin seared over high heat, rested with thyme butter and classic brandy peppercorn jus.',
-      allergens: ['dairy'],
-      dietary: ['gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['From the Grill'],
-      pairing: '2024 Chianti Classico, Fattoria di Rodano (£12.5 gls)'
-    },
-    {
-      id: 'ld-ribeye-800',
-      menuTab: 'lunch_dinner',
-      course: 'Grill',
-      name: '800g Bone-In Ribeye of Grass-Fed Beef, Beef Fat Béarnaise',
-      price: 92,
-      priceDisplay: '£92 (For Two)',
-      desc: 'Showstopping Côte de Boeuf carved tableside for two, served with smoked beef-fat tarragon béarnaise and roasting juices.',
-      allergens: ['dairy', 'egg'],
-      dietary: ['gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['For Two to Share', 'Showstopper'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-51-679x1024.jpg',
-      pairing: '2017 Vino Nobile di Montepulciano DOCG (£98 btl)'
-    },
-
-    // ================= LUNCH & DINNER: SIDES & DESSERTS =================
-    {
-      id: 'ld-fries',
-      menuTab: 'lunch_dinner',
-      course: 'Sides',
-      name: 'Crisp Shoestring French Fries & Roasted Garlic Aioli',
-      price: 7,
-      priceDisplay: '£7',
-      desc: 'Triple-cooked skin-on bistro pommes frites seasoned with rosemary sea salt and house saffron-garlic aioli.',
-      allergens: ['egg'],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Gluten-Free']
-    },
-    {
-      id: 'ld-green-beans',
-      menuTab: 'lunch_dinner',
-      course: 'Sides',
-      name: 'Fine Green Beans, Toasted Almonds & Smoky Bacon Jam',
-      price: 7,
-      priceDisplay: '£7',
-      desc: 'Charred haricots verts tossed in sweet-savory treacle bacon jam and flaked roasted Marcona almonds.',
-      allergens: ['nuts'],
-      dietary: ['gluten-free', 'dairy-free', 'shellfish-free'],
-      badges: ['Chef Side']
-    },
-    {
-      id: 'ld-chocolate-cake',
-      menuTab: 'lunch_dinner',
-      course: 'Desserts',
-      name: 'Twice-Baked Valrhona Chocolate Cake & Crème Fraîche',
-      price: 10,
-      priceDisplay: '£10',
-      desc: 'Rich, flourless-style dark chocolate fondant cake with a molten center and cold Normandy crème fraîche.',
-      allergens: ['dairy', 'egg'],
-      dietary: ['vegetarian', 'gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Signature Dessert'],
-      pairing: 'Espresso Martini (£12.5)'
-    },
-    {
-      id: 'ld-cheesecake',
-      menuTab: 'lunch_dinner',
-      course: 'Desserts',
-      name: 'New York Style Baked Cheesecake, Macerated Strawberry & Basil',
-      price: 12,
-      priceDisplay: '£12',
-      desc: 'Dense, velvety Manhattan-style vanilla bean cheesecake on a Graham biscuit crust with English strawberries and basil.',
-      allergens: ['gluten', 'dairy', 'egg'],
-      dietary: ['vegetarian', 'nut-free', 'shellfish-free'],
-      badges: ['NY Tavern Tribute'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-92-691x1024.jpg',
-      pairing: 'Brandy Alexander (£12)'
-    },
-    {
-      id: 'ld-rice-pudding',
-      menuTab: 'lunch_dinner',
-      course: 'Desserts',
-      name: 'Caramelised Rice Pudding Crème Brûlée & Spiced Apple',
-      price: 10,
-      priceDisplay: '£10',
-      desc: 'Creamy vanilla pod camargue rice pudding beneath a torched demerara sugar glass crust with warm Calvados spiced apple.',
-      allergens: ['dairy', 'egg'],
-      dietary: ['vegetarian', 'gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Gluten-Free']
-    },
-
-    // ================= SUNDAY SERVICE SPECIALS =================
-    {
-      id: 'sun-eggs-norwegian',
-      menuTab: 'sunday_service',
-      course: 'Sunday Classics',
-      name: 'Eggs Norwegian with House-Cured Trout & Dark Rye',
-      price: 18,
-      priceDisplay: '£18',
-      desc: 'Poached Burford Brown eggs over thick-cut gin-cured chalk stream trout, toasted seeded rye, and warm cayenne hollandaise.',
-      allergens: ['fish', 'gluten', 'dairy', 'egg'],
-      dietary: ['nut-free', 'shellfish-free'],
-      badges: ['Sunday Exclusive']
-    },
-    {
-      id: 'sun-beetroot',
-      menuTab: 'sunday_service',
-      course: 'Sunday Starters',
-      name: 'Salt-Baked Beetroot Carpaccio, Black Fig & Baked Ragstone',
-      price: 15,
-      priceDisplay: '£15',
-      desc: 'Ruby beetroot carpaccio with sweet black figs, warm Herefordshire Ragstone goat’s cheese, and aged balsamic.',
-      allergens: ['dairy'],
-      dietary: ['vegetarian', 'gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Sunday Exclusive', 'Vegetarian']
-    },
-    {
-      id: 'sun-moules-frites',
-      menuTab: 'sunday_service',
-      course: 'Sunday Mains',
-      name: 'Moules Frites, Lemongrass, Spring Onion & Curry Leaf',
-      price: 25,
-      priceDisplay: '£25',
-      desc: 'Steaming pot of rope-grown Shetland mussels in a fragrant lemongrass, coconut, and crisp curry leaf broth with shoestring fries.',
-      allergens: ['shellfish'],
-      dietary: ['gluten-free', 'dairy-free', 'nut-free'],
-      badges: ['Sunday Favourite']
-    },
-    {
-      id: 'sun-steak-eggs',
-      menuTab: 'sunday_service',
-      course: 'Sunday Service',
-      name: 'Steak & Eggs: 300g Sirloin, Two Fried Eggs & Chimichurri',
-      price: 38,
-      priceDisplay: '£38',
-      desc: 'Chargrilled 300g grass-fed sirloin topped with two crispy-edged Burford Brown eggs, roasted vine tomatoes, and green chimichurri.',
-      allergens: ['egg'],
-      dietary: ['gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Sunday Icon', 'Gluten-Free']
-    },
-    {
-      id: 'sun-prime-rib',
-      menuTab: 'sunday_service',
-      course: 'Sunday Service',
-      name: 'Slow-Roasted Prime Rib, Pommes Purée & Bone Marrow Jus',
-      price: 38,
-      priceDisplay: '£38',
-      desc: 'Thick-carved pink roast prime rib of British beef with Robuchon-style buttered pommes purée, green beans with bacon jam, and glossy bone marrow jus.',
-      allergens: ['dairy'],
-      dietary: ['gluten-free', 'nut-free', 'shellfish-free'],
-      badges: ['Limited Sunday Roast', 'Reserve Early'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-77-744x1024.jpg',
-      pairing: '2023 Gigondas, Domaine D’Ourea (£85 btl)'
-    },
-
-    // ================= DRINKS & MARTINIS =================
-    {
-      id: 'dr-club-row-martini',
-      menuTab: 'drinks',
-      course: 'Signature Martinis',
-      name: 'Club Row Martini',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Tanqueray No. Ten Gin, Dolin Chambéryzette wild strawberry aperitif, Italicus Rosolio di Bergamotto & rosemary.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['House Signature', 'Most Ordered'],
-      image: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-75-667x1024.jpg'
-    },
-    {
-      id: 'dr-classic-martini',
-      menuTab: 'drinks',
-      course: 'Signature Martinis',
-      name: 'Classic Martini — “Tell Us How You Like It”',
-      price: 12,
-      priceDisplay: '£12',
-      desc: 'Sub-zero Chase Potato Vodka or Tanqueray No. Ten Gin stirred to your exact specification: Dry, Wet, Dirty, Twist or Gordal Olive.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Customizable', '£12 House Pour']
-    },
-    {
-      id: 'dr-olive-oil-martini',
-      menuTab: 'drinks',
-      course: 'Signature Martinis',
-      name: 'Olive Oil Martini',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Tanqueray No. Ten Gin, Noilly Prat Dry Vermouth, Greek Roots Mastiha, and velvet mint-infused extra-virgin olive oil.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Savory & Silky']
-    },
-    {
-      id: 'dr-french-martini',
-      menuTab: 'drinks',
-      course: 'Signature Martinis',
-      name: '1980s SoHo French Martini',
-      price: 13,
-      priceDisplay: '£13',
-      desc: 'Chase Vodka, Briottet Crème de Framboise, fresh Scottish raspberry, and pressed pineapple foam.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['New York Throwback']
-    },
-    {
-      id: 'dr-champagne-cocktail',
-      menuTab: 'drinks',
-      course: 'Sharpeners',
-      name: 'Classic Champagne Cocktail',
-      price: 16,
-      priceDisplay: '£16',
-      desc: 'Angostura-soaked demerara sugar cube, Courvoisier Cognac, and chilled Devaux Grand Réserve Brut Champagne.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Aperitif']
-    },
-    {
-      id: 'dr-negroni',
-      menuTab: 'drinks',
-      course: 'Sharpeners',
-      name: 'Club Row Barrel-Rested Negroni',
-      price: 12,
-      priceDisplay: '£12',
-      desc: 'Tanqueray Gin, Campari, and sweet vermouth stirred over hand-carved block ice with expressed blood orange peel.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Sharpener']
-    },
-    {
-      id: 'dr-naked-famous',
-      menuTab: 'drinks',
-      course: 'Not Martinis',
-      name: 'Naked & Famous',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Equal parts smoky Del Maguey Mezcal, Yellow Chartreuse, Aperol, and fresh pressed lime juice.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Bartender Pick']
-    },
-    {
-      id: 'dr-vieux-carre',
-      menuTab: 'drinks',
-      course: 'After Dinner',
-      name: 'Vieux Carré',
-      price: 14,
-      priceDisplay: '£14',
-      desc: 'Rye whiskey, Cognac, sweet vermouth, Bénédictine D.O.M., and Peychaud’s & Angostura bitters.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Late Night']
-    },
-    {
-      id: 'dr-espresso-martini',
-      menuTab: 'drinks',
-      course: 'After Dinner',
-      name: 'Double-Shot Espresso Martini',
-      price: 12.5,
-      priceDisplay: '£12.5',
-      desc: 'Vodka, roasted coffee liqueur, and fresh ristretto shaken hard to a velvety crema.',
-      allergens: [],
-      dietary: ['vegetarian', 'gluten-free', 'dairy-free', 'nut-free', 'shellfish-free'],
-      badges: ['Digestif']
-    }
-  ],
-
-  wines: [
-    // SPARKLING
-    {
-      id: 'w-cremant',
-      style: 'Sparkling',
-      vintage: 'NV',
-      name: 'Crémant de Bourgogne No. 21, Jean-Charles Boisset',
-      region: 'Burgundy, France',
-      grape: 'Chardonnay, Pinot Noir',
-      glassPrice: 12,
-      bottlePrice: 55,
-      byTheGlass: true,
-      pairingTag: 'Gougères & Raw Bar'
-    },
-    {
-      id: 'w-devaux',
-      style: 'Sparkling',
-      vintage: 'NV',
-      name: 'Grand Réserve Brut, Champagne Devaux',
-      region: 'Champagne, France',
-      grape: 'Chardonnay, Pinot Noir',
-      glassPrice: 15,
-      bottlePrice: 75,
-      byTheGlass: true,
-      pairingTag: 'Crab Toast & Scallops'
-    },
-    {
-      id: 'w-langham',
-      style: 'Sparkling',
-      vintage: 'NV',
-      name: 'Rosé Brut, Langham Wine Estate',
-      region: 'Dorset, United Kingdom',
-      grape: 'Chardonnay, Pinot Meunier, Pinot Noir',
-      glassPrice: 16.5,
-      bottlePrice: 92,
-      byTheGlass: true,
-      pairingTag: 'Tuna Crudo & Aperitif'
-    },
-    {
-      id: 'w-heidsieck',
-      style: 'Sparkling',
-      vintage: 'NV',
-      name: 'Blanc de Blancs, Charles Heidsieck',
-      region: 'Champagne, France',
-      grape: '100% Chardonnay',
-      glassPrice: 22,
-      bottlePrice: 130,
-      byTheGlass: true,
-      pairingTag: 'Native Lobster & Roasted Cod'
-    },
-    // WHITE
-    {
-      id: 'w-vermentino',
-      style: 'White',
-      vintage: '2024',
-      name: 'Les Vignes de L’Eglise IGP',
-      region: 'Languedoc, France',
-      grape: 'Vermentino',
-      glassPrice: 7.5,
-      bottlePrice: 38,
-      byTheGlass: true,
-      pairingTag: 'Leeks Vinaigrette & Anchovies'
-    },
-    {
-      id: 'w-macon',
-      style: 'White',
-      vintage: '2024',
-      name: 'Mâcon-Pierreclos, Domaine Marc Jambon et Fils',
-      region: 'Burgundy, France',
-      grape: 'Chardonnay',
-      glassPrice: 11,
-      bottlePrice: 59,
-      byTheGlass: true,
-      pairingTag: 'Pumpkin Ravioli & Lobster Croquettes'
-    },
-    {
-      id: 'w-verdicchio',
-      style: 'White',
-      vintage: 'NV',
-      name: 'Verdicchio Superiore DOC ‘KYPRA’, Ca’Liptra',
-      region: 'Marche, Italy',
-      grape: 'Verdicchio',
-      glassPrice: 12.5,
-      bottlePrice: 64,
-      byTheGlass: true,
-      pairingTag: 'Stracciatella & Seafood'
-    },
-    {
-      id: 'w-pouilly',
-      style: 'White',
-      vintage: '2024',
-      name: 'Pouilly-Fumé ‘Roche Blanche’, Domaine Laporte',
-      region: 'Loire Valley, France',
-      grape: 'Sauvignon Blanc',
-      glassPrice: 15,
-      bottlePrice: 78,
-      byTheGlass: true,
-      pairingTag: 'Scallops & Goat’s Cheese'
-    },
-    {
-      id: 'w-saint-aubin',
-      style: 'White',
-      vintage: '2024',
-      name: 'Saint-Aubin 1er Cru ‘En Remilly’, Sylvain Langoureau',
-      region: 'Burgundy, France',
-      grape: 'Chardonnay',
-      glassPrice: null,
-      bottlePrice: 135,
-      byTheGlass: false,
-      pairingTag: 'Roasted Cod & Turbot'
-    },
-    // ROSÉ & SKIN CONTACT
-    {
-      id: 'w-luberon',
-      style: 'Rosé & Skin Contact',
-      vintage: '2025',
-      name: 'Luberon Rosé, Famille Perrin',
-      region: 'Provence, France',
-      grape: 'Cinsault, Grenache, Syrah',
-      glassPrice: 9,
-      bottlePrice: 44,
-      byTheGlass: true,
-      pairingTag: 'Watermelon Feta & Long Lunches'
-    },
-    {
-      id: 'w-feu-follet',
-      style: 'Rosé & Skin Contact',
-      vintage: '2024',
-      name: 'Feu Follet Skin Contact, Domaine Stoeffler',
-      region: 'Alsace, France',
-      grape: 'Muscat, Gewürztraminer, Pinot Gris',
-      glassPrice: 12.5,
-      bottlePrice: 64,
-      byTheGlass: true,
-      pairingTag: 'Pork Schnitzel & Tuna Crudo'
-    },
-    // RED
-    {
-      id: 'w-nero-davola',
-      style: 'Red',
-      vintage: '2024',
-      name: 'Nero di Pianogrillo Terre Siciliane',
-      region: 'Sicily, Italy',
-      grape: 'Nero d’Avola',
-      glassPrice: 8.5,
-      bottlePrice: 38,
-      byTheGlass: true,
-      pairingTag: 'Charcuterie & Bar Dining'
-    },
-    {
-      id: 'w-bordeaux-beynat',
-      style: 'Red',
-      vintage: '2023',
-      name: 'Château Beynat, Castillon Côtes de Bordeaux',
-      region: 'Bordeaux, France',
-      grape: 'Merlot, Cabernet Franc',
-      glassPrice: 10,
-      bottlePrice: 48,
-      byTheGlass: true,
-      pairingTag: 'Cheeseburger Au Poivre'
-    },
-    {
-      id: 'w-chianti',
-      style: 'Red',
-      vintage: '2024',
-      name: 'Chianti Classico, Fattoria di Rodano',
-      region: 'Tuscany, Italy',
-      grape: 'Sangiovese',
-      glassPrice: 12.5,
-      bottlePrice: 65,
-      byTheGlass: true,
-      pairingTag: '300g Grass-Fed Sirloin'
-    },
-    {
-      id: 'w-bourgogne',
-      style: 'Red',
-      vintage: '2022',
-      name: 'Bourgogne Rouge ‘Le Mondelot’, Domaine Lacour',
-      region: 'Burgundy, France',
-      grape: 'Pinot Noir',
-      glassPrice: 14,
-      bottlePrice: 68,
-      byTheGlass: true,
-      pairingTag: 'Classic Steak Tartare'
-    },
-    {
-      id: 'w-saint-joseph',
-      style: 'Red',
-      vintage: '2024',
-      name: 'Saint-Joseph, Maison Les Alexandrins',
-      region: 'Northern Rhône, France',
-      grape: 'Syrah',
-      glassPrice: 15.5,
-      bottlePrice: 88,
-      byTheGlass: true,
-      pairingTag: '800g Bone-In Ribeye & Prime Rib'
-    },
-    {
-      id: 'w-nuits-st-georges',
-      style: 'Red',
-      vintage: '2021',
-      name: 'Nuits-Saint-Georges ‘Aux Allots’, Domaine Chicotot',
-      region: 'Burgundy, France',
-      grape: 'Pinot Noir',
-      glassPrice: null,
-      bottlePrice: 168,
-      byTheGlass: false,
-      pairingTag: 'Private Dining Cellar Reserve'
-    }
-  ],
-
-  martiniConfig: {
-    spirits: [
-      { id: 'tanqueray-10', name: 'Tanqueray No. Ten Gin', note: 'Citrus heart, grapefruit, chamomile botanicals', supplement: 0 },
-      { id: 'chase-vodka', name: 'Chase English Potato Vodka', note: 'Creamy, ultra-smooth Herefordshire estate single-origin', supplement: 0 },
-      { id: 'club-row-blend', name: 'Club Row Signature Blend', note: 'Tanqueray 10, Dolin Chambéryzette & Italicus Bergamot', supplement: 2 }
     ],
-    styles: [
-      { id: 'classic-dry', name: 'Classic Dry (5:1)', desc: 'Whisper of Noilly Prat dry vermouth, stirred 40 turns over crystal ice' },
-      { id: 'wet-parisian', name: 'Wet Parisian (3:1)', desc: 'Generous Dolin Dry vermouth for a floral, aperitif-forward profile' },
-      { id: 'filthy-dirty', name: 'Filthy Dirty', desc: 'Washed with Spanish Gordal olive brine for a savory umami punch' },
-      { id: 'olive-oil-mastiha', name: 'Mint Olive Oil & Mastiha', desc: 'Roots Mastiha & cold-pressed mint olive oil fat-wash (£14 spec)' }
-    ],
-    garnishes: [
-      { id: 'lemon-twist', name: 'Expressed Amalfi Lemon Coin' },
-      { id: 'gordal-olives', name: 'Three Skewered Gordal Olives' },
-      { id: 'rosemary-oil', name: 'Fragrant Rosemary Sprig & Mist' }
-    ]
-  },
 
-  apartmentPackages: {
-    layouts: [
+    // ------------------------------------------------------------------------
+    // 7. CATERING & EVENT PACKAGES
+    // ------------------------------------------------------------------------
+    cateringPackages: [
       {
-        id: 'seated-dinner',
-        name: 'The Apartment — Seated Feasting',
-        capacityRange: '12 – 50 Guests',
-        maxGuests: 50,
-        minGuests: 12,
-        defaultGuests: 28,
-        basePricePerHead: 75,
-        badge: 'Up to 50 Seated',
-        desc: 'Candlelit long-table banquet in the former Victorian apartment upstairs. All courses served family-style for the table to share.',
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/09/Club-Row_PV_Beca-B-Jones-Photo_5H8A9192-724x1024.jpg',
-        highlights: [
-          'Exclusive hire of The Apartment dining salons',
-          '4-Course Sharing Feast (Gougères, Leeks, Stracciatella, Grass-Fed Sirloin Au Poivre, Twice-Baked Chocolate Cake)',
-          'Dedicated private cocktail bar & sommelier team',
-          'Bespoke printed menus with guest names or company crest'
-        ]
+        id: 'cat_lime',
+        name: 'The Lime Platter',
+        serves: '6 – 8 People',
+        price: '£65.00',
+        priceNum: 65.00,
+        items: [
+          'Jerk Chicken (8 portions)',
+          'Large Rice & Peas',
+          'Fried Plantain Platter (16 pieces)',
+          'Fried Dumplings (8 pieces)',
+          'Yeah Man Slaw & Jerk Sauce Bottles'
+        ],
+        description: 'Perfect for small office lunches, game nights, and family gatherings.'
       },
       {
-        id: 'standing-party',
-        name: 'The Apartment — Raucous Cocktail Party',
-        capacityRange: '25 – 60 Guests',
-        maxGuests: 60,
-        minGuests: 25,
-        defaultGuests: 45,
-        basePricePerHead: 65,
-        badge: 'Up to 60 Standing',
-        desc: 'True to the building’s legendary Shoreditch house-party history: flowing martinis, raw bar platters, lobster croquettes, and late-night music.',
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/09/1cr-pd-2-1024x917.jpg',
-        highlights: [
-          'Full standing access across The Apartment & private bar',
-          'Substantial roaming canapés (Crab Toast, Lobster Croquettes, Jalapeño Gougères, Steak Tartare Soldiers)',
-          'Chilled Martini & Crémant welcome tower',
-          'Optional upright piano player or vinyl selector until late'
-        ]
+        id: 'cat_kingston',
+        name: 'Kingston Street Feast',
+        serves: '12 – 16 People',
+        price: '£135.00',
+        priceNum: 135.00,
+        items: [
+          'Jerk Chicken & Curry Mutton Combo',
+          'Rice & Peas + Plain Rice Trays',
+          'Fried Plantain + Saltfish Fritters',
+          'Golden Fried Dumplings (16 pieces)',
+          'Macaroni Cheese Tray & Mixed Salad',
+          'Assorted Tropical Cans (12 cans)'
+        ],
+        description: 'Our most popular party package for birthdays, celebrations, and team events.'
       },
       {
-        id: 'semi-private-feast',
-        name: 'Main Restaurant — Group Feasting Table',
-        capacityRange: '8 – 16 Guests',
-        maxGuests: 16,
-        minGuests: 8,
-        defaultGuests: 12,
-        basePricePerHead: 75,
-        badge: '8 – 16 Guests',
-        desc: 'Host a celebratory lunch or dinner right in the buzz of the main dining room with our £75pp Festive & Group Sharing Menu.',
-        image: 'https://oneclubrow.com/wp-content/uploads/2025/09/Club-Row_PV_Beca-B-Jones-Photo_5H8A8902-683x1024.jpg',
-        highlights: [
-          'Prime central banquet table in the Grade II dining room',
-          'Full £75pp Sharing Menu (Vegetarian Rotisserie Cauliflower option available individually)',
-          'Pre-ordered magnum wines & celebratory digestifs available',
-          'Instant online availability for lunch & dinner sittings'
-        ]
+        id: 'cat_carnival',
+        name: 'Carnival Ultimate Spread',
+        serves: '25 – 35 People',
+        price: '£260.00',
+        priceNum: 260.00,
+        items: [
+          'Full Jerk Chicken + Oxtail Stew + Curry Goat',
+          'Large Trays of Rice & Peas, Plantain & Fritters',
+          'Fresh Jamaican Dumplings (35 pieces)',
+          'Full Tray Mac & Cheese & Veg Callaloo',
+          'Whole Jamaican Rum Cake or Carrot Cake',
+          'Full Case of Caribbean Sodas (24 cans)'
+        ],
+        description: 'The complete Jamaican celebration experience. Chafing trays and cutlery included.'
       }
     ],
-    addons: [
-      { id: 'champagne-arrival', name: 'Devaux Champagne & Gougères Arrival', pricePerHead: 16, flatFee: 0 },
-      { id: 'sommelier-pairing', name: 'Half-Bottle Old World Sommelier Wine Pairing', pricePerHead: 42, flatFee: 0 },
-      { id: 'late-night-martinis', name: 'After-Dinner Martini & Digestif Hour', pricePerHead: 24, flatFee: 0 },
-      { id: 'live-pianist', name: 'Late-Night House Pianist / Post-Dinner Show', pricePerHead: 0, flatFee: 450 }
-    ]
-  },
 
-  giftVouchers: [
-    {
-      id: 'gv-bar-martinis',
-      title: 'Martinis & Snacks at The Bar for Two',
-      price: 60,
-      badge: 'Popular Gift',
-      desc: 'Two signature Club Row Martinis, warm Pickled Jalapeño Gougères, Cornish Crab Toast, and Native Lobster Croquettes at the bar.',
-      validity: 'Valid for 12 months · Instant Digital or Wax-Sealed Post'
-    },
-    {
-      id: 'gv-dinner-two',
-      title: 'The Parisian & New York Tavern Dinner for Two',
-      price: 150,
-      badge: 'Signature Experience',
-      desc: 'A generous £150 dining voucher toward three courses, sharing steaks, and cellar wines in the main dining room.',
-      validity: 'Valid for 12 months · Redeemable Tue – Sun'
-    },
-    {
-      id: 'gv-ribeye-feast',
-      title: 'The 800g Côte de Boeuf & Burgundy Feast',
-      price: 220,
-      badge: 'Connoisseur Gift',
-      desc: 'Covers the showstopping 800g Grass-Fed Ribeye with Beef Fat Béarnaise, sides, desserts, and a bottle of Burgundy.',
-      validity: 'Valid for 12 months · Includes priority table request'
-    },
-    {
-      id: 'gv-monetary-100',
-      title: '£100 One Club Row Monetary Gift Card',
-      price: 100,
-      badge: 'Flexible Monetary',
-      desc: 'Flexible £100 credit redeemable across Lunch, Dinner, Sunday Service, or late-night cocktails at 1 Club Row.',
-      validity: 'Valid for 12 months · Digital Apple/Google Wallet Ready'
-    }
-  ],
+    // ------------------------------------------------------------------------
+    // 8. SOCIAL PROOF & VERIFIED REVIEWS
+    // ------------------------------------------------------------------------
+    reviews: [
+      {
+        id: 'rev_1',
+        author: 'Marcus B.',
+        location: 'Stretford',
+        rating: 5,
+        source: 'Google Verified Review',
+        date: 'October 2026',
+        text: "Hands down the best jerk chicken in South Manchester. The marinade penetrates right down to the bone, and the dumpling splits are legendary. We order every Friday without fail!"
+      },
+      {
+        id: 'rev_2',
+        author: 'Siobhan T.',
+        location: 'Chorlton',
+        rating: 5,
+        source: 'Verified Customer',
+        date: 'September 2026',
+        text: "The curry goat is out of this world — so tender, zero gristle, and seasoned to absolute perfection. Calling them directly is so much faster than waiting on delivery apps!"
+      },
+      {
+        id: 'rev_3',
+        author: "Manchester's Finest",
+        location: 'Editorial Review',
+        rating: 5,
+        source: "Food & Culture Press",
+        date: 'August 2026',
+        text: "Jamie and the Yeah Man team have been blessing Norway Street with proper, uncompromising Jamaican home-cooking for over 12 years. Essential Manchester eating."
+      },
+      {
+        id: 'rev_4',
+        author: 'David & Keira O.',
+        location: 'Old Trafford',
+        rating: 5,
+        source: 'Catering Client',
+        date: 'July 2026',
+        text: "Yeah Man catered our 40th birthday party with the Kingston Feast. Every single guest was raving about the oxtail and mac & cheese. Generous portions and piping hot."
+      }
+    ],
 
-  galleryPhotos: [
-    {
-      id: 'gal-1',
-      category: 'dining_room',
-      title: 'The Grade II Listed Dining Room',
-      caption: 'Faded Victorian grandeur on Club Row with bentwood chairs, crisp linen, and warm candlelit brass.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/1cr2-843x1024.jpg'
-    },
-    {
-      id: 'gal-2',
-      category: 'martinis_bar',
-      title: 'The Club Row Martini',
-      caption: 'Tanqueray No. Ten, Dolin Chambéryzette, Italicus & rosemary oil poured sub-zero at the mahogany bar.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-75-667x1024.jpg'
-    },
-    {
-      id: 'gal-3',
-      category: 'dishes',
-      title: 'Classic Steak Tartare & Dripping Toast',
-      caption: 'Inspired by the brasseries of Paris and taverns of New York.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/51608ff9bda5eb9b23d5fb90974d839e-733x1024.jpeg'
-    },
-    {
-      id: 'gal-4',
-      category: 'the_apartment',
-      title: 'Upstairs at The Apartment',
-      caption: 'Private dining salons in the former apartment of the building’s previous owners (up to 50 seated / 60 standing).',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/09/Club-Row_PV_Beca-B-Jones-Photo_5H8A9192-724x1024.jpg'
-    },
-    {
-      id: 'gal-5',
-      category: 'dishes',
-      title: 'One Club Row Cheeseburger “Au Poivre”',
-      caption: 'Dry-aged beef, melted cheddar, and cognac peppercorn sauce.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-56-683x1024.jpg'
-    },
-    {
-      id: 'gal-6',
-      category: 'dining_room',
-      title: 'Long Lunches & Late Dinners',
-      caption: 'Natural daylight pouring through the tall Victorian sash windows overlooking Shoreditch.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-72-703x1024.jpg'
-    },
-    {
-      id: 'gal-7',
-      category: 'the_apartment',
-      title: 'Private Cocktail Parties & Post-Dinner Shows',
-      caption: 'Historic rooms built for lively gatherings, private celebrations, and late-night piano.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/09/1cr-pd-2-1024x917.jpg'
-    },
-    {
-      id: 'gal-8',
-      category: 'dishes',
-      title: '800g Grass-Fed Ribeye & Beef Fat Béarnaise',
-      caption: 'Charcoal-seared on the bone for the table to share.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-51-679x1024.jpg'
-    },
-    {
-      id: 'gal-9',
-      category: 'martinis_bar',
-      title: 'Dining at The Bar',
-      caption: 'Walk-ins and reserved bar stools for gougères, oysters, schnitzel, and one too many martinis.',
-      src: 'https://oneclubrow.com/wp-content/uploads/2025/03/Copy-of-OneClubRow-JustinDeSouza-82-684x1024.jpg'
+    // ------------------------------------------------------------------------
+    // 9. COMMISSION-FREE COMPARISON PROPOSITION
+    // ------------------------------------------------------------------------
+    commissionComparison: {
+      headline: 'Why Order Directly from Yeah Man?',
+      subhead: 'Save Money, Support Local Independent Business & Get Hotter Food Faster',
+      benefits: [
+        {
+          title: 'Direct Kitchen Priority',
+          desc: 'Your food is cooked fresh on Norway Street and packaged immediately without waiting in aggregator driver queues.'
+        },
+        {
+          title: 'Save £14,500+ Local Commission',
+          desc: 'Third-party delivery apps take 15% to 30% from every order. Ordering direct keeps 100% of your money supporting Jamie and local kitchen staff.'
+        },
+        {
+          title: 'Special Customizations & Fresh Batches',
+          desc: 'Ask for extra gravy, crispy skin, or custom rice choices directly via WhatsApp or telephone.'
+        },
+        {
+          title: 'Zero Hidden Platform Service Fees',
+          desc: 'No confusing service fees, small basket surcharges, or inflated third-party menu markups.'
+        }
+      ]
     }
-  ],
+  };
 
-  careers: [
-    {
-      id: 'job-cdp',
-      role: 'Chef de Partie',
-      department: 'Kitchen Brigade · Full-Time',
-      compensation: 'Competitive + Tronc & Staff Meals',
-      summary: 'Work alongside our culinary team delivering classic Parisian bistro & New York tavern plates from fresh British and European produce.',
-      specUrl: 'https://docs.google.com/document/d/e/2PACX-1vT7vWkA8GNaODTwbdaZV_kTxrW8tD7JH6-E_DcmxFN8K0mIqqer4nzS7Wt6c4PLt7LdmcXlg6lC1Y_7/pub'
-    },
-    {
-      id: 'job-foh',
-      role: 'Front of House — Waiter / Bartender',
-      department: 'Dining Room & Martini Bar · Full-Time / Part-Time',
-      compensation: 'Competitive Hourly + Generous Tronc',
-      summary: 'Bring warmth, rhythm, and hospitality to our Shoreditch dining room and upstairs private events at The Apartment.',
-      specUrl: 'https://docs.google.com/document/d/e/2PACX-1vS_wt7DAX7M3LW2JhR8sUNEO2rwEerLmDw3b_OZEo8Bsk4ErFMwHB4gIjjA2jMYBDHB8MBJblZySsLW/pub'
-    }
-  ]
-};
+  return YEAHMAN_DATA;
+});

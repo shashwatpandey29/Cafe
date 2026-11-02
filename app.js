@@ -1,2667 +1,1840 @@
 /* ==========================================================================
-   ONE CLUB ROW (oneclubrow.com) — ENTERPRISE REACT 18 DIGITAL FLAGSHIP
-   Customer Pitch Remake · 1 Club Row, Shoreditch, London E1 6JX
+   YEAH MAN CARIBBEAN — Production React 18 Application
+   Authentic Jamaican Soul Food & Jerk Grill · Stretford, Manchester
+   63 Norway Street, M32 0JN · 0161 864 3259
    ========================================================================== */
 
 (function () {
-  const { useState, useMemo, useEffect, createElement: h, Fragment } = window.React;
-  const { createRoot } = window.ReactDOM;
-  const DATA = window.OCR_DATA;
+  'use strict';
 
-  // ==========================================================================
-  // 1. ARCHITECTURAL VECTOR SVG ICON & CREST SYSTEM
-  // ==========================================================================
-  function Icon({ name, size = 16, color = 'currentColor' }) {
-    const props = {
-      width: size,
-      height: size,
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: color,
-      strokeWidth: 1.85,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      className: 'icon-svg',
-      'aria-hidden': 'true'
-    };
+  // Fallback data resolution for browser and test environments
+  var DATA = (typeof window !== 'undefined' && window.YEAHMAN_DATA)
+    ? window.YEAHMAN_DATA
+    : (typeof require !== 'undefined' ? require('./data.js') : {});
 
-    switch (name) {
-      case 'martini':
-        return h('svg', props,
-          h('path', { d: 'M8 22h8' }),
-          h('path', { d: 'M12 15v7' }),
-          h('path', { d: 'm19 3-7 8-7-8Z' }),
-          h('path', { d: 'm5.5 6.5 13 0' })
-        );
-      case 'bag':
-        return h('svg', props,
-          h('path', { d: 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z' }),
-          h('line', { x1: 3, y1: 6, x2: 21, y2: 6 }),
-          h('path', { d: 'M16 10a4 4 0 0 1-8 0' })
-        );
-      case 'menu':
-        return h('svg', props,
-          h('line', { x1: 3, y1: 7, x2: 21, y2: 7 }),
-          h('line', { x1: 3, y1: 17, x2: 21, y2: 17 })
-        );
-      case 'arrowRight':
-        return h('svg', props,
-          h('path', { d: 'M5 12h14' }),
-          h('path', { d: 'm12 5 7 7-7 7' })
-        );
-      case 'clock':
-        return h('svg', props,
-          h('circle', { cx: 12, cy: 12, r: 10 }),
-          h('polyline', { points: '12 6 12 12 16 14' })
-        );
-      case 'utensils':
-        return h('svg', props,
-          h('path', { d: 'M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2' }),
-          h('path', { d: 'M7 2v20' }),
-          h('path', { d: 'M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7' })
-        );
-      case 'wine':
-        return h('svg', props,
-          h('path', { d: 'M8 22h8' }),
-          h('path', { d: 'M7 10h10' }),
-          h('path', { d: 'M12 15v7' }),
-          h('path', { d: 'M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z' })
-        );
-      case 'calendar':
-        return h('svg', props,
-          h('rect', { width: 18, height: 18, x: 3, y: 4, rx: 2 }),
-          h('line', { x1: 16, y1: 2, x2: 16, y2: 6 }),
-          h('line', { x1: 8, y1: 2, x2: 8, y2: 6 }),
-          h('line', { x1: 3, y1: 10, x2: 21, y2: 10 })
-        );
-      case 'users':
-        return h('svg', props,
-          h('path', { d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' }),
-          h('circle', { cx: 9, cy: 7, r: 4 }),
-          h('path', { d: 'M22 21v-2a4 4 0 0 0-3-3.87' }),
-          h('path', { d: 'M16 3.13a4 4 0 0 1 0 7.75' })
-        );
-      case 'gift':
-        return h('svg', props,
-          h('rect', { x: 3, y: 8, width: 18, height: 4, rx: 1 }),
-          h('path', { d: 'M12 8v13' }),
-          h('path', { d: 'M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7' }),
-          h('path', { d: 'M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' })
-        );
-      case 'pin':
-        return h('svg', props,
-          h('path', { d: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z' }),
-          h('circle', { cx: 12, cy: 10, r: 3 })
-        );
-      case 'sparkle':
-        return h('svg', props,
-          h('path', { d: 'm12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z' })
-        );
-      case 'check':
-        return h('svg', props,
-          h('path', { d: 'M20 6 9 17l-5-5' })
-        );
-      case 'close':
-        return h('svg', props,
-          h('path', { d: 'M18 6 6 18M6 6l12 12' })
-        );
-      case 'search':
-        return h('svg', props,
-          h('circle', { cx: 11, cy: 11, r: 8 }),
-          h('path', { d: 'm21 21-4.3-4.3' })
-        );
-      case 'shield':
-        return h('svg', props,
-          h('path', { d: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z' })
-        );
-      case 'key':
-        return h('svg', props,
-          h('circle', { cx: 7.5, cy: 15.5, r: 5.5 }),
-          h('path', { d: 'm21 2-9.6 9.6' }),
-          h('path', { d: 'm15.5 7.5 3 3L22 7l-3-3' })
-        );
-      case 'mail':
-        return h('svg', props,
-          h('rect', { width: 20, height: 16, x: 2, y: 4, rx: 2 }),
-          h('path', { d: 'm22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' })
-        );
-      case 'external':
-        return h('svg', props,
-          h('path', { d: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' }),
-          h('polyline', { points: '15 3 21 3 21 9' }),
-          h('line', { x1: 10, y1: 14, x2: 21, y2: 3 })
-        );
-      default:
-        return h('svg', props, h('circle', { cx: 12, cy: 12, r: 8 }));
+  // Browser React 18 or lightweight Node test mock
+  var React = (typeof window !== 'undefined' && window.React)
+    ? window.React
+    : {
+        createElement: function (type, props) {
+          var children = Array.prototype.slice.call(arguments, 2);
+          return { type: type, props: Object.assign({}, props, { children: children }) };
+        },
+        Fragment: 'React.Fragment',
+        useState: function (init) { return [init, function () {}]; },
+        useEffect: function () {},
+        useCallback: function (fn) { return fn; },
+        useMemo: function (fn) { return fn(); }
+      };
+
+  var ReactDOM = (typeof window !== 'undefined' && window.ReactDOM) ? window.ReactDOM : null;
+
+  var h = React.createElement;
+  var useState = React.useState;
+  var useEffect = React.useEffect;
+  var useCallback = React.useCallback;
+  var useMemo = React.useMemo;
+
+  /* ==========================================================================
+     HELPER: UK / Manchester Opening Hours Calculator
+     ========================================================================== */
+  function getLiveOpeningStatus(hoursData) {
+    try {
+      var now = new Date();
+      // UTC to UK / London time
+      var ukTimeString = now.toLocaleString('en-GB', { timeZone: 'Europe/London' });
+      var parts = ukTimeString.split(', ');
+      var timeParts = parts[1].split(':');
+      var hours = parseInt(timeParts[0], 10);
+      var minutes = parseInt(timeParts[1], 10);
+      var decimalTime = hours + (minutes / 60);
+
+      // Day of week: 0 = Sun, 1 = Mon, 2 = Tue, ..., 6 = Sat
+      var day = now.getDay();
+
+      if (day === 1) { // Monday
+        return {
+          isOpen: false,
+          statusText: 'Closed Today (Monday)',
+          subText: 'Kitchen opens Tuesday at 11:00 for collection',
+          badgeClass: 'closed'
+        };
+      }
+
+      if (day === 0) { // Sunday: collection 13:00 - 21:00, delivery 17:00 - 21:00
+        if (decimalTime >= 13.0 && decimalTime < 21.0) {
+          var isDel = decimalTime >= 17.0;
+          return {
+            isOpen: true,
+            statusText: isDel ? 'Open Now · Collection & Delivery' : 'Open Now · Collection Only (Delivery from 17:00)',
+            subText: 'Sunday service until 21:00',
+            badgeClass: 'open'
+          };
+        }
+        return {
+          isOpen: false,
+          statusText: 'Closed Now',
+          subText: 'Sunday opening: 13:00 – 21:00',
+          badgeClass: 'closed'
+        };
+      }
+
+      // Tuesday to Saturday: collection 11:00 - 22:30, delivery 17:00 - 22:30
+      if (decimalTime >= 11.0 && decimalTime < 22.5) {
+        var isDeliveryOpen = decimalTime >= 17.0;
+        return {
+          isOpen: true,
+          statusText: isDeliveryOpen ? 'Open Now · Collection & Delivery' : 'Open Now · Collection (Delivery from 17:00)',
+          subText: 'Piping hot fresh jerk & curries until 22:30',
+          badgeClass: 'open'
+        };
+      }
+
+      return {
+        isOpen: false,
+        statusText: 'Kitchen Closed for the Night',
+        subText: 'Reopens tomorrow at 11:00 AM · Pre-orders welcome!',
+        badgeClass: 'closed'
+      };
+    } catch (e) {
+      return {
+        isOpen: true,
+        statusText: 'Open for Orders',
+        subText: 'Tuesday–Saturday 11:00–22:30 · Sunday 13:00–21:00',
+        badgeClass: 'open'
+      };
     }
   }
 
-  // Victorian Bird Crest Ornament (Echoing One Club Row's signature illustration)
-  function BirdCrest({ size = 26, color = 'currentColor' }) {
-    return h('svg', {
-      width: size,
-      height: size,
-      viewBox: '0 0 32 32',
-      fill: 'none',
-      stroke: color,
-      strokeWidth: 1.7,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      className: 'icon-svg'
-    },
-      h('path', { d: 'M22 7c-2.5 0-4.5 1.8-5 4.2-.8 3.5-4.2 5.8-8 5.8-1.5 0-3-.4-4-1.2 1.2 4.2 5 7.2 9.5 7.2 5.5 0 9.5-4 9.5-9.5 0-1.5.5-3 2-4-1.2-.5-2.6-2.5-4-2.5Z' }),
-      h('path', { d: 'M24 9.5h3.5l-2 2' }),
-      h('path', { d: 'M14 23v5m-3 0h6' }),
-      h('circle', { cx: 21.5, cy: 9.5, r: 0.8, fill: color })
-    );
-  }
+  /* ==========================================================================
+     1. COMPONENT: NAVBAR (Sticky Header, Brand Lockup, Desktop Links, Basket)
+     ========================================================================== */
+  function Navbar(props) {
+    var brand = props.brand || {};
+    var onToggleDrawer = props.onToggleDrawer;
+    var onOpenCart = props.onOpenCart;
+    var cartCount = props.cartCount || 0;
+    var cartTotal = props.cartTotal || 0;
+    var activeSection = props.activeSection;
 
-  // Interactive Architectural Floorplan SVG for "The Apartment" Private Dining
-  function ApartmentFloorplanSvg({ layoutId, guests }) {
-    return h('svg', {
-      viewBox: '0 0 360 130',
-      style: { width: '100%', height: 'auto', display: 'block', borderRadius: '4px', background: '#131333', border: '1px solid rgba(201,164,97,0.35)' },
-      'aria-label': 'Architectural Floorplan Preview'
-    },
-      // Outer Victorian Salon Walls & Sash Windows
-      h('rect', { x: 8, y: 8, width: 344, height: 114, rx: 4, fill: 'none', stroke: '#C9A461', strokeWidth: 1.5, strokeDasharray: '4 2' }),
-      h('text', { x: 18, y: 22, fill: '#DFB973', fontSize: '8', fontFamily: 'JetBrains Mono, monospace' }, 'CLUB ROW SASH WINDOWS (NATURAL DAYLIGHT / CANDLELIGHT)'),
-      // Private Mahogany Bar Station
-      h('rect', { x: 282, y: 28, width: 58, height: 82, rx: 3, fill: 'rgba(197,54,39,0.28)', stroke: '#C53627', strokeWidth: 1.5 }),
-      h('text', { x: 291, y: 66, fill: '#F6F3E3', fontSize: '8', fontWeight: 'bold' }, 'PRIVATE'),
-      h('text', { x: 291, y: 77, fill: '#F6F3E3', fontSize: '8', fontWeight: 'bold' }, 'BAR'),
+    var navItems = [
+      { id: 'hero', label: 'Home', href: '#hero' },
+      { id: 'menu', label: 'Our Menu (80)', href: '#menu' },
+      { id: 'spotlight', label: 'Signatures', href: '#spotlight' },
+      { id: 'story', label: 'Jamie\'s Story', href: '#story' },
+      { id: 'catering', label: 'Catering', href: '#catering' },
+      { id: 'reviews', label: 'Reviews', href: '#reviews' },
+      { id: 'location', label: 'Hours & Location', href: '#location' }
+    ];
 
-      layoutId === 'seated-dinner' && h(Fragment, null,
-        h('rect', { x: 28, y: 40, width: 234, height: 26, rx: 3, fill: 'rgba(201,164,97,0.22)', stroke: '#DFB973', strokeWidth: 1.5 }),
-        h('rect', { x: 28, y: 78, width: 234, height: 26, rx: 3, fill: 'rgba(201,164,97,0.22)', stroke: '#DFB973', strokeWidth: 1.5 }),
-        h('text', { x: 64, y: 56, fill: '#F6F3E3', fontSize: '8.5', fontFamily: 'JetBrains Mono, monospace' }, `LONG BANQUET SALON · ${guests} SEATED`),
-        h('text', { x: 64, y: 94, fill: '#F6F3E3', fontSize: '8.5', fontFamily: 'JetBrains Mono, monospace' }, 'FAMILY-STYLE SHARING FEAST TABLES')
-      ),
+    return h('header', { className: 'site-header', role: 'banner' },
+      h('div', { className: 'container nav-container' },
+        // Brand Lockup
+        h('a', { href: '#hero', className: 'brand-lockup', 'aria-label': brand.name + ' Home' },
+          h('div', { className: 'brand-badge', 'aria-hidden': 'true' }, brand.monogram || 'YM'),
+          h('div', { className: 'brand-text-group' },
+            h('span', { className: 'brand-title' }, brand.name || 'YEAH MAN CARIBBEAN'),
+            h('span', { className: 'brand-subtitle' }, 'Authentic Jamaican Kitchen')
+          )
+        ),
 
-      layoutId === 'standing-party' && h(Fragment, null,
-        h('circle', { cx: 65, cy: 68, r: 24, fill: 'rgba(197,54,39,0.25)', stroke: '#DFB973', strokeWidth: 1.4 }),
-        h('text', { x: 47, y: 71, fill: '#F6F3E3', fontSize: '7.5', fontWeight: 'bold' }, 'PIANO SHOW'),
-        h('circle', { cx: 145, cy: 55, r: 18, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
-        h('circle', { cx: 195, cy: 84, r: 18, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
-        h('circle', { cx: 235, cy: 52, r: 16, fill: 'rgba(246,243,227,0.1)', stroke: '#C9A461', strokeWidth: 1.2 }),
-        h('text', { x: 112, y: 112, fill: '#DFB973', fontSize: '8', fontFamily: 'JetBrains Mono, monospace' }, `STANDING COCKTAIL FLOW · ${guests} GUESTS`)
-      ),
+        // Desktop Navigation Links
+        h('nav', { className: 'desktop-nav-links', 'aria-label': 'Main Navigation' },
+          navItems.map(function (item) {
+            var isActive = activeSection === item.id;
+            return h('a', {
+              key: item.id,
+              href: item.href,
+              className: 'nav-link' + (isActive ? ' active' : '')
+            }, item.label);
+          })
+        ),
 
-      layoutId === 'semi-private-feast' && h(Fragment, null,
-        h('rect', { x: 52, y: 46, width: 190, height: 48, rx: 6, fill: 'rgba(197,54,39,0.28)', stroke: '#DFB973', strokeWidth: 1.8 }),
-        h('text', { x: 75, y: 68, fill: '#F6F3E3', fontSize: '8.5', fontWeight: 'bold' }, `CENTRAL FEASTING TABLE (${guests}P)`),
-        h('text', { x: 75, y: 81, fill: '#DFB973', fontSize: '7.5', fontFamily: 'JetBrains Mono, monospace' }, 'MAIN GRADE II DINING ROOM')
+        // Right Actions: Call CTA, Basket Button & Mobile Hamburger
+        h('div', { className: 'header-actions' },
+          h('a', {
+            href: 'tel:' + (brand.phoneDialer || '+441618643259'),
+            className: 'btn-header-call',
+            'aria-label': 'Call Yeah Man directly at ' + (brand.phone || '0161 864 3259')
+          },
+            h('span', null, '📞 ' + (brand.phone || '0161 864 3259'))
+          ),
+
+          // Basket Trigger Button
+          h('button', {
+            type: 'button',
+            className: 'btn-header-basket',
+            onClick: onOpenCart,
+            'aria-label': 'View Order Basket, ' + cartCount + ' items'
+          },
+            h('span', null, '🛒 Basket'),
+            cartCount > 0 ? h('span', { className: 'basket-count-badge' }, cartCount) : null,
+            cartCount > 0 ? h('span', null, '· £' + cartTotal.toFixed(2)) : null
+          ),
+
+          // Mobile Hamburger Button
+          h('button', {
+            type: 'button',
+            className: 'hamburger-btn',
+            onClick: onToggleDrawer,
+            'aria-label': 'Open navigation drawer',
+            'aria-expanded': props.drawerOpen ? 'true' : 'false'
+          },
+            h('div', { className: 'hamburger-bars' },
+              h('span', null),
+              h('span', null),
+              h('span', null)
+            )
+          )
+        )
       )
     );
   }
 
-  // ==========================================================================
-  // 2. MAIN APPLICATION COMPONENT (<OneClubRowApp />)
-  // ==========================================================================
-  function OneClubRowApp() {
-    // Pitch Audit Mode (Default to false for a clean, pristine, uncluttered presentation)
-    const [pitchAnnotationsOn, setPitchAnnotationsOn] = useState(false);
-    const [pitchModalOpen, setPitchModalOpen] = useState(false);
+  /* ==========================================================================
+     2. COMPONENT: MOBILE DRAWER (Mounted Outside Header in React.Fragment)
+     ========================================================================== */
+  function MobileDrawer(props) {
+    var isOpen = props.isOpen;
+    var onClose = props.onClose;
+    var brand = props.brand || {};
+    var onOpenCart = props.onOpenCart;
 
-    // Responsive Tablet/Smartphone Slide-Over Navigation
-    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    var drawerNavItems = [
+      { id: 'hero', label: '🏠 Home', href: '#hero' },
+      { id: 'menu', label: '🍗 Our 80-Item Jamaican Menu', href: '#menu' },
+      { id: 'spotlight', label: '🔥 Chef\'s Signature Dishes', href: '#spotlight' },
+      { id: 'story', label: '🇯🇲 Jamie\'s 12-Year Heritage', href: '#story' },
+      { id: 'catering', label: '🎉 Catering & Party Platters', href: '#catering' },
+      { id: 'reviews', label: '⭐ 4.8★ Verified Customer Reviews', href: '#reviews' },
+      { id: 'location', label: '📍 Hours & Location (M32 0JN)', href: '#location' }
+    ];
 
-    // Hero Spotlight Carousel
-    const [activeSpotlightIdx, setActiveSpotlightIdx] = useState(0);
-
-    // Post-Audit Heritage Story Chapter Switcher (/about upgrade)
-    const [activeStoryId, setActiveStoryId] = useState('chap-building');
-
-    // Quick-Reserve Concierge State
-    const [resGuests, setResGuests] = useState('2 Guests');
-    const [resDate, setResDate] = useState('2026-11-06');
-    const [resSession, setResSession] = useState('Prime Dinner · 19:45');
-    const [resZone, setResZone] = useState('Main Dining Room');
-    const [resSpecialNotes, setResSpecialNotes] = useState('');
-    const [resGuestName, setResGuestName] = useState('');
-    const [resGuestEmail, setResGuestEmail] = useState('');
-    const [reservationModalOpen, setReservationModalOpen] = useState(false);
-    const [confirmedReservation, setConfirmedReservation] = useState(null);
-
-    // Menu, Dish Allergen Inspector & Cellar State
-    const [activeMenuTab, setActiveMenuTab] = useState('lunch_dinner');
-    const [menuSearch, setMenuSearch] = useState('');
-    const [activeDietaryFilters, setActiveDietaryFilters] = useState([]);
-    const [wineStyleFilter, setWineStyleFilter] = useState('All');
-    const [wineByGlassOnly, setWineByGlassOnly] = useState(false);
-    const [feastGuestCount, setFeastGuestCount] = useState(12);
-    const [inspectedDish, setInspectedDish] = useState(null);
-
-    // Newsletter & VIP Club Row Society Modal (Upgrading 820px SevenRooms iframe)
-    const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
-    const [newsletterEmail, setNewsletterEmail] = useState('');
-    const [newsletterName, setNewsletterName] = useState('');
-    const [newsletterDone, setNewsletterDone] = useState(false);
-
-    // Martini Atelier State ("Tell Us How You Like It")
-    const [martiniSpiritId, setMartiniSpiritId] = useState('tanqueray-10');
-    const [martiniStyleId, setMartiniStyleId] = useState('classic-dry');
-    const [martiniGarnishId, setMartiniGarnishId] = useState('lemon-twist');
-
-    // "The Apartment" Private Dining Configurator State
-    const [activeLayoutId, setActiveLayoutId] = useState('seated-dinner');
-    const [eventGuests, setEventGuests] = useState(28);
-    const [selectedEventAddons, setSelectedEventAddons] = useState(['champagne-arrival']);
-    const [eventDate, setEventDate] = useState('2026-11-20');
-    const [eventTimeWindow, setEventTimeWindow] = useState('Evening Reception & Dinner (18:30 – 23:30)');
-    const [eventHostName, setEventHostName] = useState('');
-    const [eventCompany, setEventCompany] = useState('');
-    const [eventEmail, setEventEmail] = useState('');
-    const [eventBriefSubmitted, setEventBriefSubmitted] = useState(false);
-
-    // Gift Voucher Studio State
-    const [voucherRecipient, setVoucherRecipient] = useState('Alex & Sam');
-    const [voucherMessage, setVoucherMessage] = useState('For long lunches, late dinners, and one too many martinis on Club Row.');
-    const [voucherDelivery, setVoucherDelivery] = useState('Digital Apple/Google Wallet Pass');
-
-    // Gallery Lightbox State
-    const [galleryFilter, setGalleryFilter] = useState('all');
-    const [lightboxPhoto, setLightboxPhoto] = useState(null);
-
-    // Evening Plan / Pre-Order & Voucher Bag Drawer
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [bagItems, setBagItems] = useState([
-      {
-        uid: 'init-martini',
-        name: 'Club Row Martini (Bar Arrival Pour)',
-        category: 'Martini Bar',
-        details: 'Tanqueray No. Ten, Dolin Chambéryzette, Italicus, Rosemary',
-        unitPrice: 14,
-        qty: 2
-      },
-      {
-        uid: 'init-gougeres',
-        name: 'Pickled Jalapeño Gougères',
-        category: 'Snacks',
-        details: 'Warm choux pastry & aged Comté for the table',
-        unitPrice: 9,
-        qty: 1
+    // Escape key listener for accessibility
+    useEffect(function () {
+      function handleKeyDown(e) {
+        if (e.key === 'Escape' && isOpen) {
+          onClose();
+        }
       }
-    ]);
-
-    // Toast Stack
-    const [toasts, setToasts] = useState([]);
-
-    function pushToast(text) {
-      const id = Date.now() + Math.random();
-      setToasts((prev) => [...prev, { id, text }]);
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, 3600);
-    }
-
-    function addToBag(item) {
-      setBagItems((prev) => {
-        const existing = prev.find((p) => p.uid === item.uid);
-        if (existing) {
-          return prev.map((p) => (p.uid === item.uid ? { ...p, qty: p.qty + 1 } : p));
+      if (isOpen && typeof window !== 'undefined') {
+        window.addEventListener('keydown', handleKeyDown);
+      }
+      return function () {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('keydown', handleKeyDown);
         }
-        return [...prev, { ...item, qty: 1 }];
-      });
-      pushToast(`Added "${item.name}" to your One Club Row Evening Plan & Bag.`);
-    }
+      };
+    }, [isOpen, onClose]);
 
-    function toggleDietaryFilter(filterKey) {
-      setActiveDietaryFilters((prev) =>
-        prev.includes(filterKey) ? prev.filter((k) => k !== filterKey) : [...prev, filterKey]
-      );
-    }
+    return h(React.Fragment, null,
+      // Backdrop
+      h('div', {
+        className: 'drawer-backdrop' + (isOpen ? ' open' : ''),
+        onClick: onClose,
+        'aria-hidden': !isOpen
+      }),
 
-    // Filtered Menu Items
-    const filteredMenuItems = useMemo(() => {
-      return DATA.menuItems.filter((item) => {
-        if (item.menuTab !== activeMenuTab) return false;
-        if (menuSearch.trim() !== '') {
-          const q = menuSearch.toLowerCase();
-          const matchName = item.name.toLowerCase().includes(q);
-          const matchDesc = item.desc.toLowerCase().includes(q);
-          const matchCourse = item.course.toLowerCase().includes(q);
-          if (!matchName && !matchDesc && !matchCourse) return false;
+      // Slide-in Drawer Panel
+      h('aside', {
+        className: 'mobile-drawer' + (isOpen ? ' open' : ''),
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'Mobile Navigation Menu'
+      },
+        h('div', { className: 'drawer-header' },
+          h('div', { className: 'brand-lockup' },
+            h('div', { className: 'brand-badge' }, brand.monogram || 'YM'),
+            h('div', { className: 'brand-text-group' },
+              h('span', { className: 'brand-title' }, brand.name || 'YEAH MAN CARIBBEAN'),
+              h('span', { className: 'brand-subtitle' }, 'Stretford · Manchester')
+            )
+          ),
+          h('button', {
+            type: 'button',
+            className: 'drawer-close-btn',
+            onClick: onClose,
+            'aria-label': 'Close navigation menu'
+          }, '✕')
+        ),
+
+        h('nav', { className: 'drawer-nav-list' },
+          drawerNavItems.map(function (item) {
+            return h('a', {
+              key: item.id,
+              href: item.href,
+              className: 'drawer-link',
+              onClick: onClose
+            }, item.label);
+          })
+        ),
+
+        h('div', { className: 'drawer-actions-box' },
+          h('button', {
+            type: 'button',
+            className: 'btn-drawer-whatsapp',
+            onClick: function () {
+              onClose();
+              if (onOpenCart) onOpenCart();
+            }
+          }, '🛒 View Basket & Order Online'),
+
+          h('a', {
+            href: 'https://wa.me/' + (brand.whatsappNumber || '441618643259') + '?text=Hi%20Yeah%20Man%20Caribbean,%20I%20would%20like%20to%20place%20an%20order',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            className: 'btn-drawer-whatsapp'
+          }, '💬 Order via WhatsApp (0161 864 3259)'),
+
+          h('a', {
+            href: 'tel:' + (brand.phoneDialer || '+441618643259'),
+            className: 'btn-drawer-phone'
+          }, '📞 Call Shop: ' + (brand.phone || '0161 864 3259'))
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     3. COMPONENT: HERO SECTION
+     ========================================================================== */
+  function Hero(props) {
+    var brand = props.brand || {};
+    var onOpenCart = props.onOpenCart;
+    var onAddToCart = props.onAddToCart;
+    var liveStatus = props.liveStatus || {};
+
+    var signatureDish = {
+      id: 'ym_1',
+      name: 'Legendary Jerk Chicken',
+      category: 'Main Dishes',
+      price: '£10.00',
+      priceNum: 10.00,
+      description: 'Marinated 48 hours in authentic Scotch bonnet, pimento & thyme jerk rub, slow-smoked over charcoal. Served with rice & peas and sweet plantain.',
+      isSignature: true
+    };
+
+    return h('section', { id: 'hero', className: 'hero-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'hero-layout' },
+          // Left Column: Copy & CTAs
+          h('div', { className: 'hero-content' },
+            h('div', { className: 'hero-badge-row' },
+              h('div', { className: 'hero-rating-badge' },
+                h('span', { className: 'hero-stars' }, '★★★★★'),
+                h('span', null, '4.8 Rating (2,150+ Reviews)'),
+                h('span', null, '· 12+ Yrs in Stretford')
+              )
+            ),
+
+            h('h1', { className: 'hero-title' },
+              'Authentic ',
+              h('span', { className: 'highlight-gold' }, 'Jamaican Soul Food'),
+              ' & Charcoal ',
+              h('span', { className: 'highlight-green' }, 'Jerk Grill')
+            ),
+
+            h('p', { className: 'hero-lead' },
+              'Handcrafted on Norway Street by Chef Jamie for over 12 years. Freshly smoked jerk quarter-chicken, slow-simmered curry goat, tender braised oxtail, and piping-hot fried dumpling splits.'
+            ),
+
+            h('div', { className: 'hero-cta-group' },
+              h('a', { href: '#menu', className: 'btn-primary-order' },
+                '🍗 Explore 80-Item Menu'
+              ),
+              h('a', {
+                href: 'https://wa.me/' + (brand.whatsappNumber || '441618643259') + '?text=Hi%20Yeah%20Man%20Caribbean,%20I%20would%20like%20to%20place%20an%20order',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'btn-whatsapp-order'
+              },
+                '💬 WhatsApp Order'
+              )
+            ),
+
+            h('div', { className: 'hero-trust-row' },
+              h('div', { className: 'hero-trust-item' },
+                h('span', { className: 'trust-number' }, '12+ Years'),
+                h('span', { className: 'trust-label' }, 'Norway Street Flagship')
+              ),
+              h('div', { className: 'hero-trust-item' },
+                h('span', { className: 'trust-number' }, '100% Halal'),
+                h('span', { className: 'trust-label' }, 'All Poultry & Meats')
+              ),
+              h('div', { className: 'hero-trust-item' },
+                h('span', { className: 'trust-number' }, 'FREE'),
+                h('span', { className: 'trust-label' }, 'Collection in 15–20 Mins')
+              )
+            )
+          ),
+
+          // Right Column: Visual Showcase Card
+          h('div', { className: 'hero-visual' },
+            h('div', { className: 'hero-visual-card' },
+              h('div', { className: 'hero-card-banner' },
+                h('span', { className: 'hero-card-tag' }, '🔥 TODAY\'S TOP DISH'),
+                h('h3', { className: 'hero-card-dish-name' }, signatureDish.name),
+                h('p', { className: 'hero-card-dish-desc' }, signatureDish.description)
+              ),
+              h('div', { className: 'hero-card-price-row' },
+                h('div', null,
+                  h('span', { className: 'hero-card-price' }, '£10.00'),
+                  h('span', { style: { display: 'block', fontSize: '0.8rem', color: 'var(--color-text-muted)' } }, 'Served with choice of rice & peas or chips')
+                ),
+                h('button', {
+                  type: 'button',
+                  className: 'btn-card-add',
+                  onClick: function () {
+                    onAddToCart(signatureDish);
+                    if (onOpenCart) onOpenCart();
+                  }
+                }, '+ Add to Order')
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     4. COMPONENT: QUICK INFO BAR (Live Status, Address & Direct Phone)
+     ========================================================================== */
+  function QuickInfoBar(props) {
+    var brand = props.brand || {};
+    var liveStatus = props.liveStatus || {};
+
+    return h('div', { className: 'quick-info-bar' },
+      h('div', { className: 'container' },
+        h('div', { className: 'info-bar-grid' },
+          // Live status
+          h('div', { className: 'info-status-group' },
+            h('span', { className: 'status-dot ' + (liveStatus.badgeClass || 'open') }),
+            h('div', null,
+              h('span', { className: 'info-status-text' }, liveStatus.statusText || 'Open for Orders'),
+              h('span', { className: 'info-status-subtext' }, ' · ' + (liveStatus.subText || 'Stretford Collection & Delivery'))
+            )
+          ),
+
+          // Quick Links
+          h('div', { className: 'info-links-group' },
+            h('a', {
+              href: brand.googleMapsUrl || 'https://maps.google.com/?q=63+Norway+Street,+Stretford,+Manchester+M32+0JN',
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              className: 'info-link-item'
+            },
+              h('span', null, '📍 63 Norway Street, Stretford, M32 0JN')
+            ),
+
+            h('a', {
+              href: 'tel:' + (brand.phoneDialer || '+441618643259'),
+              className: 'info-link-item'
+            },
+              h('span', null, '📞 0161 864 3259')
+            ),
+
+            h('span', { className: 'info-link-item', style: { color: 'var(--color-palm-green-light)' } },
+              '🛵 Delivery: M32, M16, M21, M17, M41, M33, M15, M5, M50'
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     5. COMPONENT: MENU CATALOG (Search Form, Compact UX, Category Tabs, Cards)
+     ========================================================================== */
+  function MenuCatalog(props) {
+    var categories = props.categories || [];
+    var items = props.items || [];
+    var cart = props.cart || {};
+    var onAddToCart = props.onAddToCart;
+    var onUpdateQuantity = props.onUpdateQuantity;
+
+    // Search and filter state
+    var searchQuery = props.searchQuery || '';
+    var setSearchQuery = props.setSearchQuery;
+    var selectedCategory = props.selectedCategory || 'all';
+    var setSelectedCategory = props.setSelectedCategory;
+    var dietaryFilter = props.dietaryFilter || 'all';
+    var setDietaryFilter = props.setDietaryFilter;
+    var isCompactMode = props.isCompactMode !== undefined ? props.isCompactMode : true;
+    var setIsCompactMode = props.setIsCompactMode;
+
+    // Quick tag suggestions for instant searching
+    var quickTags = [
+      { label: '🔥 Jerk Chicken', query: 'Jerk Chicken' },
+      { label: '🐐 Curry Goat', query: 'Curry Goat' },
+      { label: '🥩 Oxtail', query: 'Oxtail' },
+      { label: '🥟 Dumplings / Splits', query: 'split' },
+      { label: '🌱 Veg & Callaloo', query: 'callaloo' },
+      { label: '🥤 Tropical Drinks', query: 'drink' },
+      { label: '🍰 Rum Cake', query: 'cake' }
+    ];
+
+    // Filter items based on Category, Search Query, and Dietary filters
+    var filteredItems = useMemo(function () {
+      var q = (searchQuery || '').trim().toLowerCase();
+
+      return items.filter(function (item) {
+        // Category filter
+        if (selectedCategory !== 'all' && item.categoryId !== selectedCategory) {
+          return false;
         }
-        for (const req of activeDietaryFilters) {
-          if (!item.dietary || !item.dietary.includes(req)) return false;
-        }
-        return true;
-      });
-    }, [activeMenuTab, menuSearch, activeDietaryFilters]);
 
-    // Group dishes by course
-    const groupedCourses = useMemo(() => {
-      const map = new Map();
-      filteredMenuItems.forEach((item) => {
-        if (!map.has(item.course)) map.set(item.course, []);
-        map.get(item.course).push(item);
-      });
-      return Array.from(map.entries());
-    }, [filteredMenuItems]);
+        // Dietary filter
+        if (dietaryFilter === 'halal' && !item.isHalal) return false;
+        if (dietaryFilter === 'veg' && !item.isVeg) return false;
+        if (dietaryFilter === 'spicy' && !item.isSpicy) return false;
 
-    // Filtered Wines
-    const filteredWines = useMemo(() => {
-      return DATA.wines.filter((w) => {
-        if (wineStyleFilter !== 'All' && w.style !== wineStyleFilter) return false;
-        if (wineByGlassOnly && !w.byTheGlass) return false;
-        if (menuSearch.trim() !== '') {
-          const q = menuSearch.toLowerCase();
-          if (
-            !w.name.toLowerCase().includes(q) &&
-            !w.region.toLowerCase().includes(q) &&
-            !w.grape.toLowerCase().includes(q) &&
-            !w.pairingTag.toLowerCase().includes(q)
-          ) {
+        // Search query filter (matches name, description, category, allergen)
+        if (q) {
+          var matchName = item.name.toLowerCase().indexOf(q) !== -1;
+          var matchDesc = (item.description || '').toLowerCase().indexOf(q) !== -1;
+          var matchCat = (item.categoryName || '').toLowerCase().indexOf(q) !== -1;
+          var matchAllergen = (item.allergen || '').toLowerCase().indexOf(q) !== -1;
+          if (!matchName && !matchDesc && !matchCat && !matchAllergen) {
             return false;
           }
         }
+
         return true;
       });
-    }, [wineStyleFilter, wineByGlassOnly, menuSearch]);
+    }, [items, selectedCategory, dietaryFilter, searchQuery]);
 
-    // Current Martini Atelier Selection
-    const selectedSpirit = DATA.martiniConfig.spirits.find((s) => s.id === martiniSpiritId) || DATA.martiniConfig.spirits[0];
-    const selectedStyle = DATA.martiniConfig.styles.find((s) => s.id === martiniStyleId) || DATA.martiniConfig.styles[0];
-    const selectedGarnish = DATA.martiniConfig.garnishes.find((g) => g.id === martiniGarnishId) || DATA.martiniConfig.garnishes[0];
-    const customMartiniPrice = 12 + selectedSpirit.supplement + (martiniStyleId === 'olive-oil-mastiha' ? 2 : 0);
+    // Handle Compact Mode
+    var isShowingCompact = isCompactMode && selectedCategory === 'all' && !searchQuery.trim();
+    var displayedItems = isShowingCompact ? filteredItems.slice(0, 12) : filteredItems;
 
-    // Current Apartment Layout Selection
-    const activeApartmentLayout = DATA.apartmentPackages.layouts.find((l) => l.id === activeLayoutId) || DATA.apartmentPackages.layouts[0];
-
-    const apartmentTotalEstimate = useMemo(() => {
-      const clampedGuests = Math.min(Math.max(eventGuests, activeApartmentLayout.minGuests), activeApartmentLayout.maxGuests);
-      let perHead = activeApartmentLayout.basePricePerHead;
-      let flat = 0;
-      selectedEventAddons.forEach((addId) => {
-        const addon = DATA.apartmentPackages.addons.find((a) => a.id === addId);
-        if (addon) {
-          perHead += addon.pricePerHead;
-          flat += addon.flatFee;
-        }
-      });
-      return {
-        guests: clampedGuests,
-        perHead,
-        flat,
-        total: clampedGuests * perHead + flat
-      };
-    }, [activeApartmentLayout, eventGuests, selectedEventAddons]);
-
-    // Filtered Gallery
-    const visibleGallery = useMemo(() => {
-      if (galleryFilter === 'all') return DATA.galleryPhotos;
-      return DATA.galleryPhotos.filter((p) => p.category === galleryFilter);
-    }, [galleryFilter]);
-
-    // Bag Totals
-    const totalBagCount = bagItems.reduce((acc, item) => acc + item.qty, 0);
-    const totalBagValue = bagItems.reduce((acc, item) => acc + item.unitPrice * item.qty, 0);
-
-    const activeSpotlight = DATA.heroSpotlights[activeSpotlightIdx] || DATA.heroSpotlights[0];
-
-    return h(Fragment, null,
-      // ======================================================================
-      // TOP UTILITY TELEMETRY BAR
-      // ======================================================================
-      h('div', { className: 'utility-bar' },
-        h('div', { className: 'container utility-inner' },
-          h('div', { className: 'utility-left' },
-            h('span', { className: 'live-pill' },
-              h('span', { className: 'pulse-dot' }),
-              'Shoreditch Dining Room & Martini Bar · Open Tue–Sun'
-            ),
-            h('span', null, '1 Club Row, London E1 6JX (Above The Knave of Clubs)')
-          ),
-          h('div', { className: 'utility-right' },
-            h('a', {
-              href: DATA.venue.googleMapsUrl,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-              style: { textDecoration: 'underline', color: 'var(--brass-bright)' }
-            }, 'Secret Doorway Directions'),
-            h('button', {
-              type: 'button',
-              className: 'audit-trigger-btn',
-              onClick: () => setPitchModalOpen(true)
-            },
-              h(Icon, { name: 'sparkle', size: 13 }),
-              'Customer Pitch Audit (38 → 98/100)'
-            )
+    return h('section', { id: 'menu', className: 'section menu-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'section-header' },
+          h('span', { className: 'section-tag' }, 'Authentic Jamaican Kitchen'),
+          h('h2', { className: 'section-title' }, 'Our Traditional Island Menu'),
+          h('p', { className: 'section-subtitle' },
+            '80 authentic Jamaican dishes, sides, refreshing tropical juices and homemade desserts cooked fresh every single day.'
           )
-        )
-      ),
+        ),
 
-      // ======================================================================
-      // STICKY HEADER (Replaces hidden #modalmenu-only desktop nav)
-      // ======================================================================
-      h('header', { className: 'site-header' },
-        h('div', { className: 'container header-inner' },
-          h('a', { href: '#top', className: 'brand-logo' },
-            h('div', { className: 'brand-crest-badge' },
-              h(BirdCrest, { size: 24, color: '#F6F3E3' })
-            ),
-            h('div', { className: 'brand-wordmark' },
-              h('span', { className: 'brand-title' }, 'One Club Row'),
-              h('span', { className: 'brand-subtitle' }, 'Shoreditch · Est. 1 Club Row')
-            )
-          ),
-
-          h('nav', { className: 'main-nav', 'aria-label': 'Primary Navigation' },
-            h('a', { href: '#storySection', className: 'nav-link' }, 'The Story'),
-            h('a', { href: '#menuSection', className: 'nav-link' }, 'Menus & Cellar'),
-            h('a', { href: '#martiniSection', className: 'nav-link' }, 'Martini Atelier'),
-            h('a', { href: '#apartmentSection', className: 'nav-link' }, 'The Apartment'),
-            h('a', { href: '#vouchersSection', className: 'nav-link' }, 'Gift Vouchers'),
-            h('a', { href: '#gallerySection', className: 'nav-link' }, 'Gallery'),
-            h('a', { href: '#visitSection', className: 'nav-link' }, 'Find The Door')
-          ),
-
-          h('div', { className: 'header-actions' },
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-cream header-plan-btn',
-              onClick: () => setDrawerOpen(true),
-              'aria-label': `View Evening Plan (${totalBagCount} items)`
-            },
-              h(Icon, { name: 'bag', size: 16 }),
-              h('span', { className: 'header-plan-label' }, 'Evening Plan'),
-              totalBagCount > 0 && h('span', { className: 'bag-counter-pill' }, totalBagCount)
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-primary header-reserve-btn',
-              onClick: () => setReservationModalOpen(true)
-            },
-              h(Icon, { name: 'calendar', size: 15 }),
-              h('span', null, 'Reserve Table')
-            ),
-            h('button', {
-              type: 'button',
-              className: `mobile-burger-btn ${mobileNavOpen ? 'active' : ''}`,
-              'aria-label': mobileNavOpen ? 'Close Menu' : 'Open Navigation Menu',
-              onClick: () => setMobileNavOpen(!mobileNavOpen)
-            },
-              h(Icon, { name: mobileNavOpen ? 'close' : 'menu', size: 18 })
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // HERO SECTION (Replaces Dead '/' GIF Splash Gate & Empty '/home' Page)
-      // ======================================================================
-      h('section', { id: 'top', className: 'hero-section' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #01'),
-            h('div', null,
-              h('strong', null, 'Eliminated Dead GIF Splash Gate ("/") & Empty "/home" Screen: '),
-              'On the live WordPress site, visitors land on an unlabeled GIF with a broken "<title>One Club Row -</title>" and must click "Enter Site" only to see a single photo with hidden navigation. Our remake welcomes guests immediately with the Victorian tavern story, dish spotlights, and a 1-click Table & Bar Seat Booking Bar.'
-            )
-          ),
-
-          h('div', { className: 'hero-squiggle-top', 'aria-hidden': 'true' },
-            h('span', { className: 'squiggle-line' }),
-            h(BirdCrest, { size: 28, color: '#C53627' }),
-            h('span', { style: { fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--brass-bright)', fontSize: '0.95rem' } },
-              'New York Tavern Energy · Parisian Brasserie Soul'
-            ),
-            h(BirdCrest, { size: 28, color: '#C53627' }),
-            h('span', { className: 'squiggle-line' })
-          ),
-
-          h('div', { className: 'hero-grid' },
-            // Left Column: Editorial Story
-            h('div', null,
-              h('div', { className: 'hero-eyebrow' },
-                h(Icon, { name: 'martini', size: 14, color: '#DFB973' }),
-                'Grade II Listed Victorian Dining Room · Above The Knave of Clubs'
-              ),
-              h('h1', { className: 'hero-headline' },
-                'For Long Lunches, Late Dinners & ',
-                h('em', null, 'One Too Many Martinis.')
-              ),
-              h('p', { className: 'hero-lead' },
-                'Set in the faded grandeur of 1 Club Row in Shoreditch, our dining room draws inspiration from the lively taverns of New York and the timeless bistros of Paris—with raucous private dining & post-dinner shows upstairs in The Apartment.'
-              ),
-
-              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '1.8rem' } },
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  onClick: () => setReservationModalOpen(true)
-                },
-                  h(Icon, { name: 'calendar', size: 16 }),
-                  'Book Dining Room or Bar Stool'
-                ),
-                h('a', { href: '#menuSection', className: 'btn-outline-cream' },
-                  h(Icon, { name: 'wine', size: 16 }),
-                  'Explore Menus & Wine Cellar'
-                ),
-                h('a', { href: '#apartmentSection', className: 'btn-outline-cream' },
-                  h(Icon, { name: 'users', size: 16 }),
-                  'Hire The Apartment (Up to 60p)'
-                )
-              ),
-
-              h('div', { className: 'hero-accolades' },
-                DATA.venue.accolades.map((acc, i) =>
-                  h('div', { key: i, className: 'accolade-card' },
-                    h('div', { className: 'accolade-title' }, acc.label),
-                    h('div', { className: 'accolade-sub' }, acc.detail)
-                  )
-                )
-              )
-            ),
-
-            // Right Column: Authentic One Club Row Framed Spotlight
-            h('div', null,
-              h('div', { className: 'ocr-art-frame' },
-                h('div', { className: 'ocr-art-inner' },
-                  h('img', {
-                    src: activeSpotlight.image,
-                    alt: activeSpotlight.name
-                  }),
-                  h('div', { className: 'spotlight-overlay' },
-                    h('div', {
-                      style: {
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.12em',
-                        color: 'var(--brass-bright)',
-                        marginBottom: '0.25rem'
-                      }
-                    }, activeSpotlight.tag),
-                    h('h2', {
-                      style: {
-                        fontFamily: 'var(--font-serif)',
-                        fontSize: '1.65rem',
-                        fontWeight: 700,
-                        lineHeight: 1.15,
-                        color: 'var(--parchment)',
-                        marginBottom: '0.35rem'
-                      }
-                    }, activeSpotlight.name),
-                    h('p', {
-                      style: {
-                        fontSize: '0.84rem',
-                        color: 'var(--text-cream-muted)',
-                        marginBottom: '0.65rem'
-                      }
-                    }, activeSpotlight.subtitle),
-                    h('div', {
-                      style: {
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: '0.5rem',
-                        paddingTop: '0.55rem',
-                        borderTop: '1px solid rgba(246,243,227,0.18)'
-                      }
-                    },
-                      h('span', {
-                        style: {
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: '0.82rem',
-                          fontWeight: 700,
-                          color: 'var(--brass-bright)'
-                        }
-                      }, activeSpotlight.priceLabel),
-                      h('span', {
-                        style: {
-                          fontSize: '0.74rem',
-                          color: 'var(--parchment)'
-                        }
-                      }, activeSpotlight.pairing)
-                    ),
-                    h('div', { className: 'spotlight-tabs', role: 'tablist', 'aria-label': 'Hero Spotlights' },
-                      DATA.heroSpotlights.map((sp, idx) =>
-                        h('button', {
-                          key: sp.id,
-                          type: 'button',
-                          className: `spotlight-dot ${idx === activeSpotlightIdx ? 'active' : ''}`,
-                          onClick: () => setActiveSpotlightIdx(idx),
-                          title: sp.name,
-                          'aria-label': sp.name
-                        })
-                      )
-                    )
-                  )
-                )
-              ),
-              h('div', {
-                style: {
-                  display: 'flex',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  marginTop: '0.75rem',
-                  flexWrap: 'wrap'
-                }
+        // Controls Wrapper: Search Form, Quick Chips, Category Tabs & Compact Banner
+        h('div', { className: 'menu-controls-wrapper' },
+          // Dedicated Search Form Row
+          h('div', { className: 'search-form-row' },
+            h('span', { className: 'search-icon-left', 'aria-hidden': 'true' }, '🔍'),
+            h('input', {
+              type: 'text',
+              className: 'search-input-field',
+              placeholder: 'Search 80 dishes, curries, sides, tropical drinks, allergens...',
+              value: searchQuery,
+              onChange: function (e) {
+                if (setSearchQuery) setSearchQuery(e.target.value);
               },
-                DATA.heroSpotlights.map((sp, idx) =>
-                  h('button', {
-                    key: sp.id,
-                    type: 'button',
-                    onClick: () => setActiveSpotlightIdx(idx),
-                    style: {
-                      background: idx === activeSpotlightIdx ? 'var(--crimson)' : 'rgba(246,243,227,0.1)',
-                      color: 'var(--parchment)',
-                      border: '1px solid rgba(246,243,227,0.22)',
-                      padding: '0.28rem 0.65rem',
-                      borderRadius: '4px',
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }
-                  }, sp.name.split('&')[0].trim())
-                )
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // EMBEDDED TABLE & BAR SEAT QUICK-RESERVE CONCIERGE BAR
-      // ======================================================================
-      h('div', { className: 'container booking-bar-wrapper' },
-        h('div', { className: 'booking-bar' },
-          h('div', { className: 'booking-bar-header' },
-            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } },
-              h(Icon, { name: 'calendar', size: 18, color: '#C53627' }),
-              h('strong', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.3rem', textTransform: 'uppercase' } },
-                'Instant Table & Martini Bar Reservations'
-              ),
-              h('span', { className: 'badge-pill navy' }, 'SevenRooms Synchronised')
-            ),
-            h('span', { style: { fontSize: '0.78rem', color: 'var(--ink-secondary)' } },
-              'Walk-ins always welcome at the bar · Reservations up to 16 guests online'
-            )
-          ),
-
-          h('div', { className: 'booking-bar-grid' },
-            h('div', { className: 'field-group' },
-              h('label', { className: 'field-label', htmlFor: 'res-guests' }, 'Party Size'),
-              h('select', {
-                id: 'res-guests',
-                className: 'field-control',
-                value: resGuests,
-                onChange: (e) => setResGuests(e.target.value)
-              },
-                [
-                  '1 Guest (Bar Counter)',
-                  '2 Guests',
-                  '3 Guests',
-                  '4 Guests',
-                  '5 Guests',
-                  '6 Guests',
-                  '7 Guests',
-                  '8–16 Guests (£75pp Feasting)'
-                ].map((opt) => h('option', { key: opt, value: opt }, opt))
-              )
-            ),
-
-            h('div', { className: 'field-group' },
-              h('label', { className: 'field-label', htmlFor: 'res-date' }, 'Preferred Date'),
-              h('input', {
-                id: 'res-date',
-                type: 'date',
-                className: 'field-control',
-                value: resDate,
-                onChange: (e) => setResDate(e.target.value)
-              })
-            ),
-
-            h('div', { className: 'field-group' },
-              h('label', { className: 'field-label', htmlFor: 'res-session' }, 'Sitting & Time'),
-              h('select', {
-                id: 'res-session',
-                className: 'field-control',
-                value: resSession,
-                onChange: (e) => setResSession(e.target.value)
-              },
-                [
-                  'Lunch · 12:15',
-                  'Lunch · 13:15',
-                  'Early Dinner · 17:45',
-                  'Prime Dinner · 19:45',
-                  'Late Dinner & Martinis · 21:15',
-                  'Sunday Service Prime Rib · 14:00'
-                ].map((opt) => h('option', { key: opt, value: opt }, opt))
-              )
-            ),
-
-            h('div', { className: 'field-group' },
-              h('label', { className: 'field-label', htmlFor: 'res-zone' }, 'Seating Experience'),
-              h('select', {
-                id: 'res-zone',
-                className: 'field-control',
-                value: resZone,
-                onChange: (e) => setResZone(e.target.value)
-              },
-                [
-                  'Main Dining Room',
-                  'Mahogany Martini Bar Counter',
-                  'Window Table (Club Row View)',
-                  'Group Sharing Table (8–16pp)'
-                ].map((opt) => h('option', { key: opt, value: opt }, opt))
-              )
-            ),
-
-            h('button', {
+              'aria-label': 'Search Menu Items'
+            }),
+            searchQuery ? h('button', {
               type: 'button',
-              className: 'btn-primary',
-              style: { height: '43px' },
-              onClick: () => setReservationModalOpen(true)
-            },
-              h(Icon, { name: 'check', size: 15 }),
-              'Lock Table Pass'
-            )
+              className: 'search-clear-btn',
+              onClick: function () { if (setSearchQuery) setSearchQuery(''); },
+              'aria-label': 'Clear search'
+            }, '✕') : null
           ),
 
-          // Live SevenRooms Time-Slot Pill Selector (1-Tap Mobile & Desktop Booking)
-          h('div', { className: 'slot-pills-row', role: 'group', 'aria-label': 'Instant Available Time Slots' },
-            h('span', { style: { fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-secondary)', marginRight: '0.25rem', flexShrink: 0 } },
-              'Live Sitting Slots:'
-            ),
-            (DATA.venue.liveTimeSlots || []).map((slot) =>
-              h('button', {
-                key: slot.time,
+          // Quick Filter Tag Chips
+          h('div', { className: 'quick-tags-container', 'aria-label': 'Quick Search Tags' },
+            h('span', { className: 'quick-tag-label' }, 'Popular:'),
+            quickTags.map(function (tag, idx) {
+              var isActive = searchQuery.toLowerCase() === tag.query.toLowerCase();
+              return h('button', {
+                key: idx,
                 type: 'button',
-                className: `slot-pill-btn ${resSession === slot.label ? 'active' : ''}`,
-                onClick: () => {
-                  setResSession(slot.label);
-                  setResZone(slot.zone);
-                  setReservationModalOpen(true);
-                }
-              },
-                h('span', null, slot.label),
-                h('span', { className: 'slot-pill-tag' }, slot.tag)
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // POST-AUDIT SECTION 0: THE STORY & HERITAGE OF 1 CLUB ROW (/about Upgrade)
-      // ======================================================================
-      h('section', { id: 'storySection', className: 'section-block warm-theme', style: { paddingTop: '2.5rem' } },
-        h('div', { className: 'container' },
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, 'The Story of 1 Club Row'),
-            h('h2', { className: 'section-title' }, 'Victorian Grandeur, Reborn for Shoreditch Nights'),
-            h('p', { className: 'section-subtitle' },
-              'Replacing the bare 3-sentence "/about/" page with an interactive three-chapter chronicle of our Grade II listed building, our kitchen, and the legendary upstairs apartment.'
-            )
-          ),
-
-          h('div', { className: 'story-chapter-tabs', role: 'tablist', 'aria-label': 'Venue Story Chapters' },
-            (DATA.venue.storyChapters || []).map((chap) =>
-              h('button', {
-                key: chap.id,
-                type: 'button',
-                role: 'tab',
-                'aria-selected': activeStoryId === chap.id,
-                className: `story-tab-btn ${activeStoryId === chap.id ? 'active' : ''}`,
-                onClick: () => setActiveStoryId(chap.id)
-              },
-                h('div', { style: { fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--crimson)', marginBottom: '0.2rem' } },
-                  chap.kicker
-                ),
-                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink-primary)' } },
-                  chap.title
-                )
-              )
-            )
-          ),
-
-          (() => {
-            const chap = (DATA.venue.storyChapters || []).find((c) => c.id === activeStoryId) || DATA.venue.storyChapters[0];
-            if (!chap) return null;
-            return h('div', { className: 'story-grid' },
-              h('div', {
-                style: {
-                  background: 'var(--parchment-card)',
-                  border: '1px solid var(--border-parchment)',
-                  borderLeft: '4px solid var(--crimson)',
-                  padding: '2rem',
-                  borderRadius: '8px',
-                  boxShadow: 'var(--shadow-sm)'
-                }
-              },
-                h('span', { className: 'badge-pill', style: { marginBottom: '0.6rem', display: 'inline-block' } }, chap.kicker),
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, lineHeight: 1.12, marginBottom: '0.85rem' } },
-                  chap.title
-                ),
-                h('blockquote', {
-                  style: {
-                    fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
-                    fontSize: '1.22rem',
-                    color: 'var(--club-navy-surface)',
-                    background: 'var(--parchment-warm)',
-                    padding: '1rem 1.2rem',
-                    borderRadius: '6px',
-                    marginBottom: '1rem'
+                className: 'quick-tag-chip' + (isActive ? ' active' : ''),
+                onClick: function () {
+                  if (isActive) {
+                    if (setSearchQuery) setSearchQuery('');
+                  } else {
+                    if (setSearchQuery) setSearchQuery(tag.query);
+                    if (setSelectedCategory) setSelectedCategory('all');
                   }
-                },
-                  chap.quote,
-                  h('footer', { style: { fontFamily: 'var(--font-sans)', fontStyle: 'normal', fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--crimson)', marginTop: '0.4rem' } },
-                    `— ${chap.source}`
-                  )
-                ),
-                h('p', { style: { fontSize: '0.94rem', color: 'var(--ink-secondary)', marginBottom: '1.35rem', lineHeight: 1.7 } },
-                  chap.body
-                ),
-                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
-                  (chap.stats || []).map((st) =>
-                    h('div', { key: st.label },
-                      h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', fontWeight: 700 } }, st.label),
-                      h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--club-navy-surface)' } }, st.value)
-                    )
-                  )
-                )
-              ),
-
-              h('div', { className: 'ocr-art-frame', style: { background: 'var(--club-navy-surface)' } },
-                h('div', { className: 'ocr-art-inner', style: { aspectRatio: '4 / 3.4' } },
-                  h('img', { src: chap.image, alt: chap.title, loading: 'lazy' })
-                )
-              )
-            );
-          })()
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 1: INTERACTIVE BRASSERIE MENUS, ALLERGEN MATRIX & WINE CELLAR
-      // ======================================================================
-      h('section', { id: 'menuSection', className: 'section-block' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #02'),
-            h('div', null,
-              h('strong', null, 'Cleaned Canva/PDF HTML Pollution + Added Live Allergen Exclusion Matrix & Sommelier Filters: '),
-              'On oneclubrow.com/menus/, all 5 Bootstrap tabs share duplicate id="pills-home-tab" attributes and the wine list contains raw <div class="page" title="Page 2"><div class="layoutArea"> wrappers pasted from a PDF. Below is the complete, authentic One Club Row menu with 1-click dietary filtering, sommelier pairings, and pre-order planning.'
-            )
+                }
+              }, tag.label);
+            })
           ),
 
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, '01 · Culinary & Cellar Programme'),
-            h('h2', { className: 'section-title' }, 'Menus, Martinis & Old-World Cellar'),
-            h('p', { className: 'section-subtitle' },
-              'Inspired by the brasseries of Paris and the taverns of New York. Filter any menu by dietary requirement or explore sommelier wine pairings.'
-            )
-          ),
-
-          // Menu Category Tabs
-          h('div', { className: 'menu-tabs-bar', role: 'tablist', 'aria-label': 'One Club Row Menus' },
-            DATA.menuCategories.map((cat) =>
-              h('button', {
+          // Category Pills Scroll Row
+          h('div', { className: 'category-tabs-scroll', role: 'tablist', 'aria-label': 'Menu Categories' },
+            h('button', {
+              type: 'button',
+              role: 'tab',
+              className: 'category-pill-btn' + (selectedCategory === 'all' ? ' active' : ''),
+              'aria-selected': selectedCategory === 'all',
+              onClick: function () { if (setSelectedCategory) setSelectedCategory('all'); }
+            },
+              h('span', null, '🍽️ All Dishes'),
+              h('span', { className: 'pill-count' }, items.length)
+            ),
+            categories.map(function (cat) {
+              var count = items.filter(function (it) { return it.categoryId === cat.id; }).length;
+              var isCatActive = selectedCategory === cat.id;
+              return h('button', {
                 key: cat.id,
                 type: 'button',
                 role: 'tab',
-                'aria-selected': activeMenuTab === cat.id,
-                className: `menu-tab-btn ${activeMenuTab === cat.id ? 'active' : ''}`,
-                onClick: () => setActiveMenuTab(cat.id)
-              }, cat.label)
+                className: 'category-pill-btn' + (isCatActive ? ' active' : ''),
+                'aria-selected': isCatActive,
+                onClick: function () { if (setSelectedCategory) setSelectedCategory(cat.id); }
+              },
+                h('span', null, cat.icon + ' ' + cat.name),
+                h('span', { className: 'pill-count' }, count)
+              );
+            })
+          ),
+
+          // Dietary Filter Row and Results Summary
+          h('div', { className: 'filter-summary-row' },
+            h('div', { className: 'dietary-chips-group' },
+              h('button', {
+                type: 'button',
+                className: 'dietary-chip' + (dietaryFilter === 'all' ? ' active' : ''),
+                onClick: function () { if (setDietaryFilter) setDietaryFilter('all'); }
+              }, 'All Items'),
+              h('button', {
+                type: 'button',
+                className: 'dietary-chip' + (dietaryFilter === 'halal' ? ' active' : ''),
+                onClick: function () { if (setDietaryFilter) setDietaryFilter(dietaryFilter === 'halal' ? 'all' : 'halal'); }
+              }, '✓ Halal Friendly'),
+              h('button', {
+                type: 'button',
+                className: 'dietary-chip' + (dietaryFilter === 'veg' ? ' active' : ''),
+                onClick: function () { if (setDietaryFilter) setDietaryFilter(dietaryFilter === 'veg' ? 'all' : 'veg'); }
+              }, '🌱 Vegetarian / Vegan'),
+              h('button', {
+                type: 'button',
+                className: 'dietary-chip' + (dietaryFilter === 'spicy' ? ' active' : ''),
+                onClick: function () { if (setDietaryFilter) setDietaryFilter(dietaryFilter === 'spicy' ? 'all' : 'spicy'); }
+              }, '🔥 Spicy Heat')
+            ),
+
+            h('div', { className: 'results-count-text' },
+              'Showing ' + displayedItems.length + ' of ' + filteredItems.length + ' dishes'
             )
           ),
 
-          // Allergen & Dietary Exclusion Matrix + Search Bar
-          activeMenuTab !== 'festive_feasting' && h('div', { className: 'allergen-matrix-bar' },
-            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' } },
-              h('span', {
-                style: {
-                  fontSize: '0.74rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  color: 'var(--club-navy-surface)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem'
-                }
-              },
-                h(Icon, { name: 'shield', size: 15, color: '#236B42' }),
-                'Dietary & Allergen Filter:'
+          // Compact Mode Banner
+          selectedCategory === 'all' && !searchQuery.trim() ? h('div', { className: 'compact-toggle-banner' },
+            h('div', { className: 'compact-banner-text' },
+              isCompactMode
+                ? h('span', null, 'Showing ', h('strong', null, '12 Popular Featured Dishes'), ' to keep menu browsing fast & clean.')
+                : h('span', null, 'Showing ', h('strong', null, 'All 80 Menu Items'), ' across all categories.')
+            ),
+            h('button', {
+              type: 'button',
+              className: 'btn-toggle-compact',
+              onClick: function () { if (setIsCompactMode) setIsCompactMode(!isCompactMode); }
+            },
+              isCompactMode ? 'Show All 80 Dishes ▾' : 'Show Top 12 Dishes ▴'
+            )
+          ) : null
+        ),
+
+        // Menu Cards Grid
+        displayedItems.length > 0 ? h('div', { className: 'menu-grid' },
+          displayedItems.map(function (item) {
+            var cartEntry = cart[item.id];
+            var currentQty = cartEntry ? cartEntry.qty : 0;
+
+            return h('div', { key: item.id, className: 'menu-item-card' },
+              h('div', null,
+                h('div', { className: 'card-top-row' },
+                  h('span', { className: 'card-category-badge' }, item.categoryName),
+                  item.isSignature ? h('span', { className: 'card-signature-badge' }, 'Chef Signature') : null
+                ),
+                h('h3', { className: 'card-title' }, item.name),
+                h('p', { className: 'card-desc' }, item.description),
+                item.allergen ? h('p', { className: 'card-allergens' },
+                  '⚠️ Contains: ' + item.allergen
+                ) : null
               ),
-              activeMenuTab !== 'wine'
-                ? h('div', { className: 'dietary-chips' },
-                    [
-                      { key: 'vegetarian', label: 'Vegetarian' },
-                      { key: 'gluten-free', label: 'Gluten-Free' },
-                      { key: 'dairy-free', label: 'Dairy-Free' },
-                      { key: 'nut-free', label: 'Nut-Free' },
-                      { key: 'shellfish-free', label: 'Shellfish-Free' }
-                    ].map((f) =>
+
+              h('div', { className: 'card-bottom-row' },
+                h('span', { className: 'card-price-value' }, item.price),
+
+                // Interactive Add button or Stepper
+                currentQty === 0
+                  ? h('button', {
+                      type: 'button',
+                      className: 'btn-card-add',
+                      onClick: function () { if (onAddToCart) onAddToCart(item); },
+                      'aria-label': 'Add ' + item.name + ' to order'
+                    }, '+ Add · ' + item.price)
+                  : h('div', { className: 'card-stepper-box' },
                       h('button', {
-                        key: f.key,
                         type: 'button',
-                        className: `dietary-chip ${activeDietaryFilters.includes(f.key) ? 'active' : ''}`,
-                        onClick: () => toggleDietaryFilter(f.key)
-                      },
-                        activeDietaryFilters.includes(f.key) && h(Icon, { name: 'check', size: 12 }),
-                        f.label
-                      )
-                    ),
-                    activeDietaryFilters.length > 0 && h('button', {
-                      type: 'button',
-                      className: 'dietary-chip',
-                      style: { color: 'var(--crimson)', borderColor: 'var(--crimson)' },
-                      onClick: () => setActiveDietaryFilters([])
-                    }, 'Reset Filters')
-                  )
-                : h('div', { className: 'dietary-chips' },
-                    ['All', 'Sparkling', 'White', 'Rosé & Skin Contact', 'Red'].map((st) =>
+                        className: 'stepper-btn',
+                        onClick: function () { if (onUpdateQuantity) onUpdateQuantity(item.id, -1); },
+                        'aria-label': 'Decrease quantity'
+                      }, '−'),
+                      h('span', { className: 'stepper-qty' }, currentQty),
                       h('button', {
-                        key: st,
                         type: 'button',
-                        className: `dietary-chip ${wineStyleFilter === st ? 'active' : ''}`,
-                        onClick: () => setWineStyleFilter(st)
-                      }, st)
-                    ),
-                    h('button', {
-                      type: 'button',
-                      className: `dietary-chip ${wineByGlassOnly ? 'active' : ''}`,
-                      onClick: () => setWineByGlassOnly(!wineByGlassOnly)
-                    }, 'By The Glass Only')
-                  )
-            ),
-
-            h('div', { style: { position: 'relative', minWidth: '250px' } },
-              h('input', {
-                type: 'search',
-                className: 'field-control',
-                placeholder: activeMenuTab === 'wine' ? 'Search Burgundy, Champagne, grape...' : 'Search steak tartare, schnitzel, martini...',
-                value: menuSearch,
-                onChange: (e) => setMenuSearch(e.target.value),
-                style: { paddingLeft: '2.1rem' }
-              }),
-              h('span', { style: { position: 'absolute', left: '0.7rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-muted)' } },
-                h(Icon, { name: 'search', size: 15 })
+                        className: 'stepper-btn',
+                        onClick: function () { if (onUpdateQuantity) onUpdateQuantity(item.id, 1); },
+                        'aria-label': 'Increase quantity'
+                      }, '+')
+                    )
               )
-            )
-          ),
-
-          // TAB VIEW A: LUNCH & DINNER / SUNDAY SERVICE / DRINKS
-          (activeMenuTab === 'lunch_dinner' || activeMenuTab === 'sunday_service' || activeMenuTab === 'drinks') && (
-            groupedCourses.length === 0
-              ? h('div', {
-                  style: {
-                    textAlign: 'center',
-                    padding: '3rem 1rem',
-                    background: 'var(--parchment-card)',
-                    border: '1px solid var(--border-parchment)',
-                    borderRadius: '8px'
-                  }
-                },
-                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.5rem', marginBottom: '0.5rem' } },
-                    'No dishes match all selected dietary exclusions'
-                  ),
-                  h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
-                    'Our kitchen prepares every plate fresh to order and can adapt sauces on request.'
-                  ),
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-outline-navy',
-                    onClick: () => { setActiveDietaryFilters([]); setMenuSearch(''); }
-                  }, 'Show Full Menu')
-                )
-              : groupedCourses.map(([courseName, items]) =>
-                  h('div', { key: courseName, className: 'menu-course-group' },
-                    h('div', { className: 'course-heading' },
-                      h('span', null, courseName),
-                      h('span', { style: { fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: 'var(--ink-secondary)' } },
-                        `${items.length} ${items.length === 1 ? 'Plate' : 'Plates'}`
-                      )
-                    ),
-                    h('div', { className: 'menu-grid' },
-                      items.map((item) =>
-                        h('article', { key: item.id, className: 'dish-card' },
-                          item.image && h('img', {
-                            src: item.image,
-                            alt: item.name,
-                            className: 'dish-thumb',
-                            loading: 'lazy'
-                          }),
-                          h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } },
-                            h('div', null,
-                              h('div', { className: 'dish-title-row' },
-                                h('h3', { className: 'dish-name' }, item.name),
-                                h('span', { className: 'dish-price' }, item.priceDisplay)
-                              ),
-                              h('p', { className: 'dish-desc' }, item.desc)
-                            ),
-                            h('div', { className: 'dish-meta-row' },
-                              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.35rem' } },
-                                (item.badges || []).map((b) =>
-                                  h('span', { key: b, className: 'badge-pill' }, b)
-                                ),
-                                item.pairing && h('span', { className: 'badge-pill navy', title: 'Sommelier Recommendation' },
-                                  `🍷 ${item.pairing}`
-                                )
-                              ),
-                              h('div', { style: { display: 'flex', gap: '0.4rem', flexWrap: 'wrap' } },
-                                h('button', {
-                                  type: 'button',
-                                  className: 'btn-outline-navy',
-                                  style: { padding: '0.3rem 0.6rem', fontSize: '0.68rem', borderColor: 'var(--border-parchment)' },
-                                  onClick: () => setInspectedDish(item)
-                                }, 'Allergens & Info'),
-                                h('button', {
-                                  type: 'button',
-                                  className: 'btn-outline-navy',
-                                  style: { padding: '0.3rem 0.65rem', fontSize: '0.7rem' },
-                                  onClick: () =>
-                                    addToBag({
-                                      uid: item.id,
-                                      name: item.name,
-                                      category: item.course,
-                                      details: item.pairing ? `Sommelier note: ${item.pairing}` : item.course,
-                                      unitPrice: item.price
-                                    })
-                                }, '+ Table Plan')
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-          ),
-
-          // TAB VIEW B: CURATED WINE CELLAR
-          activeMenuTab === 'wine' && h('div', { className: 'wine-grid' },
-            filteredWines.map((wine) =>
-              h('div', { key: wine.id, className: 'wine-card' },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' } },
-                  h('div', null,
-                    h('span', { className: 'badge-pill navy', style: { marginBottom: '0.3rem', display: 'inline-block' } },
-                      `${wine.style} · ${wine.vintage}`
-                    ),
-                    h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.22rem', fontWeight: 700 } }, wine.name),
-                    h('div', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
-                      `${wine.region} — ${wine.grape}`
-                    )
-                  ),
-                  h('div', { style: { textAlign: 'right', fontFamily: 'var(--font-mono)', flexShrink: 0 } },
-                    wine.glassPrice && h('div', { style: { fontSize: '0.82rem', color: 'var(--crimson)', fontWeight: 700 } },
-                      `£${wine.glassPrice} Glass`
-                    ),
-                    h('div', { style: { fontSize: '0.88rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
-                      `£${wine.bottlePrice} Bottle`
-                    )
-                  )
-                ),
-                h('div', {
-                  style: {
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingTop: '0.55rem',
-                    borderTop: '1px dashed var(--border-parchment)',
-                    marginTop: '0.35rem'
-                  }
-                },
-                  h('span', { style: { fontSize: '0.76rem', color: 'var(--emerald-ok)', fontWeight: 600 } },
-                    `Best Paired With: ${wine.pairingTag}`
-                  ),
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-outline-navy',
-                    style: { padding: '0.26rem 0.6rem', fontSize: '0.68rem' },
-                    onClick: () =>
-                      addToBag({
-                        uid: wine.id,
-                        name: `${wine.vintage} ${wine.name} (Bottle)`,
-                        category: `Wine Cellar · ${wine.style}`,
-                        details: `${wine.region} (${wine.grape})`,
-                        unitPrice: wine.bottlePrice
-                      })
-                  }, '+ Reserve Bottle')
-                )
-              )
-            )
-          ),
-
-          // TAB VIEW C: £75pp GROUP & FESTIVE FEASTING CALCULATOR
-          activeMenuTab === 'festive_feasting' && h('div', {
-            style: {
-              background: 'var(--parchment-card)',
-              border: '2px solid var(--crimson)',
-              borderRadius: '10px',
-              padding: '2rem',
-              maxWidth: '880px',
-              margin: '0 auto'
+            );
+          })
+        ) : h('div', { className: 'empty-menu-state' },
+          h('div', { className: 'empty-state-icon' }, '🔍'),
+          h('h3', { className: 'empty-state-title' }, 'No dishes found matching your search'),
+          h('p', { className: 'empty-state-text' }, 'Try searching for Jerk Chicken, Curry Goat, Dumplings, or clear your filters.'),
+          h('button', {
+            type: 'button',
+            className: 'btn-primary-order',
+            onClick: function () {
+              if (setSearchQuery) setSearchQuery('');
+              if (setSelectedCategory) setSelectedCategory('all');
+              if (setDietaryFilter) setDietaryFilter('all');
             }
-          },
-            h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-parchment)' } },
-              h('div', null,
-                h('span', { className: 'badge-pill' }, '8 – 16 Guests · Served Family-Style'),
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, marginTop: '0.3rem' } },
-                  'The One Club Row Sharing Feast (£75pp)'
-                ),
-                h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)' } },
-                  'Designed for celebratory long lunches and group tables of 8 to 16 guests. Every dish arrives generous and family-style for the table to share.'
-                )
-              ),
-              h('div', { style: { textAlign: 'right', background: 'var(--club-navy-surface)', color: 'var(--parchment)', padding: '0.9rem 1.25rem', borderRadius: '6px' } },
-                h('div', { style: { fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--brass-bright)' } }, 'Table Estimate'),
-                h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.55rem', fontWeight: 700 } }, `£${feastGuestCount * 75}`),
-                h('div', { style: { fontSize: '0.74rem' } }, `${feastGuestCount} Guests × £75pp`)
-              )
-            ),
-
-            h('div', { style: { marginBottom: '1.5rem' } },
-              h('label', { className: 'field-label', style: { display: 'block', marginBottom: '0.4rem' } },
-                `Select Group Party Size: ${feastGuestCount} Guests`
-              ),
-              h('input', {
-                type: 'range',
-                min: 8,
-                max: 16,
-                value: feastGuestCount,
-                onChange: (e) => setFeastGuestCount(Number(e.target.value)),
-                style: { width: '100%', accentColor: 'var(--crimson)' }
-              })
-            ),
-
-            h('div', { className: 'menu-grid', style: { marginBottom: '1.5rem' } },
-              [
-                { course: '01 · Arrival Snacks', items: 'Warm Pickled Jalapeño Gougères & House Sourdough with Cultured Salted Butter' },
-                { course: '02 · Table Starters', items: 'Leeks Vinaigrette with Spiced Hazelnuts · Pugliese Stracciatella & Delicata Squash' },
-                { course: '03 · Feasting Mains & Sides', items: 'Grass-Fed Sirloin of Beef with Sauce Au Poivre, Shoestring Fries & Club Row Aged Parmesan Caesar Salad (Vegetarian Rotisserie Cauliflower Chimichurri available individually)' },
-                { course: '04 · Finishing Dessert', items: 'Twice-Baked Valrhona Chocolate Cake with Cold Normandy Crème Fraîche' }
-              ].map((step) =>
-                h('div', { key: step.course, style: { background: '#fff', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-parchment)' } },
-                  h('div', { style: { fontWeight: 700, color: 'var(--crimson)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.25rem' } }, step.course),
-                  h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.12rem', fontWeight: 600 } }, step.items)
-                )
-              )
-            ),
-
-            h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' } },
-              h('span', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
-                'Need more than 16 guests? Hire "The Apartment" upstairs for up to 50 seated.'
-              ),
-              h('button', {
-                type: 'button',
-                className: 'btn-primary',
-                onClick: () => {
-                  setResGuests('8–16 Guests (£75pp Feasting)');
-                  setResZone('Group Sharing Table (8–16pp)');
-                  setReservationModalOpen(true);
-                }
-              }, `Book ${feastGuestCount}-Guest Feasting Table (£${feastGuestCount * 75})`)
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 2: THE CLUB ROW MARTINI ATELIER ("TELL US HOW YOU LIKE IT")
-      // ======================================================================
-      h('section', { id: 'martiniSection', className: 'section-block navy-theme' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout', style: { background: 'rgba(19, 19, 51, 0.85)', borderColor: 'var(--brass-bright)' } },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #03'),
-            h('div', null,
-              h('strong', null, 'Turned "Chase Vodka or Tanqueray 10 – Tell Us How You Like It" Into an Interactive Bar Conversion Engine: '),
-              'One Club Row’s biggest press hook is its sub-zero martinis and mahogany bar counter, yet their current website buries cocktails in plain text. This interactive Martini Atelier lets guests dial in their exact pour and lock in bar seating.'
-            )
-          ),
-
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, '02 · “Tell Us How You Like It”'),
-            h('h2', { className: 'section-title' }, 'The Club Row Martini Atelier'),
-            h('p', { className: 'section-subtitle' },
-              'Kept at -18°C in our bar freezers and stirred over crystal block ice. Configure your bespoke house pour and reserve a stool at the mahogany bar.'
-            )
-          ),
-
-          h('div', { className: 'martini-atelier-grid' },
-            // Left: 3-Step Interactive Builder
-            h('div', { className: 'atelier-steps-card' },
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
-                'Step 01 · Choose Your Freezer-Chilled Base Spirit'
-              ),
-              h('div', { className: 'option-cards-grid' },
-                DATA.martiniConfig.spirits.map((sp) =>
-                  h('button', {
-                    key: sp.id,
-                    type: 'button',
-                    className: `atelier-option-btn ${martiniSpiritId === sp.id ? 'active' : ''}`,
-                    onClick: () => setMartiniSpiritId(sp.id)
-                  },
-                    h('div', { style: { fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.2rem' } }, sp.name),
-                    h('div', { style: { fontSize: '0.75rem', color: 'var(--text-cream-muted)' } }, sp.note)
-                  )
-                )
-              ),
-
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
-                'Step 02 · Select Vermouth & Dilution Style'
-              ),
-              h('div', { className: 'option-cards-grid' },
-                DATA.martiniConfig.styles.map((st) =>
-                  h('button', {
-                    key: st.id,
-                    type: 'button',
-                    className: `atelier-option-btn ${martiniStyleId === st.id ? 'active' : ''}`,
-                    onClick: () => setMartiniStyleId(st.id)
-                  },
-                    h('div', { style: { fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.2rem' } }, st.name),
-                    h('div', { style: { fontSize: '0.75rem', color: 'var(--text-cream-muted)' } }, st.desc)
-                  )
-                )
-              ),
-
-              h('div', { style: { fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)', marginBottom: '0.6rem' } },
-                'Step 03 · Finishing Garnish'
-              ),
-              h('div', { className: 'option-cards-grid', style: { marginBottom: 0 } },
-                DATA.martiniConfig.garnishes.map((gar) =>
-                  h('button', {
-                    key: gar.id,
-                    type: 'button',
-                    className: `atelier-option-btn ${martiniGarnishId === gar.id ? 'active' : ''}`,
-                    onClick: () => setMartiniGarnishId(gar.id)
-                  },
-                    h('div', { style: { fontWeight: 700, fontSize: '0.9rem' } }, gar.name)
-                  )
-                )
-              )
-            ),
-
-            // Right: Live Bartender Spec Ticket
-            h('div', { className: 'martini-preview-card' },
-              h('div', null,
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--club-navy-surface)', paddingBottom: '0.75rem', marginBottom: '1rem' } },
-                  h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } },
-                    h(Icon, { name: 'martini', size: 20, color: '#C53627' }),
-                    h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase' } },
-                      '1CR Bar Docket · -18°C Service'
-                    )
-                  ),
-                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.35rem', fontWeight: 700, color: 'var(--crimson)' } },
-                    `£${customMartiniPrice}`
-                  )
-                ),
-
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.5rem' } },
-                  `${selectedSpirit.name.split(' ')[0]} ${selectedStyle.name.split('(')[0].trim()} Martini`
-                ),
-                h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '1.15rem' } },
-                  `${selectedSpirit.name} · ${selectedStyle.desc} · Finished with ${selectedGarnish.name}.`
-                ),
-
-                h('div', { style: { background: 'var(--parchment-warm)', padding: '0.95rem', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.82rem' } },
-                  h('div', { style: { fontWeight: 700, color: 'var(--club-navy-surface)', marginBottom: '0.3rem' } },
-                    'Recommended Bar Pairing:'
-                  ),
-                  h('div', null, 'Warm Pickled Jalapeño Gougères (£9) + Cornish Crab Toast (£5 ea)')
-                )
-              ),
-
-              h('div', { style: { display: 'flex', flexDirection: 'column', gap: '0.65rem' } },
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  style: { width: '100%' },
-                  onClick: () => {
-                    addToBag({
-                      uid: `martini-${martiniSpiritId}-${martiniStyleId}-${martiniGarnishId}`,
-                      name: `Bespoke ${selectedStyle.name.split('(')[0].trim()} Martini`,
-                      category: 'Martini Bar Docket',
-                      details: `${selectedSpirit.name} · ${selectedGarnish.name}`,
-                      unitPrice: customMartiniPrice
-                    });
-                  }
-                }, `Add Bespoke Martini to Evening Plan (£${customMartiniPrice})`),
-
-                h('button', {
-                  type: 'button',
-                  className: 'btn-outline-navy',
-                  style: { width: '100%' },
-                  onClick: () => {
-                    setResZone('Mahogany Martini Bar Counter');
-                    setResSpecialNotes(`Martini Spec on Arrival: ${selectedSpirit.name}, ${selectedStyle.name}, ${selectedGarnish.name}`);
-                    setReservationModalOpen(true);
-                  }
-                }, 'Reserve Mahogany Bar Stool With This Pour')
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 3: "THE APARTMENT" UPSTAIRS PRIVATE DINING & PARTY CONFIGURATOR
-      // ======================================================================
-      h('section', { id: 'apartmentSection', className: 'section-block warm-theme' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #05'),
-            h('div', null,
-              h('strong', null, 'Replaced Static PDF + Clunky 15-Field Gravity Form With an Interactive Event Configurator: '),
-              'On oneclubrow.com/private-dining/, hosts face an unstyled 15-field form where time dropdowns start at "12:00am", "12:30am", "1:00am" with zero room capacity or package pricing guidance. Our configurator lets corporate & private hosts compare 50-seat dinners vs. 60-guest cocktail parties and calculate budgets instantaneously.'
-            )
-          ),
-
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, '03 · Upstairs at 1 Club Row'),
-            h('h2', { className: 'section-title' }, '“The Apartment” Private Dining & Parties'),
-            h('p', { className: 'section-subtitle' },
-              'Above our restaurant are a series of grand private rooms in the former apartment of the previous owners—once known for particularly raucous Shoreditch house parties, now hosting private feasts, cocktail receptions, and post-dinner shows.'
-            )
-          ),
-
-          // 3 Room Layout Mode Cards
-          h('div', { className: 'layout-selector-grid' },
-            DATA.apartmentPackages.layouts.map((lay) =>
-              h('button', {
-                key: lay.id,
-                type: 'button',
-                className: `layout-tab-card ${activeLayoutId === lay.id ? 'active' : ''}`,
-                onClick: () => {
-                  setActiveLayoutId(lay.id);
-                  setEventGuests(lay.defaultGuests);
-                }
-              },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' } },
-                  h('span', { className: 'badge-pill' }, lay.badge),
-                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
-                    `From £${lay.basePricePerHead}pp`
-                  )
-                ),
-                h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.25rem' } },
-                  lay.name
-                ),
-                h('p', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } }, lay.capacityRange)
-              )
-            )
-          ),
-
-          h('div', { className: 'apartment-grid' },
-            // Left: Room Preview + Guest & Add-on Controls
-            h('div', {
-              style: {
-                background: 'var(--parchment-card)',
-                border: '1px solid var(--border-parchment)',
-                borderRadius: '8px',
-                padding: '1.6rem'
-              }
-            },
-              h('div', { style: { display: 'grid', gridTemplateColumns: '140px 1fr', gap: '1.2rem', alignItems: 'center', marginBottom: '1.35rem' } },
-                h('img', {
-                  src: activeApartmentLayout.image,
-                  alt: activeApartmentLayout.name,
-                  style: { width: '140px', height: '165px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--crimson)' }
-                }),
-                h('div', null,
-                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.65rem', fontWeight: 700, marginBottom: '0.35rem' } },
-                    activeApartmentLayout.name
-                  ),
-                  h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '0.7rem' } },
-                    activeApartmentLayout.desc
-                  ),
-                  h('ul', { style: { listStyle: 'none', display: 'grid', gap: '0.3rem', fontSize: '0.8rem' } },
-                    activeApartmentLayout.highlights.map((hl) =>
-                      h('li', { key: hl, style: { display: 'flex', alignItems: 'center', gap: '0.45rem' } },
-                        h(Icon, { name: 'check', size: 14, color: '#236B42' }),
-                        hl
-                      )
-                    )
-                  )
-                )
-              ),
-
-              h('div', { style: { marginBottom: '1.3rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' } },
-                  h('label', { className: 'field-label' }, 'Number of Guests'),
-                  h('span', { style: { fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--crimson)' } },
-                    `${apartmentTotalEstimate.guests} Guests (${activeApartmentLayout.capacityRange})`
-                  )
-                ),
-                h('input', {
-                  type: 'range',
-                  min: activeApartmentLayout.minGuests,
-                  max: activeApartmentLayout.maxGuests,
-                  value: apartmentTotalEstimate.guests,
-                  onChange: (e) => setEventGuests(Number(e.target.value)),
-                  style: { width: '100%', accentColor: 'var(--crimson)' }
-                })
-              ),
-
-              h('div', null,
-                h('div', { className: 'field-label', style: { marginBottom: '0.55rem' } },
-                  'Curated Enhancements & Post-Dinner Entertainment'
-                ),
-                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' } },
-                  DATA.apartmentPackages.addons.map((addon) => {
-                    const checked = selectedEventAddons.includes(addon.id);
-                    return h('button', {
-                      key: addon.id,
-                      type: 'button',
-                      onClick: () =>
-                        setSelectedEventAddons((prev) =>
-                          prev.includes(addon.id) ? prev.filter((x) => x !== addon.id) : [...prev, addon.id]
-                        ),
-                      style: {
-                        textAlign: 'left',
-                        padding: '0.7rem 0.85rem',
-                        borderRadius: '6px',
-                        border: checked ? '1.5px solid var(--crimson)' : '1px solid var(--border-parchment)',
-                        background: checked ? 'var(--crimson-soft)' : '#fff',
-                        cursor: 'pointer'
-                      }
-                    },
-                      h('div', { style: { fontWeight: 700, fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between' } },
-                        h('span', null, addon.name),
-                        h('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--crimson)' } },
-                          addon.pricePerHead > 0 ? `+£${addon.pricePerHead}pp` : `+£${addon.flatFee}`
-                        )
-                      )
-                    );
-                  })
-                )
-              )
-            ),
-
-            // Right: Live Event Brief & Tripleseat Express Submission
-            h('div', { className: 'event-summary-box' },
-              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.9rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-navy-light)' } },
-                h('div', null,
-                  h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brass-bright)' } },
-                    'Instant Tripleseat Event Estimate'
-                  ),
-                  h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.55rem' } }, 'Private Hire Proposal')
-                ),
-                h('a', {
-                  href: DATA.venue.brochurePdfUrl,
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                  className: 'btn-outline-cream',
-                  style: { padding: '0.38rem 0.7rem', fontSize: '0.7rem' }
-                },
-                  h(Icon, { name: 'external', size: 13 }),
-                  'Official PDF Brochure'
-                )
-              ),
-
-              h('div', { className: 'floorplan-card' },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--brass-bright)' } },
-                  h('span', null, 'LIVE ARCHITECTURAL FLOORPLAN'),
-                  h('span', null, `${apartmentTotalEstimate.guests} GUESTS CONFIGURED`)
-                ),
-                h(ApartmentFloorplanSvg, { layoutId: activeLayoutId, guests: apartmentTotalEstimate.guests })
-              ),
-
-              h('div', { style: { background: 'rgba(19, 19, 51, 0.55)', padding: '1rem', borderRadius: '6px', marginBottom: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' } },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' } },
-                  h('span', null, `${apartmentTotalEstimate.guests} Guests × £${apartmentTotalEstimate.perHead}/head`),
-                  h('span', null, `£${(apartmentTotalEstimate.guests * apartmentTotalEstimate.perHead).toLocaleString()}`)
-                ),
-                apartmentTotalEstimate.flat > 0 && h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem', color: 'var(--brass-bright)' } },
-                  h('span', null, 'Late-Night Pianist / Entertainment'),
-                  h('span', null, `+£${apartmentTotalEstimate.flat}`)
-                ),
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', paddingTop: '0.5rem', borderTop: '1px solid var(--border-navy-light)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--brass-bright)' } },
-                  h('span', null, 'Estimated Event Total'),
-                  h('span', null, `£${apartmentTotalEstimate.total.toLocaleString()}`)
-                )
-              ),
-
-              eventBriefSubmitted
-                ? h('div', { style: { background: 'rgba(52, 211, 153, 0.14)', border: '1px solid #34D399', padding: '1.1rem', borderRadius: '6px', textAlign: 'center' } },
-                    h('strong', { style: { color: '#34D399', display: 'block', marginBottom: '0.3rem' } },
-                      '✓ Private Event Brief Logged for The Apartment'
-                    ),
-                    h('p', { style: { fontSize: '0.8rem', color: 'var(--parchment)', marginBottom: '0.75rem' } },
-                      `Our Events Manager will reply to ${eventEmail || 'your email'} within 2 business hours with date holds for ${eventDate}.`
-                    ),
-                    h('button', {
-                      type: 'button',
-                      className: 'btn-outline-cream',
-                      onClick: () => setEventBriefSubmitted(false)
-                    }, 'Modify Event Configuration')
-                  )
-                : h('form', {
-                    onSubmit: (e) => {
-                      e.preventDefault();
-                      setEventBriefSubmitted(true);
-                      pushToast('Private Dining & Events enquiry sent to One Club Row Events Team.');
-                    },
-                    style: { display: 'grid', gap: '0.7rem' }
-                  },
-                    h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' } },
-                      h('input', {
-                        type: 'date',
-                        className: 'field-control',
-                        value: eventDate,
-                        onChange: (e) => setEventDate(e.target.value),
-                        required: true
-                      }),
-                      h('select', {
-                        className: 'field-control',
-                        value: eventTimeWindow,
-                        onChange: (e) => setEventTimeWindow(e.target.value)
-                      },
-                        [
-                          'Long Lunch Hire (12:00 – 16:30)',
-                          'Evening Reception & Dinner (18:30 – 23:30)',
-                          'Late Cocktail Party & Piano (19:30 – 01:00)'
-                        ].map((w) => h('option', { key: w, value: w }, w))
-                      )
-                    ),
-                    h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' } },
-                      h('input', {
-                        type: 'text',
-                        className: 'field-control',
-                        placeholder: 'Your Name *',
-                        value: eventHostName,
-                        onChange: (e) => setEventHostName(e.target.value),
-                        required: true
-                      }),
-                      h('input', {
-                        type: 'text',
-                        className: 'field-control',
-                        placeholder: 'Company / Occasion *',
-                        value: eventCompany,
-                        onChange: (e) => setEventCompany(e.target.value),
-                        required: true
-                      })
-                    ),
-                    h('input', {
-                      type: 'email',
-                      className: 'field-control',
-                      placeholder: 'Work or Personal Email *',
-                      value: eventEmail,
-                      onChange: (e) => setEventEmail(e.target.value),
-                      required: true
-                    }),
-                    h('button', { type: 'submit', className: 'btn-primary', style: { width: '100%' } },
-                      'Request Hold for The Apartment'
-                    )
-                  )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 4: NATIVE GIFT VOUCHER STUDIO (Replaces Empty /gift-cards/)
-      // ======================================================================
-      h('section', { id: 'vouchersSection', className: 'section-block' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #06A'),
-            h('div', null,
-              h('strong', null, 'Turned Empty "/gift-cards/" Sitemap Page Into a Native Experience Voucher Studio: '),
-              'Currently, oneclubrow.com/gift-cards/ is an empty page while the menu bounces users to an external giftpro.co.uk subdomain. Our native studio lets guests personalize a wax-sealed One Club Row gift card and check out without leaving the site.'
-            )
-          ),
-
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, '04 · Give The Gift of Club Row'),
-            h('h2', { className: 'section-title' }, 'Dining & Martini Gift Vouchers'),
-            h('p', { className: 'section-subtitle' },
-              'Treat friends, colleagues, or fellow martini lovers to a long lunch, an 800g Côte de Boeuf feast, or late-night cocktails in Shoreditch.'
-            )
-          ),
-
-          h('div', { className: 'apartment-grid' },
-            h('div', { className: 'vouchers-grid' },
-              DATA.giftVouchers.map((gv) =>
-                h('div', { key: gv.id, className: 'voucher-card' },
-                  h('div', null,
-                    h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' } },
-                      h('span', { className: 'badge-pill' }, gv.badge),
-                      h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--crimson)' } },
-                        `£${gv.price}`
-                      )
-                    ),
-                    h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.35rem' } },
-                      gv.title
-                    ),
-                    h('p', { style: { fontSize: '0.84rem', color: 'var(--ink-secondary)', marginBottom: '0.75rem' } },
-                      gv.desc
-                    )
-                  ),
-                  h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.65rem', borderTop: '1px solid var(--border-parchment)' } },
-                    h('span', { style: { fontSize: '0.72rem', color: 'var(--ink-muted)' } }, gv.validity),
-                    h('button', {
-                      type: 'button',
-                      className: 'btn-outline-navy',
-                      style: { padding: '0.38rem 0.75rem', fontSize: '0.72rem' },
-                      onClick: () =>
-                        addToBag({
-                          uid: `${gv.id}-${voucherRecipient}`,
-                          name: `Gift Voucher: ${gv.title}`,
-                          category: `For: ${voucherRecipient} (${voucherDelivery})`,
-                          details: `Note: "${voucherMessage}"`,
-                          unitPrice: gv.price
-                        })
-                    }, '+ Add Gift Card')
-                  )
-                )
-              )
-            ),
-
-            // Live Wax-Sealed Gift Card Personalizer
-            h('div', {
-              style: {
-                background: 'var(--club-navy-surface)',
-                color: 'var(--parchment)',
-                border: '3px double var(--brass)',
-                borderRadius: '10px',
-                padding: '1.75rem',
-                boxShadow: 'var(--shadow-lg)'
-              }
-            },
-              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' } },
-                h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.55rem' } },
-                  h(BirdCrest, { size: 22, color: '#DFB973' }),
-                  h('span', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.2rem', letterSpacing: '0.06em', textTransform: 'uppercase' } },
-                    'One Club Row · Gift Bespoke Preview'
-                  )
-                ),
-                h('span', { className: 'badge-pill', style: { background: 'var(--crimson)', color: '#fff' } }, 'Wax-Sealed')
-              ),
-
-              h('div', {
-                style: {
-                  background: 'var(--parchment-card)',
-                  color: 'var(--ink-primary)',
-                  padding: '1.25rem',
-                  borderRadius: '6px',
-                  border: '1.5px solid var(--crimson)',
-                  marginBottom: '1.15rem'
-                }
-              },
-                h('div', { style: { fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--crimson)', fontWeight: 700 } },
-                  `Presented To: ${voucherRecipient || 'Your Guest'}`
-                ),
-                h('p', { style: { fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '1.18rem', margin: '0.45rem 0' } },
-                  `“${voucherMessage}”`
-                ),
-                h('div', { style: { fontSize: '0.72rem', color: 'var(--ink-secondary)', display: 'flex', justifyContent: 'space-between' } },
-                  h('span', null, '1 Club Row, Shoreditch, E1 6JX'),
-                  h('span', null, voucherDelivery)
-                )
-              ),
-
-              h('div', { style: { display: 'grid', gap: '0.65rem' } },
-                h('div', null,
-                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Recipient Name'),
-                  h('input', {
-                    type: 'text',
-                    className: 'field-control',
-                    value: voucherRecipient,
-                    onChange: (e) => setVoucherRecipient(e.target.value)
-                  })
-                ),
-                h('div', null,
-                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Personal Card Message'),
-                  h('input', {
-                    type: 'text',
-                    className: 'field-control',
-                    value: voucherMessage,
-                    onChange: (e) => setVoucherMessage(e.target.value)
-                  })
-                ),
-                h('div', null,
-                  h('label', { className: 'field-label', style: { color: 'var(--brass-bright)', display: 'block', marginBottom: '0.25rem' } }, 'Delivery Format'),
-                  h('select', {
-                    className: 'field-control',
-                    value: voucherDelivery,
-                    onChange: (e) => setVoucherDelivery(e.target.value)
-                  },
-                    [
-                      'Digital Apple/Google Wallet Pass (Instant Email)',
-                      'Heavyweight Cream Card with Crimson Wax Seal (+£4 Post)'
-                    ].map((d) => h('option', { key: d, value: d }, d))
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 5: CATEGORIZED PHOTOGRAPHY GALLERY (Justin De Souza & Beca B. Jones)
-      // ======================================================================
-      h('section', { id: 'gallerySection', className: 'section-block warm-theme' },
-        h('div', { className: 'container' },
-          h('div', { className: 'section-header' },
-            h('span', { className: 'section-kicker' }, '05 · Inside 1 Club Row'),
-            h('h2', { className: 'section-title' }, 'The Dining Room, The Bar & The Apartment'),
-            h('p', { className: 'section-subtitle' },
-              'Photography by Justin De Souza and Beca B. Jones. Filter by space or click any frame to inspect in full resolution.'
-            )
-          ),
-
-          h('div', { className: 'menu-tabs-bar' },
-            [
-              { id: 'all', label: 'All Spaces & Plates' },
-              { id: 'dining_room', label: 'The Dining Room' },
-              { id: 'martinis_bar', label: 'The Martini Bar' },
-              { id: 'dishes', label: 'Brasserie Plates' },
-              { id: 'the_apartment', label: 'Upstairs at The Apartment' }
-            ].map((tab) =>
-              h('button', {
-                key: tab.id,
-                type: 'button',
-                className: `menu-tab-btn ${galleryFilter === tab.id ? 'active' : ''}`,
-                onClick: () => setGalleryFilter(tab.id)
-              }, tab.label)
-            )
-          ),
-
-          h('div', { className: 'gallery-grid' },
-            visibleGallery.map((photo) =>
-              h('div', {
-                key: photo.id,
-                className: 'gallery-item',
-                onClick: () => setLightboxPhoto(photo)
-              },
-                h('div', { className: 'gallery-img-wrap' },
-                  h('img', { src: photo.src, alt: photo.title, loading: 'lazy' }),
-                  h('div', {
-                    style: {
-                      position: 'absolute',
-                      inset: 'auto 0 0 0',
-                      background: 'linear-gradient(to top, rgba(19,19,51,0.92), transparent)',
-                      color: 'var(--parchment)',
-                      padding: '1.2rem 0.9rem 0.75rem'
-                    }
-                  },
-                    h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700 } }, photo.title),
-                    h('div', { style: { fontSize: '0.74rem', color: 'var(--text-cream-muted)' } }, photo.caption)
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SECTION 6: SECRET DOORWAY ARRIVAL GUIDE, FIXED CONTACT & CAREERS
-      // ======================================================================
-      h('section', { id: 'visitSection', className: 'section-block' },
-        h('div', { className: 'container' },
-          pitchAnnotationsOn && h('div', { className: 'pitch-callout' },
-            h('span', { className: 'pitch-callout-badge' }, 'UX Audit Fix #06B'),
-            h('div', null,
-              h('strong', null, 'Fixed Broken Contact Link + Added "Secret Staircase" Arrival Wayfinding: '),
-              'On oneclubrow.com/contact/, clicking hello@oneclubrow.com mistakenly links back to href="https://oneclubrow.com/home/" instead of opening an email client! First-time guests also frequently walk into The Knave of Clubs pub downstairs by mistake. Our arrival card solves both.'
-            )
-          ),
-
-          h('div', { className: 'wayfinding-grid' },
-            // Left: How to Find the Secret Doorway
-            h('div', {
-              style: {
-                background: 'var(--club-navy-surface)',
-                color: 'var(--parchment)',
-                border: '2px solid var(--crimson)',
-                borderRadius: '10px',
-                padding: '2rem'
-              }
-            },
-              h('div', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.45rem', color: 'var(--brass-bright)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.5rem' } },
-                h(Icon, { name: 'key', size: 15 }),
-                'Arrival & Wayfinding Guide'
-              ),
-              h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.2rem', marginBottom: '0.75rem' } },
-                'How to Find Our Door on Club Row'
-              ),
-              h('p', { style: { fontSize: '0.92rem', color: 'var(--text-cream-muted)', marginBottom: '1.25rem' } },
-                'We sit on the first floor above The Knave of Clubs pub on the corner of Bethnal Green Road and Club Row. Look for the discreet entrance doorway at 1 Club Row—climb the Victorian staircase straight up into the dining room and bar.'
-              ),
-
-              h('div', { style: { display: 'grid', gap: '0.75rem', background: 'rgba(19,19,51,0.55)', padding: '1.15rem', borderRadius: '6px', marginBottom: '1.35rem', fontSize: '0.85rem' } },
-                h('div', null,
-                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Address: '),
-                  '1 Club Row, Shoreditch, London E1 6JX (2 mins from Shoreditch High Street Overground / 8 mins from Liverpool Street)'
-                ),
-                h('div', null,
-                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Lunch & Dinner Hours: '),
-                  'Tuesday – Saturday: 12:00pm – 2:00pm & 5:30pm – 10:00pm · Sunday: 12:00pm – 2:00pm & 5:30pm – 9:00pm'
-                ),
-                h('div', null,
-                  h('strong', { style: { color: 'var(--brass-bright)' } }, 'Direct Concierge Email (Fixed mailto:): '),
-                  h('a', {
-                    href: `mailto:${DATA.venue.email}`,
-                    style: { textDecoration: 'underline', color: '#fff', fontWeight: 700 }
-                  }, DATA.venue.email)
-                )
-              ),
-
-              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '0.75rem' } },
-                h('a', {
-                  href: DATA.venue.googleMapsUrl,
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                  className: 'btn-primary'
-                },
-                  h(Icon, { name: 'pin', size: 15 }),
-                  'Open in Google Maps'
-                ),
-                h('a', {
-                  href: `mailto:${DATA.venue.email}?subject=Enquiry%20for%20One%20Club%20Row`,
-                  className: 'btn-outline-cream'
-                },
-                  h(Icon, { name: 'mail', size: 15 }),
-                  'Email hello@oneclubrow.com'
-                )
-              )
-            ),
-
-            // Right: Careers & Join Our Brigade
-            h('div', {
-              style: {
-                background: 'var(--parchment-card)',
-                border: '1.5px solid var(--border-parchment)',
-                borderRadius: '10px',
-                padding: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }
-            },
-              h('div', null,
-                h('span', { className: 'section-kicker' }, 'Join The Brigade'),
-                h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.1rem', marginBottom: '0.5rem' } },
-                  'Careers at One Club Row'
-                ),
-                h('p', { style: { fontSize: '0.9rem', color: 'var(--ink-secondary)', marginBottom: '1.25rem' } },
-                  'Our team is the most important part of our restaurant and we are always looking for fun, enthusiastic, and hard-working hospitality professionals to join us.'
-                ),
-
-                h('div', { style: { display: 'grid', gap: '0.85rem', marginBottom: '1.35rem' } },
-                  DATA.careers.map((job) =>
-                    h('div', {
-                      key: job.id,
-                      style: {
-                        background: '#fff',
-                        border: '1px solid var(--border-parchment)',
-                        borderLeft: '4px solid var(--crimson)',
-                        padding: '1rem 1.15rem',
-                        borderRadius: '6px'
-                      }
-                    },
-                      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' } },
-                        h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.3rem', fontWeight: 700 } }, job.role),
-                        h('span', { className: 'badge-pill navy' }, job.department)
-                      ),
-                      h('p', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)', marginBottom: '0.6rem' } }, job.summary),
-                      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
-                        h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, color: 'var(--emerald-ok)' } },
-                          job.compensation
-                        ),
-                        h('a', {
-                          href: job.specUrl,
-                          target: '_blank',
-                          rel: 'noopener noreferrer',
-                          style: { fontSize: '0.76rem', fontWeight: 700, color: 'var(--crimson)', textDecoration: 'underline' }
-                        }, 'Read Role Specification →')
-                      )
-                    )
-                  )
-                )
-              ),
-
-              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid var(--border-parchment)' } },
-                h('span', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)' } },
-                  'Send your CV directly to ',
-                  h('a', { href: `mailto:${DATA.venue.careersEmail}`, style: { fontWeight: 700, textDecoration: 'underline' } }, DATA.venue.careersEmail)
-                ),
-                h('a', {
-                  href: `mailto:${DATA.venue.careersEmail}?subject=Application%20—%20One%20Club%20Row`,
-                  className: 'btn-outline-navy'
-                }, 'Apply in 1 Click')
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // FOOTER
-      // ======================================================================
-      h('footer', { className: 'site-footer' },
-        h('div', { className: 'container', style: { textAlign: 'center' } },
-          h('div', { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', background: 'var(--crimson)', border: '2px solid var(--brass)', marginBottom: '1rem' } },
-            h(BirdCrest, { size: 30, color: '#F6F3E3' })
-          ),
-          h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.2rem', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '0.35rem' } },
-            'One Club Row'
-          ),
-          h('p', { style: { fontSize: '0.88rem', color: 'var(--text-cream-muted)', maxWidth: '520px', margin: '0 auto 1.5rem' } },
-            '1 Club Row, Shoreditch, London E1 6JX · Inspired by the taverns of New York and the bistros of Paris.'
-          ),
-          h('div', { style: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2rem', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em' } },
-            h('a', { href: DATA.venue.instagram, target: '_blank', rel: 'noopener noreferrer', style: { color: 'var(--brass-bright)' } }, 'Instagram (@oneclubrow)'),
-            h('a', { href: DATA.venue.sevenRoomsReserveUrl, target: '_blank', rel: 'noopener noreferrer' }, 'SevenRooms Reservations'),
-            h('a', { href: DATA.venue.brochurePdfUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Private Dining Brochure'),
-            h('a', { href: `mailto:${DATA.venue.email}` }, 'hello@oneclubrow.com'),
-            h('button', {
-              type: 'button',
-              onClick: () => setNewsletterModalOpen(true),
-              style: { background: 'none', border: 'none', color: 'var(--brass-bright)', fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.09em', cursor: 'pointer', textDecoration: 'underline' }
-            }, 'Join Club Row Society (Newsletter)')
-          ),
-          h('div', { style: { fontSize: '0.74rem', color: 'var(--text-cream-muted)', opacity: 0.75 } },
-            '© One Club Row Shoreditch · Post-UX Audit Digital Flagship Remake'
-          )
-        )
-      ),
-
-      // ======================================================================
-      // FLOATING PITCH INSIGHTS SWITCH (Bottom Left)
-      // ======================================================================
-      h('div', { className: 'pitch-floating-bar' },
-        h('div', {
-          className: 'pitch-toggle-switch',
-          onClick: () => setPitchAnnotationsOn(!pitchAnnotationsOn)
-        },
-          h('span', { className: `pitch-toggle-dot ${pitchAnnotationsOn ? 'active' : ''}` }),
-          h('span', null, pitchAnnotationsOn ? 'Pitch Callouts: ON' : 'Pitch Callouts: OFF')
+          }, 'Reset All Filters')
         ),
-        h('span', { style: { opacity: 0.3 } }, '|'),
-        h('button', {
-          type: 'button',
-          onClick: () => setPitchModalOpen(true),
-          style: { background: 'none', border: 'none', color: 'var(--brass-bright)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline' }
-        }, 'Open Full 6-Point Audit')
-      ),
 
-      // ======================================================================
-      // MODAL 1: EXECUTIVE UX AUDIT PITCH MODAL (For Presenting to Customer)
-      // ======================================================================
-      pitchModalOpen && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setPitchModalOpen(false); }
-      },
-        h('div', { className: 'modal-card wide' },
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '2px solid var(--club-navy-surface)' } },
-            h('div', null,
-              h('span', { className: 'badge-pill' }, 'Customer Pitch Deck · Forensic Code Audit'),
-              h('h2', { style: { fontFamily: 'var(--font-serif)', fontSize: '2.1rem', fontWeight: 700, marginTop: '0.25rem' } },
-                'Why Replace oneclubrow.com With This Flagship?'
-              ),
-              h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)' } },
-                'We audited the live WordPress/Pinegrow website across all 8 pages. Here are the 6 high-impact conversion & UX upgrades built into this new product:'
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-navy',
-              onClick: () => setPitchModalOpen(false)
-            }, h(Icon, { name: 'close', size: 16 }))
-          ),
-
-          h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' } },
-            DATA.auditFindings.map((f) =>
-              h('div', {
-                key: f.id,
-                style: {
-                  background: '#fff',
-                  border: '1px solid var(--border-parchment)',
-                  borderTop: '4px solid var(--crimson)',
-                  borderRadius: '6px',
-                  padding: '1.1rem'
-                }
-              },
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' } },
-                  h('strong', { style: { fontSize: '0.82rem', color: 'var(--club-navy-surface)' } }, f.area),
-                  h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, background: 'var(--emerald-bg)', color: 'var(--emerald-ok)', padding: '0.15rem 0.45rem', borderRadius: '4px' } },
-                    `${f.currentScore} → ${f.remakeScore}`
-                  )
-                ),
-                h('p', { style: { fontSize: '0.78rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' } },
-                  h('strong', { style: { color: 'var(--crimson)' } }, 'Live Defect: '),
-                  f.problem
-                ),
-                h('p', { style: { fontSize: '0.78rem', color: 'var(--ink-primary)', marginBottom: '0.55rem' } },
-                  h('strong', { style: { color: 'var(--emerald-ok)' } }, 'Our Solution: '),
-                  f.solution
-                ),
-                h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 700, color: 'var(--club-navy-surface)' } },
-                  `Projected Impact: ${f.impact}`
-                )
-              )
-            )
-          ),
-
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' } },
-            h('span', { style: { fontSize: '0.8rem', color: 'var(--ink-secondary)' } },
-              'Tip: Toggle "Pitch Callouts" in the bottom-left bar when demonstrating live to the client.'
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-primary',
-              onClick: () => setPitchModalOpen(false)
-            }, 'Return to Interactive Product Demo')
-          )
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 2: NATIVE TABLE & BAR RESERVATION CONCIERGE PASS
-      // ======================================================================
-      reservationModalOpen && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setReservationModalOpen(false); }
-      },
-        h('div', { className: 'modal-card' },
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '2px solid var(--club-navy-surface)' } },
-            h('div', null,
-              h('span', { className: 'badge-pill' }, '1 Club Row, Shoreditch · E1 6JX'),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.85rem', fontWeight: 700 } },
-                confirmedReservation ? 'Table & Bar Pass Confirmed' : 'Complete Your Reservation'
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-navy',
-              onClick: () => {
-                setReservationModalOpen(false);
-                setConfirmedReservation(null);
-              }
-            }, h(Icon, { name: 'close', size: 16 }))
-          ),
-
-          confirmedReservation
-            ? h('div', null,
-                h('div', {
-                  style: {
-                    background: 'var(--club-navy-surface)',
-                    color: 'var(--parchment)',
-                    padding: '1.35rem',
-                    borderRadius: '8px',
-                    border: '2px solid var(--brass)',
-                    marginBottom: '1.25rem'
-                  }
-                },
-                  h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: 'var(--brass-bright)' } },
-                    h('span', null, `REF: ${confirmedReservation.code}`),
-                    h('span', null, 'STATUS: CONFIRMED')
-                  ),
-                  h('h4', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.55rem', marginBottom: '0.35rem' } },
-                    `${confirmedReservation.guests} · ${confirmedReservation.zone}`
-                  ),
-                  h('div', { style: { fontSize: '0.86rem', marginBottom: '0.65rem' } },
-                    `Date: ${confirmedReservation.date} · Sitting: ${confirmedReservation.session}`
-                  ),
-                  confirmedReservation.notes && h('div', { style: { fontSize: '0.78rem', background: 'rgba(255,255,255,0.08)', padding: '0.5rem 0.75rem', borderRadius: '4px' } },
-                    `Concierge Note: ${confirmedReservation.notes}`
-                  )
-                ),
-                h('p', { style: { fontSize: '0.82rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
-                  'Arrival Note: Enter via the street doorway at 1 Club Row directly beside The Knave of Clubs pub and head up the stairs.'
-                ),
-                h('div', { style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap' } },
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-primary',
-                    onClick: () => {
-                      setReservationModalOpen(false);
-                      setConfirmedReservation(null);
-                    }
-                  }, 'Done'),
-                  h('a', {
-                    href: DATA.venue.sevenRoomsReserveUrl,
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                    className: 'btn-outline-navy'
-                  }, 'Also Open Live SevenRooms Portal ↗')
-                )
-              )
-            : h('form', {
-                onSubmit: (e) => {
-                  e.preventDefault();
-                  setConfirmedReservation({
-                    code: '1CR-' + Math.floor(100000 + Math.random() * 900000),
-                    guests: resGuests,
-                    date: resDate,
-                    session: resSession,
-                    zone: resZone,
-                    name: resGuestName || 'VIP Guest',
-                    notes: resSpecialNotes
-                  });
-                  pushToast(`Reservation Pass issued for ${resGuests} (${resZone}).`);
-                },
-                style: { display: 'grid', gap: '0.85rem' }
-              },
-                h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' } },
-                  h('div', { className: 'field-group' },
-                    h('label', { className: 'field-label' }, 'Party Size'),
-                    h('input', { type: 'text', className: 'field-control', value: resGuests, onChange: (e) => setResGuests(e.target.value) })
-                  ),
-                  h('div', { className: 'field-group' },
-                    h('label', { className: 'field-label' }, 'Seating Zone'),
-                    h('input', { type: 'text', className: 'field-control', value: resZone, onChange: (e) => setResZone(e.target.value) })
-                  )
-                ),
-                h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' } },
-                  h('div', { className: 'field-group' },
-                    h('label', { className: 'field-label' }, 'Guest Full Name *'),
-                    h('input', {
-                      type: 'text',
-                      className: 'field-control',
-                      placeholder: 'e.g. Eleanor Vance',
-                      value: resGuestName,
-                      onChange: (e) => setResGuestName(e.target.value),
-                      required: true
-                    })
-                  ),
-                  h('div', { className: 'field-group' },
-                    h('label', { className: 'field-label' }, 'Email for Pass *'),
-                    h('input', {
-                      type: 'email',
-                      className: 'field-control',
-                      placeholder: 'guest@domain.com',
-                      value: resGuestEmail,
-                      onChange: (e) => setResGuestEmail(e.target.value),
-                      required: true
-                    })
-                  )
-                ),
-                h('div', { className: 'field-group' },
-                  h('label', { className: 'field-label' }, 'Dietary Notes or Martini Arrival Spec'),
-                  h('input', {
-                    type: 'text',
-                    className: 'field-control',
-                    placeholder: 'e.g. Two sub-zero Tanqueray 10 Dry Martinis on arrival, 1 gluten-free guest',
-                    value: resSpecialNotes,
-                    onChange: (e) => setResSpecialNotes(e.target.value)
-                  })
-                ),
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.5rem' } },
-                  h('a', {
-                    href: DATA.venue.sevenRoomsReserveUrl,
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                    style: { fontSize: '0.78rem', color: 'var(--club-navy-surface)', textDecoration: 'underline', fontWeight: 600 }
-                  }, 'Or continue on SevenRooms ↗'),
-                  h('button', { type: 'submit', className: 'btn-primary' }, 'Confirm Instant Booking Pass')
-                )
-              )
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 3: GALLERY HIGH-RES LIGHTBOX
-      // ======================================================================
-      lightboxPhoto && h('div', {
-        className: 'modal-backdrop',
-        onClick: () => setLightboxPhoto(null)
-      },
-        h('div', {
-          className: 'modal-card',
-          style: { maxWidth: '580px', textAlign: 'center' },
-          onClick: (e) => e.stopPropagation()
-        },
-          h('img', {
-            src: lightboxPhoto.src,
-            alt: lightboxPhoto.title,
-            style: { width: '100%', maxHeight: '68vh', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--crimson)', marginBottom: '0.9rem' }
-          }),
-          h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 700 } }, lightboxPhoto.title),
-          h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } }, lightboxPhoto.caption),
-          h('button', { type: 'button', className: 'btn-outline-navy', onClick: () => setLightboxPhoto(null) }, 'Close Frame')
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 4: DISH & 14-ALLERGEN MATRIX INSPECTOR MODAL (Post-Audit Section)
-      // ======================================================================
-      inspectedDish && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setInspectedDish(null); }
-      },
-        h('div', { className: 'modal-card' },
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem', paddingBottom: '0.85rem', borderBottom: '2px solid var(--club-navy-surface)' } },
-            h('div', null,
-              h('span', { className: 'badge-pill' }, `${inspectedDish.section} · Allergen & Sommelier Guide`),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.9rem', fontWeight: 700, marginTop: '0.2rem' } },
-                inspectedDish.name
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-navy',
-              onClick: () => setInspectedDish(null)
-            }, h(Icon, { name: 'close', size: 16 }))
-          ),
-
-          h('p', { style: { fontSize: '0.9rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
-            inspectedDish.desc
-          ),
-
-          h('div', { style: { marginBottom: '1.15rem' } },
-            h('div', { style: { fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--club-navy-surface)', marginBottom: '0.45rem' } },
-              'Kitchen Allergen Matrix (Live Audit Upgrade — Replaces Unindexed Menu Text)'
-            ),
-            h('div', { className: 'allergen-grid-14' },
-              ['gluten', 'dairy', 'egg', 'fish', 'shellfish', 'molluscs', 'nuts', 'mustard', 'sulphites'].map((alg) => {
-                const present = (inspectedDish.allergens || []).includes(alg);
-                return h('div', {
-                  key: alg,
-                  className: `allergen-status-cell ${present ? 'contains' : 'free'}`
-                },
-                  h('span', null, present ? '●' : '✓'),
-                  h('span', { style: { textTransform: 'capitalize' } }, `${alg}: ${present ? 'Contains' : 'Free'}`)
-                );
-              })
-            )
-          ),
-
-          h('div', {
-            style: {
-              background: 'var(--parchment-warm)',
-              border: '1px solid var(--border-parchment)',
-              borderLeft: '3px solid var(--crimson)',
-              borderRadius: '6px',
-              padding: '0.85rem 1rem',
-              marginBottom: '1.2rem',
-              fontSize: '0.82rem'
-            }
-          },
-            h('strong', { style: { color: 'var(--club-navy-surface)', display: 'block', marginBottom: '0.2rem' } },
-              'Sommelier & Bar Pairing Note:'
-            ),
-            inspectedDish.category === 'raw-snacks' || inspectedDish.allergens?.includes('shellfish') || inspectedDish.allergens?.includes('fish')
-              ? 'Pairs with Jacquesson Cuvée No. 746 (£24 gls) or Txakoli Ameztoi Getariako (£10 gls) for crisp mineral acidity.'
-              : inspectedDish.category === 'mains'
-                ? 'Pairs with Bachelet-Monnot Maranges 1er Cru La Fussière 2022 (£22 gls) or ask our sommelier for our Coravin rare pours.'
-                : 'Pairs with our House Sub-Zero Tanqueray 10 Dry Martini (£14) or ratafia service.'
-          ),
-
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' } },
-            h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--crimson)' } },
-              `£${inspectedDish.price}`
-            ),
-            h('div', { style: { display: 'flex', gap: '0.6rem' } },
-              h('button', {
-                type: 'button',
-                className: 'btn-outline-navy',
-                onClick: () => setInspectedDish(null)
-              }, 'Close'),
-              h('button', {
-                type: 'button',
-                className: 'btn-primary',
-                onClick: () => {
-                  addToEveningBag({
-                    uid: `dish-${inspectedDish.id}`,
-                    name: inspectedDish.name,
-                    category: inspectedDish.section,
-                    unitPrice: inspectedDish.price,
-                    details: inspectedDish.desc
-                  });
-                  setInspectedDish(null);
-                }
-              }, '+ Add to Evening Plan')
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // MODAL 5: CLUB ROW SOCIETY & NEWSLETTER MODAL (Replaces 820px iframe)
-      // ======================================================================
-      newsletterModalOpen && h('div', {
-        className: 'modal-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setNewsletterModalOpen(false); }
-      },
-        h('div', { className: 'modal-card' },
-          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '2px solid var(--club-navy-surface)' } },
-            h('div', null,
-              h('span', { className: 'badge-pill' }, 'Post-Audit Fix · Native React Society Card'),
-              h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.85rem', fontWeight: 700 } },
-                'Join the One Club Row Society'
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-navy',
-              onClick: () => setNewsletterModalOpen(false)
-            }, h(Icon, { name: 'close', size: 16 }))
-          ),
-          newsletterDone
-            ? h('div', { style: { textAlign: 'center', padding: '1.25rem 0' } },
-                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--emerald-ok)', marginBottom: '0.4rem' } },
-                  'Welcome to 1 Club Row'
-                ),
-                h('p', { style: { fontSize: '0.88rem', color: 'var(--ink-secondary)', marginBottom: '1rem' } },
-                  'You are on the priority list for live pianist nights, seasonal menus by Chef Patrick Powell, and private dining invitations.'
-                ),
-                h('button', {
-                  type: 'button',
-                  className: 'btn-primary',
-                  onClick: () => {
-                    setNewsletterDone(false);
-                    setNewsletterModalOpen(false);
-                  }
-                }, 'Done')
-              )
-            : h('form', {
-                onSubmit: (e) => {
-                  e.preventDefault();
-                  setNewsletterDone(true);
-                  pushToast('Subscribed to the One Club Row Society.');
-                },
-                style: { display: 'grid', gap: '0.85rem' }
-              },
-                h('p', { style: { fontSize: '0.86rem', color: 'var(--ink-secondary)' } },
-                  'Receive priority invitations to late-night piano lock-ins, rare wine cellars, and seasonal menu launches above The Knave of Clubs.'
-                ),
-                h('div', { className: 'field-group' },
-                  h('label', { className: 'field-label' }, 'Full Name *'),
-                  h('input', {
-                    type: 'text',
-                    className: 'field-control',
-                    placeholder: 'Your Name',
-                    value: newsletterName,
-                    onChange: (e) => setNewsletterName(e.target.value),
-                    required: true
-                  })
-                ),
-                h('div', { className: 'field-group' },
-                  h('label', { className: 'field-label' }, 'Email Address *'),
-                  h('input', {
-                    type: 'email',
-                    className: 'field-control',
-                    placeholder: 'guest@domain.com',
-                    value: newsletterEmail,
-                    onChange: (e) => setNewsletterEmail(e.target.value),
-                    required: true
-                  })
-                ),
-                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.35rem' } },
-                  h('a', {
-                    href: DATA.venue.sevenRoomsSubscriptionUrl,
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                    style: { fontSize: '0.76rem', color: 'var(--club-navy-surface)', textDecoration: 'underline', fontWeight: 600 }
-                  }, 'Official SevenRooms List ↗'),
-                  h('button', { type: 'submit', className: 'btn-primary' }, 'Join the Society')
-                )
-              )
-        )
-      ),
-
-      // ======================================================================
-      // MOBILE & TABLET SLIDE-OVER NAVIGATION DRAWER (Multi-Device UX)
-      // ======================================================================
-      mobileNavOpen && h('div', {
-        className: 'drawer-backdrop mobile-nav-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setMobileNavOpen(false); }
-      },
-        h('aside', { className: 'mobile-nav-drawer' },
-          h('div', { className: 'mobile-nav-header' },
-            h('div', { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-              h('div', { className: 'brand-crest-badge', style: { width: '38px', height: '38px' } },
-                h(BirdCrest, { size: 20, color: '#F6F3E3' })
-              ),
-              h('div', null,
-                h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--parchment)' } },
-                  'One Club Row'
-                ),
-                h('div', { style: { fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--brass-bright)' } },
-                  'Shoreditch · Est. 1 Club Row'
-                )
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'mobile-nav-close',
-              'aria-label': 'Close Menu',
-              onClick: () => setMobileNavOpen(false)
-            }, h(Icon, { name: 'close', size: 18, color: '#F6F3E3' }))
-          ),
-          h('div', { className: 'mobile-nav-body' },
-            h('nav', { className: 'mobile-nav-links' },
-              [
-                { href: '#storySection', num: '01', label: 'The Story & The Trio' },
-                { href: '#menuSection', num: '02', label: 'Culinary Menus & Cellar' },
-                { href: '#martiniSection', num: '03', label: 'Bespoke Martini Ritual' },
-                { href: '#apartmentSection', num: '04', label: 'The Apartment (Private Dining)' },
-                { href: '#vouchersSection', num: '05', label: 'Personalized Gift Vouchers' },
-                { href: '#gallerySection', num: '06', label: 'Editorial Gallery' },
-                { href: '#visitSection', num: '07', label: 'Hours, Location & Entrance' }
-              ].map((nav) =>
-                h('a', {
-                  key: nav.href,
-                  href: nav.href,
-                  className: 'mobile-nav-item',
-                  onClick: () => setMobileNavOpen(false)
-                },
-                  h('span', { className: 'mobile-nav-num' }, nav.num),
-                  h('span', { className: 'mobile-nav-text' }, nav.label),
-                  h(Icon, { name: 'arrowRight', size: 14, color: 'var(--brass-bright)' })
-                )
-              )
-            ),
-            h('div', { className: 'mobile-nav-actions' },
-              h('button', {
-                type: 'button',
-                className: 'btn-primary',
-                style: { width: '100%', height: '46px', fontSize: '0.84rem' },
-                onClick: () => {
-                  setMobileNavOpen(false);
-                  setReservationModalOpen(true);
-                }
-              },
-                h(Icon, { name: 'calendar', size: 16 }),
-                'Reserve a Table (SevenRooms)'
-              ),
-              h('button', {
-                type: 'button',
-                className: 'btn-outline-cream',
-                style: { width: '100%', height: '44px', fontSize: '0.82rem' },
-                onClick: () => {
-                  setMobileNavOpen(false);
-                  setDrawerOpen(true);
-                }
-              },
-                h(Icon, { name: 'bag', size: 16 }),
-                `Your Evening Plan (${totalBagCount} items)`
-              )
-            ),
-            h('div', { className: 'mobile-nav-info' },
-              h('div', { className: 'mobile-info-row' },
-                h('strong', null, 'Address: '),
-                '1 Club Row, London E1 6JX (Above The Knave of Clubs)'
-              ),
-              h('div', { className: 'mobile-info-row' },
-                h('strong', null, 'Hours: '),
-                'Tue–Sun · 12:00pm – Late (Closed Mon)'
-              ),
-              h('div', { style: { display: 'flex', gap: '0.6rem', marginTop: '0.65rem' } },
-                h('button', {
-                  type: 'button',
-                  className: 'mobile-audit-btn',
-                  onClick: () => {
-                    setMobileNavOpen(false);
-                    setPitchModalOpen(true);
-                  }
-                },
-                  h(Icon, { name: 'sparkle', size: 13, color: '#DFB973' }),
-                  'Open 6-Point UX Audit Pitch Deck'
-                )
-              )
-            )
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SLIDE-OVER EVENING PLAN & GIFT VOUCHER CONCIERGE DRAWER
-      // ======================================================================
-      drawerOpen && h('div', {
-        className: 'drawer-backdrop',
-        onClick: (e) => { if (e.target === e.currentTarget) setDrawerOpen(false); }
-      },
-        h('aside', { className: 'concierge-drawer' },
-          h('div', { className: 'drawer-header' },
-            h('div', null,
-              h('div', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.45rem', fontWeight: 700 } },
-                'One Club Row Evening Plan'
-              ),
-              h('div', { style: { fontSize: '0.75rem', color: 'var(--brass-bright)' } },
-                'Table Pre-Orders, Bespoke Martinis & Gift Vouchers'
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-outline-cream',
-              style: { padding: '0.35rem 0.6rem' },
-              onClick: () => setDrawerOpen(false)
-            }, h(Icon, { name: 'close', size: 15 }))
-          ),
-
-          h('div', { className: 'drawer-body' },
-            bagItems.length === 0
-              ? h('div', { style: { textAlign: 'center', padding: '3rem 1rem', color: 'var(--ink-secondary)' } },
-                  h(Icon, { name: 'martini', size: 32, color: '#C53627' }),
-                  h('h4', { style: { fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: '0.5rem 0' } },
-                    'Your Evening Plan is Empty'
-                  ),
-                  h('p', { style: { fontSize: '0.84rem' } },
-                    'Add plates from Lunch & Dinner, configure a bespoke Martini, or personalize a Gift Voucher.'
-                  )
-                )
-              : bagItems.map((item) =>
-                  h('div', {
-                    key: item.uid,
-                    style: {
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      gap: '0.85rem',
-                      padding: '0.9rem 0',
-                      borderBottom: '1px solid var(--border-parchment)'
-                    }
-                  },
-                    h('div', null,
-                      h('span', { className: 'badge-pill navy', style: { marginBottom: '0.2rem', display: 'inline-block' } }, item.category),
-                      h('div', { style: { fontWeight: 700, fontSize: '0.92rem' } }, item.name),
-                      h('div', { style: { fontSize: '0.76rem', color: 'var(--ink-secondary)', marginBottom: '0.4rem' } }, item.details),
-                      h('div', { style: { display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--parchment-warm)', padding: '0.15rem 0.55rem', borderRadius: '4px' } },
-                        h('button', {
-                          type: 'button',
-                          style: { border: 'none', background: 'none', fontWeight: 700, cursor: 'pointer' },
-                          onClick: () =>
-                            setBagItems((prev) =>
-                              prev
-                                .map((p) => (p.uid === item.uid ? { ...p, qty: p.qty - 1 } : p))
-                                .filter((p) => p.qty > 0)
-                            )
-                        }, '−'),
-                        h('span', { style: { fontSize: '0.78rem', fontWeight: 700 } }, item.qty),
-                        h('button', {
-                          type: 'button',
-                          style: { border: 'none', background: 'none', fontWeight: 700, cursor: 'pointer' },
-                          onClick: () =>
-                            setBagItems((prev) =>
-                              prev.map((p) => (p.uid === item.uid ? { ...p, qty: p.qty + 1 } : p))
-                            )
-                        }, '+')
-                      )
-                    ),
-                    h('div', { style: { textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--crimson)' } },
-                      `£${(item.unitPrice * item.qty).toFixed(2).replace(/\.00$/, '')}`
-                    )
-                  )
-                )
-          ),
-
-          h('div', { className: 'drawer-footer' },
-            h('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.85rem' } },
-              h('span', null, 'Estimated Total'),
-              h('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--crimson)' } },
-                `£${totalBagValue.toFixed(2).replace(/\.00$/, '')}`
-              )
-            ),
-            h('button', {
-              type: 'button',
-              className: 'btn-primary',
-              style: { width: '100%' },
-              onClick: () => {
-                setDrawerOpen(false);
-                setResSpecialNotes(
-                  `Pre-selected items (${totalBagCount}): ` +
-                    bagItems.map((b) => `${b.qty}x ${b.name}`).join(', ')
-                );
-                setReservationModalOpen(true);
-              }
-            }, 'Attach to Table Reservation / Checkout')
-          )
-        )
-      ),
-
-      // ======================================================================
-      // SMARTPHONE STICKY BOTTOM TAB BAR (Fixes hidden knave.js mobile footer)
-      // ======================================================================
-      h('nav', { className: 'mobile-bottom-nav', 'aria-label': 'Mobile Quick Actions' },
-        h('a', { href: '#menuSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'utensils', size: 18 }),
-          h('span', null, 'Menus')
-        ),
-        h('a', { href: '#martiniSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'martini', size: 18 }),
-          h('span', null, 'Martinis')
-        ),
-        h('a', { href: '#apartmentSection', className: 'mobile-tab-item' },
-          h(Icon, { name: 'users', size: 18 }),
-          h('span', null, 'Apartment')
-        ),
-        h('button', {
-          type: 'button',
-          className: 'mobile-tab-item',
-          onClick: () => setDrawerOpen(true),
-          'aria-label': 'Open Evening Plan'
-        },
-          h(Icon, { name: 'bag', size: 18 }),
-          h('span', null, 'Plan'),
-          totalBagCount > 0 && h('span', { className: 'mobile-tab-badge' }, totalBagCount)
-        ),
-        h('button', {
-          type: 'button',
-          className: 'mobile-tab-item highlight-tab',
-          onClick: () => setReservationModalOpen(true),
-          'aria-label': 'Reserve a Table'
-        },
-          h('span', { className: 'highlight-tab-inner' },
-            h(Icon, { name: 'calendar', size: 16 }),
-            h('span', null, 'Reserve')
-          )
-        )
-      ),
-
-      // Toast Notifications
-      h('div', { className: 'toast-container', 'aria-live': 'polite' },
-        toasts.map((t) => h('div', { key: t.id, className: 'toast' }, t.text))
+        // Bottom expander if in compact mode
+        isShowingCompact && filteredItems.length > 12 ? h('div', { style: { textAlign: 'center', marginTop: '2.5rem' } },
+          h('button', {
+            type: 'button',
+            className: 'btn-primary-order',
+            onClick: function () { if (setIsCompactMode) setIsCompactMode(false); }
+          }, '🍗 View All 80 Dishes & Drinks')
+        ) : null
       )
     );
   }
 
-  // Mount React 18 Root
-  document.addEventListener('DOMContentLoaded', function () {
-    const rootEl = document.getElementById('root');
-    if (rootEl && createRoot) {
-      const root = createRoot(rootEl);
-      root.render(h(OneClubRowApp));
+  /* ==========================================================================
+     6. COMPONENT: SIGNATURE SPOTLIGHT (Chef Jamie's 4 Specialties)
+     ========================================================================== */
+  function SignatureSpotlight(props) {
+    var signatures = props.signatures || [];
+    var cart = props.cart || {};
+    var onAddToCart = props.onAddToCart;
+    var onUpdateQuantity = props.onUpdateQuantity;
+
+    return h('section', { id: 'spotlight', className: 'section spotlight-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'section-header' },
+          h('span', { className: 'section-tag' }, 'House Specialties'),
+          h('h2', { className: 'section-title' }, 'Chef Jamie\'s Signature Dishes'),
+          h('p', { className: 'section-subtitle' },
+            'The four pillars of Yeah Man Caribbean that keep Manchester foodies traveling to Norway Street.'
+          )
+        ),
+
+        h('div', { className: 'signature-grid' },
+          signatures.map(function (dish) {
+            var cartEntry = cart[dish.id];
+            var qty = cartEntry ? cartEntry.qty : 0;
+
+            return h('div', { key: dish.id, className: 'spotlight-card' },
+              h('div', null,
+                h('span', { className: 'spotlight-badge' }, dish.tag || 'Signature'),
+                h('h3', { className: 'spotlight-name' }, dish.name),
+                h('p', { className: 'spotlight-desc' }, dish.description),
+                h('div', { className: 'spotlight-meta-box' },
+                  h('div', { style: { fontWeight: 700, color: 'var(--color-gold)' } }, dish.heatLevel),
+                  h('div', null, dish.prepNote)
+                )
+              ),
+
+              h('div', { className: 'card-bottom-row' },
+                h('span', { className: 'card-price-value' }, dish.price),
+                qty === 0
+                  ? h('button', {
+                      type: 'button',
+                      className: 'btn-card-add',
+                      onClick: function () { if (onAddToCart) onAddToCart(dish); }
+                    }, '+ Add to Order')
+                  : h('div', { className: 'card-stepper-box' },
+                      h('button', {
+                        type: 'button',
+                        className: 'stepper-btn',
+                        onClick: function () { if (onUpdateQuantity) onUpdateQuantity(dish.id, -1); }
+                      }, '−'),
+                      h('span', { className: 'stepper-qty' }, qty),
+                      h('button', {
+                        type: 'button',
+                        className: 'stepper-btn',
+                        onClick: function () { if (onUpdateQuantity) onUpdateQuantity(dish.id, 1); }
+                      }, '+')
+                    )
+              )
+            );
+          })
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     7. COMPONENT: STORY SECTION (12+ Years Heritage & Authentic Ethos)
+     ========================================================================== */
+  function StorySection(props) {
+    var brand = props.brand || {};
+
+    return h('section', { id: 'story', className: 'section story-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'story-layout' },
+          h('div', { className: 'story-text' },
+            h('span', { className: 'section-tag' }, 'Our Heritage'),
+            h('h2', { className: 'section-title' }, '12 Years of Uncompromising Jamaican Tradition'),
+            h('p', { className: 'story-lead-p' },
+              'When Chef Jamie founded Yeah Man Caribbean on Norway Street in 2012, he had one unwavering mission: to serve authentic Jamaican comfort food exactly as it is prepared across the parishes of Jamaica.'
+            ),
+            h('p', { className: 'story-p' },
+              'We do not cut corners. Our jerk marinade is ground from fresh Scotch bonnet peppers, pimento berries, scallions, and mountain thyme, then cured into fresh poultry for 48 hours before kissing the glowing charcoal drums.'
+            ),
+            h('p', { className: 'story-p' },
+              'Our oxtail and mutton are simmered low and slow for four hours until they melt off the bone into a luxurious, glossy gravy with plump butter beans. When you eat with us, you are part of our family.'
+            ),
+
+            h('div', { className: 'story-features-list' },
+              h('div', { className: 'story-feature-item' },
+                h('div', { className: 'story-feature-icon' }, '✓'),
+                h('span', null, 'Traditional Jamaican charcoal smoking drums')
+              ),
+              h('div', { className: 'story-feature-item' },
+                h('div', { className: 'story-feature-icon' }, '✓'),
+                h('span', null, '100% Halal certified meats cooked in scratch-made marinades')
+              ),
+              h('div', { className: 'story-feature-item' },
+                h('div', { className: 'story-feature-icon' }, '✓'),
+                h('span', null, 'Fresh handmade dumplings and fried splits prepared daily')
+              )
+            )
+          ),
+
+          h('div', { className: 'story-visual' },
+            h('div', { className: 'pitch-item', style: { padding: '2rem', border: '1px solid var(--border-gold)' } },
+              h('h3', { className: 'pitch-item-title', style: { fontSize: '1.4rem', marginBottom: '1rem' } }, '🏆 Stretford\'s Community Anchor'),
+              h('p', { className: 'story-p' },
+                'For over a decade, we have proudly fed local families, Manchester United matchday travelers, nurses, teachers, and Caribbean food enthusiasts from across Greater Manchester.'
+              ),
+              h('p', { className: 'story-p', style: { color: 'var(--color-gold)', fontWeight: 700 } },
+                '"No shortcuts, no pre-made jars. Just genuine Caribbean warmth and fire."'
+              ),
+              h('p', { style: { fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: '0.5rem' } },
+                '— Chef Jamie, Head Chef & Founder'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     8. COMPONENT: CATERING & POSTCODE CHECKER SECTION
+     ========================================================================== */
+  function CateringSection(props) {
+    var packages = props.packages || [];
+    var onOpenInquiry = props.onOpenInquiry;
+    var fulfillment = props.fulfillment || {};
+    var postcodes = fulfillment.postcodes || [];
+
+    var enteredPostcodeState = useState('');
+    var enteredPostcode = enteredPostcodeState[0];
+    var setEnteredPostcode = enteredPostcodeState[1];
+
+    var checkResultState = useState(null);
+    var checkResult = checkResultState[0];
+    var setCheckResult = checkResultState[1];
+
+    function handleCheckPostcode(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var clean = (enteredPostcode || '').trim().toUpperCase().replace(/\s+/g, '');
+      if (!clean) return;
+
+      var match = postcodes.find(function (p) {
+        var pCode = p.code.replace(/\s+/g, '');
+        return clean.indexOf(pCode) === 0;
+      });
+
+      if (match) {
+        setCheckResult({
+          valid: true,
+          message: '✓ Great news! We deliver to ' + match.code + ' (' + match.area + ') with £3.00 delivery fee (Min order £15).'
+        });
+      } else {
+        setCheckResult({
+          valid: false,
+          message: 'We deliver directly to M15, M16, M17, M21, M32, M33, M41, M5, M50. You are welcome to collect your order for free in 15–20 mins!'
+        });
+      }
     }
-  });
+
+    return h('section', { id: 'catering', className: 'section catering-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'section-header' },
+          h('span', { className: 'section-tag' }, 'Events & Group Feasts'),
+          h('h2', { className: 'section-title' }, 'Party Platters & Event Catering'),
+          h('p', { className: 'section-subtitle' },
+            'Bring the warmth and flavors of Yeah Man Caribbean to your birthday, corporate lunch, or celebration.'
+          )
+        ),
+
+        // Catering Packages
+        h('div', { className: 'catering-cards-grid' },
+          packages.map(function (pkg, index) {
+            var isFeatured = index === 1;
+            return h('div', {
+              key: pkg.id,
+              className: 'catering-card' + (isFeatured ? ' featured' : '')
+            },
+              h('div', null,
+                h('div', { className: 'catering-card-header' },
+                  h('div', { className: 'catering-serves' }, pkg.serves),
+                  h('h3', { className: 'catering-name' }, pkg.name),
+                  h('div', { className: 'catering-price' }, pkg.price)
+                ),
+                h('p', { className: 'story-p', style: { fontSize: '0.88rem', marginBottom: '1rem' } }, pkg.description),
+                h('ul', { className: 'catering-items-list' },
+                  pkg.items.map(function (item, i) {
+                    return h('li', { key: i, className: 'catering-item' }, item);
+                  })
+                )
+              ),
+
+              h('button', {
+                type: 'button',
+                className: 'btn-catering-inquire',
+                onClick: function () { if (onOpenInquiry) onOpenInquiry(pkg.name); }
+              }, 'Inquire for Catering')
+            );
+          })
+        ),
+
+        // Postcode Delivery Validator Box
+        h('div', { className: 'postcode-checker-box' },
+          h('h3', { style: { fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.5rem' } },
+            '🛵 Check If We Deliver To Your Manchester Postcode'
+          ),
+          h('p', { style: { color: 'var(--color-text-secondary)', fontSize: '0.95rem' } },
+            'Enter your postcode below to verify direct delivery availability in seconds.'
+          ),
+
+          h('form', { onSubmit: handleCheckPostcode, className: 'checker-input-row' },
+            h('input', {
+              type: 'text',
+              className: 'checker-input',
+              placeholder: 'e.g. M32 0JN or M16',
+              value: enteredPostcode,
+              onChange: function (e) { setEnteredPostcode(e.target.value); },
+              'aria-label': 'Enter Postcode'
+            }),
+            h('button', { type: 'submit', className: 'btn-check-postcode' }, 'Check Postcode')
+          ),
+
+          checkResult ? h('div', {
+            className: 'postcode-result-badge ' + (checkResult.valid ? 'success' : 'warning')
+          }, checkResult.message) : null,
+
+          h('div', { style: { marginTop: '1rem' } },
+            h('span', { style: { fontSize: '0.82rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.4rem' } },
+              'Direct Delivery Districts Supported:'
+            ),
+            h('div', { className: 'supported-districts-list' },
+              postcodes.map(function (p) {
+                return h('span', { key: p.code, className: 'district-chip' }, p.code + ' (' + p.area + ')');
+              })
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     9. COMPONENT: REVIEWS SECTION
+     ========================================================================== */
+  function ReviewsSection(props) {
+    var reviews = props.reviews || [];
+
+    return h('section', { id: 'reviews', className: 'section reviews-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'section-header' },
+          h('span', { className: 'section-tag' }, 'Verified Testimonials'),
+          h('h2', { className: 'section-title' }, 'What Manchester Says About Us'),
+          h('p', { className: 'section-subtitle' },
+            'Over 2,150 genuine 5-star reviews from Stretford neighbors and food critics.'
+          )
+        ),
+
+        h('div', { className: 'reviews-grid' },
+          reviews.map(function (rev) {
+            return h('div', { key: rev.id, className: 'review-card' },
+              h('div', null,
+                h('div', { className: 'review-rating-stars' }, '★★★★★'),
+                h('p', { className: 'review-text' }, '“' + rev.text + '”')
+              ),
+              h('div', { className: 'review-author-row' },
+                h('div', null,
+                  h('span', { className: 'review-author-name' }, rev.author),
+                  h('span', { style: { fontSize: '0.78rem', color: 'var(--color-text-muted)', marginLeft: '0.5rem' } }, rev.location)
+                ),
+                h('span', { className: 'review-source-tag' }, rev.source)
+              )
+            );
+          })
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     10. COMPONENT: LOCATION & HOURS SCHEDULE
+     ========================================================================== */
+  function LocationHours(props) {
+    var brand = props.brand || {};
+    var hours = props.hours || {};
+    var schedule = hours.schedule || [];
+
+    var todayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
+
+    return h('section', { id: 'location', className: 'section location-section' },
+      h('div', { className: 'container' },
+        h('div', { className: 'section-header' },
+          h('span', { className: 'section-tag' }, 'Visit Us In Stretford'),
+          h('h2', { className: 'section-title' }, 'Hours & Collection Point'),
+          h('p', { className: 'section-subtitle' },
+            'Fresh batches cooked continuously throughout the day on Norway Street.'
+          )
+        ),
+
+        h('div', { className: 'location-layout' },
+          // Schedule Card
+          h('div', { className: 'schedule-card' },
+            h('h3', { style: { fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-text-primary)' } },
+              '⏰ Weekly Operating Hours'
+            ),
+            h('div', { className: 'hours-table' },
+              schedule.map(function (row) {
+                var isToday = row.day === todayName;
+                return h('div', {
+                  key: row.day,
+                  className: 'hours-row' + (isToday ? ' today' : '')
+                },
+                  h('span', { className: 'hours-day' }, row.day + (isToday ? ' (Today)' : '')),
+                  h('span', { className: 'hours-times' },
+                    row.isOpen ? ('Coll: ' + row.collection + ' | Del: ' + row.delivery) : 'Closed'
+                  )
+                );
+              })
+            ),
+            h('p', { style: { fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '1rem' } },
+              hours.notice || 'Pre-orders welcome via phone or WhatsApp!'
+            )
+          ),
+
+          // Map & Contact Card
+          h('div', { className: 'map-card' },
+            h('div', { className: 'map-address-box' },
+              h('h3', { className: 'address-headline' }, '📍 ' + (brand.name || 'Yeah Man Caribbean')),
+              h('p', { className: 'address-subtext' }, brand.address || '63 Norway Street, Stretford, Manchester, M32 0JN'),
+              h('p', { className: 'address-subtext', style: { marginTop: '0.5rem', fontWeight: 700 } },
+                '📞 Telephone: ' + (brand.phone || '0161 864 3259')
+              ),
+              h('p', { className: 'address-subtext', style: { color: 'var(--color-palm-green-light)', fontWeight: 600 } },
+                '🏆 ' + (brand.hygieneRating || 'Food Hygiene Rating: 5 (Very Good)')
+              )
+            ),
+
+            h('a', {
+              href: brand.googleMapsUrl || 'https://maps.google.com/?q=63+Norway+Street,+Stretford,+Manchester+M32+0JN',
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              className: 'btn-open-maps'
+            }, '🗺️ Open in Google Maps Directions')
+          )
+        ),
+
+        // Direct Pitch Banner
+        h('div', { className: 'pitch-banner' },
+          h('h3', { style: { fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, textAlign: 'center', color: 'var(--color-text-primary)' } },
+            'Why Order Directly from Yeah Man?'
+          ),
+          h('p', { style: { textAlign: 'center', color: 'var(--color-text-secondary)', marginTop: '0.35rem' } },
+            'Save Money, Support Local Independent Hospitality & Get Hotter Food Faster'
+          ),
+
+          h('div', { className: 'pitch-grid' },
+            h('div', { className: 'pitch-item' },
+              h('h4', { className: 'pitch-item-title' }, 'Direct Kitchen Priority'),
+              h('p', { className: 'pitch-item-desc' }, 'Cooked fresh on Norway Street and packaged immediately without waiting for aggregator couriers.')
+            ),
+            h('div', { className: 'pitch-item' },
+              h('h4', { className: 'pitch-item-title' }, 'Save Local Commission'),
+              h('p', { className: 'pitch-item-desc' }, 'Apps take 15% to 30% from every order. Ordering direct keeps 100% of your spend supporting Jamie & staff.')
+            ),
+            h('div', { className: 'pitch-item' },
+              h('h4', { className: 'pitch-item-title' }, 'Custom Gravy & Spices'),
+              h('p', { className: 'pitch-item-desc' }, 'Ask for extra sauce, crispy skin, or custom rice choices directly via WhatsApp or phone call.')
+            ),
+            h('div', { className: 'pitch-item' },
+              h('h4', { className: 'pitch-item-title' }, 'Zero Hidden Surcharges'),
+              h('p', { className: 'pitch-item-desc' }, 'No inflated menu prices, small order penalty fees, or third-party service markups.')
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     11. COMPONENT: INTERACTIVE CART DRAWER
+     ========================================================================== */
+  function CartDrawer(props) {
+    var isOpen = props.isOpen;
+    var onClose = props.onClose;
+    var cart = props.cart || {};
+    var onUpdateQuantity = props.onUpdateQuantity;
+    var onClearCart = props.onClearCart;
+    var brand = props.brand || {};
+    var fulfillment = props.fulfillment || {};
+
+    var orderType = props.orderType || 'collection';
+    var setOrderType = props.setOrderType;
+    var orderNotes = props.orderNotes || '';
+    var setOrderNotes = props.setOrderNotes;
+
+    var cartItems = Object.values(cart);
+    var subtotal = cartItems.reduce(function (sum, entry) {
+      return sum + (entry.item.priceNum * entry.qty);
+    }, 0);
+
+    var deliveryFee = orderType === 'delivery' ? 3.00 : 0.00;
+    var isMinOrderSatisfied = orderType === 'collection' || subtotal >= 15.00;
+    var grandTotal = subtotal + deliveryFee;
+
+    // Estimated aggregator markup saving (~20%)
+    var estimatedSavings = (subtotal * 0.20).toFixed(2);
+
+    // Format WhatsApp order text
+    function getWhatsAppUrl() {
+      var lines = [];
+      lines.push('*YEAH MAN CARIBBEAN — DIRECT ORDER*');
+      lines.push('Fulfillment: ' + (orderType === 'delivery' ? 'Local Delivery (£3.00)' : 'Collection Takeaway (FREE)'));
+      lines.push('--------------------------------');
+      cartItems.forEach(function (e) {
+        lines.push(e.qty + 'x ' + e.item.name + ' (£' + (e.item.priceNum * e.qty).toFixed(2) + ')');
+      });
+      lines.push('--------------------------------');
+      lines.push('Food Subtotal: £' + subtotal.toFixed(2));
+      if (orderType === 'delivery') {
+        lines.push('Delivery Fee: £3.00');
+      }
+      lines.push('*Total Due: £' + grandTotal.toFixed(2) + '*');
+      if (orderNotes) {
+        lines.push('Notes: ' + orderNotes);
+      }
+      lines.push('--------------------------------');
+      lines.push('Please confirm order acceptance and estimated ready time.');
+
+      var fullText = encodeURIComponent(lines.join('\n'));
+      return 'https://wa.me/' + (brand.whatsappNumber || '441618643259') + '?text=' + fullText;
+    }
+
+    return h(React.Fragment, null,
+      // Backdrop
+      h('div', {
+        className: 'cart-backdrop' + (isOpen ? ' open' : ''),
+        onClick: onClose,
+        'aria-hidden': !isOpen
+      }),
+
+      // Drawer panel
+      h('aside', {
+        className: 'cart-drawer' + (isOpen ? ' open' : ''),
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'Your Order Basket'
+      },
+        // Header
+        h('div', { className: 'cart-header' },
+          h('h3', { className: 'cart-header-title' },
+            '🛒 Your Basket (' + cartItems.reduce(function (c, i) { return c + i.qty; }, 0) + ')'
+          ),
+          h('button', {
+            type: 'button',
+            className: 'cart-close-btn',
+            onClick: onClose,
+            'aria-label': 'Close basket'
+          }, '✕')
+        ),
+
+        // Fulfillment Type Toggle
+        h('div', { className: 'fulfillment-segmented-toggle' },
+          h('button', {
+            type: 'button',
+            className: 'toggle-option-btn' + (orderType === 'collection' ? ' active' : ''),
+            onClick: function () { if (setOrderType) setOrderType('collection'); }
+          },
+            h('span', null, '🚶 Free Collection'),
+            h('span', { className: 'toggle-sub' }, 'Ready in 15–20 Mins')
+          ),
+          h('button', {
+            type: 'button',
+            className: 'toggle-option-btn' + (orderType === 'delivery' ? ' active' : ''),
+            onClick: function () { if (setOrderType) setOrderType('delivery'); }
+          },
+            h('span', null, '🛵 Local Delivery'),
+            h('span', { className: 'toggle-sub' }, '£3.00 · Min £15.00')
+          )
+        ),
+
+        // Cart Items List
+        h('div', { className: 'cart-items-container' },
+          cartItems.length === 0 ? h('div', { className: 'cart-empty-message' },
+            h('div', { className: 'cart-empty-icon' }, '🍗'),
+            h('h4', { style: { color: 'var(--color-text-primary)', marginBottom: '0.5rem' } }, 'Your basket is empty'),
+            h('p', null, 'Explore our authentic 80-item menu and add your favorite jerk chicken, curry goat, or dumplings.')
+          ) : cartItems.map(function (entry) {
+            var item = entry.item;
+            var itemTotal = (item.priceNum * entry.qty).toFixed(2);
+
+            return h('div', { key: item.id, className: 'cart-item-row' },
+              h('div', { className: 'cart-item-details' },
+                h('div', { className: 'cart-item-name' }, item.name),
+                h('div', { className: 'cart-item-price-unit' }, item.price + ' each')
+              ),
+              h('div', { className: 'cart-item-stepper' },
+                h('button', {
+                  type: 'button',
+                  className: 'cart-stepper-btn',
+                  onClick: function () { if (onUpdateQuantity) onUpdateQuantity(item.id, -1); },
+                  'aria-label': 'Decrease ' + item.name
+                }, '−'),
+                h('span', { className: 'cart-stepper-qty' }, entry.qty),
+                h('button', {
+                  type: 'button',
+                  className: 'cart-stepper-btn',
+                  onClick: function () { if (onUpdateQuantity) onUpdateQuantity(item.id, 1); },
+                  'aria-label': 'Increase ' + item.name
+                }, '+')
+              ),
+              h('div', { className: 'cart-item-total' }, '£' + itemTotal)
+            );
+          }),
+
+          // Special Instructions textarea
+          cartItems.length > 0 ? h('div', { style: { marginTop: '1rem' } },
+            h('label', { className: 'form-label' }, 'Special Instructions / Delivery Notes:'),
+            h('textarea', {
+              rows: 2,
+              placeholder: 'e.g. Extra jerk gravy, no onions, delivery address details...',
+              value: orderNotes,
+              onChange: function (e) { if (setOrderNotes) setOrderNotes(e.target.value); }
+            })
+          ) : null
+        ),
+
+        // Cart Footer & Checkout CTAs
+        cartItems.length > 0 ? h('div', { className: 'cart-footer' },
+          h('div', { className: 'cart-calc-row' },
+            h('span', null, 'Food Subtotal:'),
+            h('span', null, '£' + subtotal.toFixed(2))
+          ),
+          h('div', { className: 'cart-calc-row' },
+            h('span', null, orderType === 'delivery' ? 'Delivery Fee (M32 & Local):' : 'Collection Fee:'),
+            h('span', null, orderType === 'delivery' ? '£3.00' : 'FREE')
+          ),
+          h('div', { className: 'cart-calc-row total-row' },
+            h('span', null, 'Order Total:'),
+            h('span', { className: 'total-amount' }, '£' + grandTotal.toFixed(2))
+          ),
+
+          // Savings notice
+          h('div', { className: 'cart-savings-notice' },
+            '🎉 You save ~£' + estimatedSavings + ' by ordering direct without Just Eat app markups!'
+          ),
+
+          // Min delivery warning if needed
+          !isMinOrderSatisfied ? h('div', { style: { color: 'var(--color-spice-coral)', fontSize: '0.82rem', textAlign: 'center', fontWeight: 700 } },
+            '⚠️ Minimum delivery order is £15.00. Please add £' + (15.00 - subtotal).toFixed(2) + ' more or select Free Collection.'
+          ) : null,
+
+          // Primary WhatsApp Dispatch
+          h('a', {
+            href: isMinOrderSatisfied ? getWhatsAppUrl() : '#',
+            target: isMinOrderSatisfied ? '_blank' : '_self',
+            rel: 'noopener noreferrer',
+            className: 'btn-cart-whatsapp',
+            style: { opacity: isMinOrderSatisfied ? 1 : 0.5, pointerEvents: isMinOrderSatisfied ? 'auto' : 'none' }
+          }, '💬 Send Order via WhatsApp'),
+
+          // Direct Phone Call
+          h('a', {
+            href: 'tel:' + (brand.phoneDialer || '+441618643259'),
+            className: 'btn-cart-phone'
+          }, '📞 Call Shop to Dictate Order (' + (brand.phone || '0161 864 3259') + ')'),
+
+          // Clear cart link
+          h('button', {
+            type: 'button',
+            style: { fontSize: '0.78rem', color: 'var(--color-text-muted)', textDecoration: 'underline', marginTop: '0.2rem', cursor: 'pointer' },
+            onClick: onClearCart
+          }, 'Empty Basket')
+        ) : null
+      )
+    );
+  }
+
+  /* ==========================================================================
+     12. COMPONENT: FLOATING CART PILL
+     ========================================================================== */
+  function FloatingCartPill(props) {
+    var cartCount = props.cartCount || 0;
+    var cartTotal = props.cartTotal || 0;
+    var onOpenCart = props.onOpenCart;
+
+    if (cartCount === 0) return null;
+
+    return h('button', {
+      type: 'button',
+      className: 'floating-cart-pill',
+      onClick: onOpenCart,
+      'aria-label': 'View Order Basket, ' + cartCount + ' items, £' + cartTotal.toFixed(2)
+    },
+      h('span', null, '🛒 ' + cartCount + ' item' + (cartCount > 1 ? 's' : '')),
+      h('span', null, '· £' + cartTotal.toFixed(2)),
+      h('span', { style: { marginLeft: '0.25rem' } }, 'View Basket →')
+    );
+  }
+
+  /* ==========================================================================
+     13. COMPONENT: MOBILE STICKY QUICK BAR (<= 768px)
+     ========================================================================== */
+  function MobileQuickBar(props) {
+    var brand = props.brand || {};
+    var cartCount = props.cartCount || 0;
+    var onOpenCart = props.onOpenCart;
+
+    return h('div', { className: 'mobile-quick-bar', role: 'navigation', 'aria-label': 'Mobile Bottom Bar' },
+      h('a', {
+        href: 'tel:' + (brand.phoneDialer || '+441618643259'),
+        className: 'mobile-bar-action'
+      },
+        h('span', { className: 'action-icon' }, '📞'),
+        h('span', null, 'Call Shop')
+      ),
+
+      h('a', {
+        href: '#menu',
+        className: 'mobile-bar-action'
+      },
+        h('span', { className: 'action-icon' }, '🍗'),
+        h('span', null, 'Menu (80)')
+      ),
+
+      h('a', {
+        href: 'https://wa.me/' + (brand.whatsappNumber || '441618643259') + '?text=Hi%20Yeah%20Man%20Caribbean,%20I%20would%20like%20to%20place%20an%20order',
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        className: 'mobile-bar-action'
+      },
+        h('span', { className: 'action-icon' }, '💬'),
+        h('span', null, 'WhatsApp')
+      ),
+
+      h('button', {
+        type: 'button',
+        className: 'mobile-bar-action',
+        onClick: onOpenCart
+      },
+        h('span', { className: 'action-icon' }, '🛒'),
+        h('span', null, 'Basket'),
+        cartCount > 0 ? h('span', { className: 'mobile-bar-badge' }, cartCount) : null
+      )
+    );
+  }
+
+  /* ==========================================================================
+     14. COMPONENT: INQUIRY MODAL (Catering Requests)
+     ========================================================================== */
+  function InquiryModal(props) {
+    var isOpen = props.isOpen;
+    var onClose = props.onClose;
+    var packageName = props.packageName || 'General Catering Inquiry';
+
+    var nameState = useState('');
+    var name = nameState[0];
+    var setName = nameState[1];
+
+    var phoneState = useState('');
+    var phone = phoneState[0];
+    var setPhone = phoneState[1];
+
+    var dateState = useState('');
+    var date = dateState[0];
+    var setDate = dateState[1];
+
+    var guestsState = useState('15');
+    var guests = guestsState[0];
+    var setGuests = guestsState[1];
+
+    var submittedState = useState(false);
+    var submitted = submittedState[0];
+    var setSubmitted = submittedState[1];
+
+    function handleSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      setSubmitted(true);
+      setTimeout(function () {
+        setSubmitted(false);
+        if (onClose) onClose();
+      }, 2500);
+    }
+
+    if (!isOpen) return null;
+
+    return h('div', {
+      className: 'modal-backdrop open',
+      onClick: onClose,
+      role: 'dialog',
+      'aria-modal': 'true'
+    },
+      h('div', {
+        className: 'modal-dialog',
+        onClick: function (e) { e.stopPropagation(); }
+      },
+        h('div', { className: 'modal-header' },
+          h('h3', { className: 'modal-title' }, '🎉 Catering Inquiry: ' + packageName),
+          h('button', {
+            type: 'button',
+            className: 'drawer-close-btn',
+            onClick: onClose
+          }, '✕')
+        ),
+
+        submitted ? h('div', { style: { textAlign: 'center', padding: '2rem 1rem' } },
+          h('div', { style: { fontSize: '3rem', marginBottom: '1rem' } }, '✅'),
+          h('h4', { style: { color: 'var(--color-palm-green-light)', fontSize: '1.25rem', marginBottom: '0.5rem' } },
+            'Inquiry Received!'
+          ),
+          h('p', null, 'Chef Jamie will contact you shortly to confirm your booking and menu choices.')
+        ) : h('form', { onSubmit: handleSubmit },
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Your Name:'),
+            h('input', {
+              type: 'text',
+              required: true,
+              value: name,
+              onChange: function (e) { setName(e.target.value); }
+            })
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Phone Number:'),
+            h('input', {
+              type: 'tel',
+              required: true,
+              value: phone,
+              onChange: function (e) { setPhone(e.target.value); }
+            })
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Event Date:'),
+            h('input', {
+              type: 'date',
+              required: true,
+              value: date,
+              onChange: function (e) { setDate(e.target.value); }
+            })
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Estimated Number of Guests:'),
+            h('select', {
+              value: guests,
+              onChange: function (e) { setGuests(e.target.value); }
+            },
+              h('option', { value: '6-10' }, '6 – 10 Guests (The Lime Platter)'),
+              h('option', { value: '12-20' }, '12 – 20 Guests (Kingston Feast)'),
+              h('option', { value: '25-50' }, '25 – 50 Guests (Carnival Spread)'),
+              h('option', { value: '50+' }, '50+ Guests (Custom Event)')
+            )
+          ),
+          h('button', { type: 'submit', className: 'btn-submit-inquiry' },
+            'Submit Catering Request'
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     15. COMPONENT: FOOTER
+     ========================================================================== */
+  function Footer(props) {
+    var brand = props.brand || {};
+
+    return h('footer', { className: 'site-footer', role: 'contentinfo' },
+      h('div', { className: 'container' },
+        h('div', { className: 'footer-grid' },
+          // Col 1: Brand
+          h('div', null,
+            h('div', { className: 'brand-lockup', style: { marginBottom: '1rem' } },
+              h('div', { className: 'brand-badge' }, brand.monogram || 'YM'),
+              h('div', { className: 'brand-text-group' },
+                h('span', { className: 'brand-title' }, brand.name || 'YEAH MAN CARIBBEAN'),
+                h('span', { className: 'brand-subtitle' }, 'Stretford · Manchester')
+              )
+            ),
+            h('p', { style: { fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-text-secondary)' } },
+              brand.valueProp || 'Authentic Jamaican soul food cooked fresh daily in Stretford for over 12 years.'
+            )
+          ),
+
+          // Col 2: Navigation
+          h('div', null,
+            h('h4', { className: 'footer-col-title' }, 'Quick Navigation'),
+            h('ul', { className: 'footer-links-list' },
+              h('li', null, h('a', { href: '#hero', className: 'footer-link' }, 'Home')),
+              h('li', null, h('a', { href: '#menu', className: 'footer-link' }, 'Our 80-Item Menu')),
+              h('li', null, h('a', { href: '#spotlight', className: 'footer-link' }, 'Signature Dishes')),
+              h('li', null, h('a', { href: '#catering', className: 'footer-link' }, 'Catering Packages')),
+              h('li', null, h('a', { href: '#location', className: 'footer-link' }, 'Hours & Directions'))
+            )
+          ),
+
+          // Col 3: Delivery Districts
+          h('div', null,
+            h('h4', { className: 'footer-col-title' }, 'Delivery Areas'),
+            h('p', { style: { fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--color-text-secondary)' } },
+              'Direct local delivery to M15, M16, M17, M21, M32, M33, M41, M5, M50. Delivery fee £3.00, minimum order £15.00.'
+            ),
+            h('p', { style: { fontSize: '0.85rem', marginTop: '0.5rem', color: 'var(--color-gold)' } },
+              'Free Collection for all orders (ready in 15–20 mins).'
+            )
+          ),
+
+          // Col 4: Contact & Direct Ordering
+          h('div', null,
+            h('h4', { className: 'footer-col-title' }, 'Direct Contact'),
+            h('p', { style: { fontSize: '0.88rem', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' } },
+              '📍 ' + (brand.address || '63 Norway Street, Stretford, Manchester, M32 0JN')
+            ),
+            h('p', { style: { fontSize: '0.88rem', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' } },
+              '📞 Telephone: ' + (brand.phone || '0161 864 3259')
+            ),
+            h('p', { style: { fontSize: '0.88rem', color: 'var(--color-whatsapp)', fontWeight: 700 } },
+              '💬 WhatsApp: 0161 864 3259'
+            )
+          )
+        ),
+
+        h('div', { className: 'footer-bottom-row' },
+          h('span', null,
+            '© ' + new Date().getFullYear() + ' Yeah Man Caribbean. All rights reserved. Registered in England.'
+          ),
+          h('span', null,
+            'Food Allergies Notice: Please inform us of any dietary requirements before ordering.'
+          )
+        )
+      )
+    );
+  }
+
+  /* ==========================================================================
+     16. ROOT APP COMPONENT (State Orchestrator)
+     ========================================================================== */
+  function App() {
+    var brand = DATA.brand || {};
+    var hours = DATA.hours || {};
+    var fulfillment = DATA.fulfillment || {};
+    var menuCategories = DATA.menuCategories || [];
+    var menuItems = DATA.menuItems || [];
+    var signatures = DATA.signatureSpotlight || [];
+    var cateringPackages = DATA.cateringPackages || [];
+    var reviews = DATA.reviews || [];
+
+    // App state
+    var drawerOpenState = useState(false);
+    var drawerOpen = drawerOpenState[0];
+    var setDrawerOpen = drawerOpenState[1];
+
+    var cartOpenState = useState(false);
+    var cartOpen = cartOpenState[0];
+    var setCartOpen = cartOpenState[1];
+
+    var cartState = useState({});
+    var cart = cartState[0];
+    var setCart = cartState[1];
+
+    var searchQueryState = useState('');
+    var searchQuery = searchQueryState[0];
+    var setSearchQuery = searchQueryState[1];
+
+    var selectedCategoryState = useState('all');
+    var selectedCategory = selectedCategoryState[0];
+    var setSelectedCategory = selectedCategoryState[1];
+
+    var dietaryFilterState = useState('all');
+    var dietaryFilter = dietaryFilterState[0];
+    var setDietaryFilter = dietaryFilterState[1];
+
+    var isCompactModeState = useState(true);
+    var isCompactMode = isCompactModeState[0];
+    var setIsCompactMode = isCompactModeState[1];
+
+    var orderTypeState = useState('collection');
+    var orderType = orderTypeState[0];
+    var setOrderType = orderTypeState[1];
+
+    var orderNotesState = useState('');
+    var orderNotes = orderNotesState[0];
+    var setOrderNotes = orderNotesState[1];
+
+    var inquiryModalOpenState = useState(false);
+    var inquiryModalOpen = inquiryModalOpenState[0];
+    var setInquiryModalOpen = inquiryModalOpenState[1];
+
+    var inquiryPackageState = useState('');
+    var inquiryPackage = inquiryPackageState[0];
+    var setInquiryPackage = inquiryPackageState[1];
+
+    var activeSectionState = useState('hero');
+    var activeSection = activeSectionState[0];
+    var setActiveSection = activeSectionState[1];
+
+    // Live opening status
+    var liveStatus = useMemo(function () {
+      return getLiveOpeningStatus(hours);
+    }, [hours]);
+
+    // Cart calculations
+    var cartEntries = Object.values(cart);
+    var cartCount = cartEntries.reduce(function (sum, e) { return sum + e.qty; }, 0);
+    var cartTotal = cartEntries.reduce(function (sum, e) { return sum + (e.item.priceNum * e.qty); }, 0);
+
+    // Cart actions
+    var handleAddToCart = useCallback(function (item) {
+      setCart(function (prev) {
+        var updated = Object.assign({}, prev);
+        if (updated[item.id]) {
+          updated[item.id] = {
+            item: item,
+            qty: updated[item.id].qty + 1
+          };
+        } else {
+          updated[item.id] = {
+            item: item,
+            qty: 1
+          };
+        }
+        return updated;
+      });
+    }, []);
+
+    var handleUpdateQuantity = useCallback(function (itemId, delta) {
+      setCart(function (prev) {
+        var updated = Object.assign({}, prev);
+        if (!updated[itemId]) return prev;
+        var newQty = updated[itemId].qty + delta;
+        if (newQty <= 0) {
+          delete updated[itemId];
+        } else {
+          updated[itemId] = {
+            item: updated[itemId].item,
+            qty: newQty
+          };
+        }
+        return updated;
+      });
+    }, []);
+
+    var handleClearCart = useCallback(function () {
+      setCart({});
+    }, []);
+
+    var handleOpenInquiry = useCallback(function (pkgName) {
+      setInquiryPackage(pkgName);
+      setInquiryModalOpen(true);
+    }, []);
+
+    // Prevent body scroll when drawer or cart is open
+    useEffect(function () {
+      if (typeof document === 'undefined') return;
+      if (drawerOpen) {
+        document.body.classList.add('drawer-open');
+      } else {
+        document.body.classList.remove('drawer-open');
+      }
+      if (cartOpen) {
+        document.body.classList.add('cart-open');
+      } else {
+        document.body.classList.remove('cart-open');
+      }
+      return function () {
+        document.body.classList.remove('drawer-open');
+        document.body.classList.remove('cart-open');
+      };
+    }, [drawerOpen, cartOpen]);
+
+    return h('div', { className: 'site-wrapper' },
+      // 1. Sticky Navbar
+      h(Navbar, {
+        brand: brand,
+        cartCount: cartCount,
+        cartTotal: cartTotal,
+        drawerOpen: drawerOpen,
+        activeSection: activeSection,
+        onToggleDrawer: function () { setDrawerOpen(!drawerOpen); },
+        onOpenCart: function () { setCartOpen(true); }
+      }),
+
+      // 2. Mobile Drawer (Outside header via React.Fragment to fix squashed bug)
+      h(MobileDrawer, {
+        isOpen: drawerOpen,
+        onClose: function () { setDrawerOpen(false); },
+        brand: brand,
+        onOpenCart: function () { setCartOpen(true); }
+      }),
+
+      // 3. Hero Section
+      h(Hero, {
+        brand: brand,
+        liveStatus: liveStatus,
+        onAddToCart: handleAddToCart,
+        onOpenCart: function () { setCartOpen(true); }
+      }),
+
+      // 4. Quick Info Bar
+      h(QuickInfoBar, {
+        brand: brand,
+        liveStatus: liveStatus
+      }),
+
+      // 5. Menu Catalog with Dedicated Search & Compact Mode
+      h(MenuCatalog, {
+        categories: menuCategories,
+        items: menuItems,
+        cart: cart,
+        searchQuery: searchQuery,
+        setSearchQuery: setSearchQuery,
+        selectedCategory: selectedCategory,
+        setSelectedCategory: setSelectedCategory,
+        dietaryFilter: dietaryFilter,
+        setDietaryFilter: setDietaryFilter,
+        isCompactMode: isCompactMode,
+        setIsCompactMode: setIsCompactMode,
+        onAddToCart: handleAddToCart,
+        onUpdateQuantity: handleUpdateQuantity
+      }),
+
+      // 6. Signature Spotlight
+      h(SignatureSpotlight, {
+        signatures: signatures,
+        cart: cart,
+        onAddToCart: handleAddToCart,
+        onUpdateQuantity: handleUpdateQuantity
+      }),
+
+      // 7. Heritage Story
+      h(StorySection, {
+        brand: brand
+      }),
+
+      // 8. Catering & Postcode Validator
+      h(CateringSection, {
+        packages: cateringPackages,
+        fulfillment: fulfillment,
+        onOpenInquiry: handleOpenInquiry
+      }),
+
+      // 9. Verified Customer Reviews
+      h(ReviewsSection, {
+        reviews: reviews
+      }),
+
+      // 10. Location, Schedule & Pitch Banner
+      h(LocationHours, {
+        brand: brand,
+        hours: hours
+      }),
+
+      // 11. Interactive Cart Drawer
+      h(CartDrawer, {
+        isOpen: cartOpen,
+        onClose: function () { setCartOpen(false); },
+        cart: cart,
+        onUpdateQuantity: handleUpdateQuantity,
+        onClearCart: handleClearCart,
+        brand: brand,
+        fulfillment: fulfillment,
+        orderType: orderType,
+        setOrderType: setOrderType,
+        orderNotes: orderNotes,
+        setOrderNotes: setOrderNotes
+      }),
+
+      // 12. Floating Basket Pill
+      h(FloatingCartPill, {
+        cartCount: cartCount,
+        cartTotal: cartTotal,
+        onOpenCart: function () { setCartOpen(true); }
+      }),
+
+      // 13. Mobile Bottom Quick Bar
+      h(MobileQuickBar, {
+        brand: brand,
+        cartCount: cartCount,
+        onOpenCart: function () { setCartOpen(true); }
+      }),
+
+      // 14. Catering Inquiry Modal
+      h(InquiryModal, {
+        isOpen: inquiryModalOpen,
+        packageName: inquiryPackage,
+        onClose: function () { setInquiryModalOpen(false); }
+      }),
+
+      // 15. Footer
+      h(Footer, {
+        brand: brand
+      })
+    );
+  }
+
+  // Mount React 18 Application in Browser
+  if (typeof document !== 'undefined') {
+    var mountNode = document.getElementById('root');
+    if (mountNode && ReactDOM && ReactDOM.createRoot) {
+      var root = ReactDOM.createRoot(mountNode);
+      root.render(h(App, null));
+    } else if (mountNode && ReactDOM && ReactDOM.render) {
+      ReactDOM.render(h(App, null), mountNode);
+    }
+  }
+
+  // Export module for testing suites
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      Navbar: Navbar,
+      MobileDrawer: MobileDrawer,
+      Hero: Hero,
+      QuickInfoBar: QuickInfoBar,
+      MenuCatalog: MenuCatalog,
+      SignatureSpotlight: SignatureSpotlight,
+      StorySection: StorySection,
+      CateringSection: CateringSection,
+      ReviewsSection: ReviewsSection,
+      LocationHours: LocationHours,
+      CartDrawer: CartDrawer,
+      FloatingCartPill: FloatingCartPill,
+      MobileQuickBar: MobileQuickBar,
+      InquiryModal: InquiryModal,
+      Footer: Footer,
+      App: App
+    };
+  }
 })();
