@@ -1,6 +1,8 @@
 /* ==========================================================================
    AURA COFFEE ATELIER — Professional Cafe Flagship Application (React 18)
    Inspired by Caffè Nero, Blue Bottle Coffee, WatchHouse & Ralph's Coffee
+   Features: Drink Customizer, Live Search, Dietary Filters, Cart Persistence,
+   Location Pickup Selector, Interactive 9-Stamp Simulator, and Mobile Drawer.
    ========================================================================== */
 
 (function () {
@@ -21,6 +23,7 @@
   var useState = React.useState;
   var useEffect = React.useEffect;
   var useMemo = React.useMemo;
+  var useRef = React.useRef;
 
   // --------------------------------------------------------------------------
   // VECTOR SVG ICONS
@@ -99,6 +102,41 @@
           h('line', { x1: 4, y1: 6, x2: 20, y2: 6 }),
           h('line', { x1: 4, y1: 18, x2: 20, y2: 18 })
         );
+      case 'search':
+        return h('svg', svgProps,
+          h('circle', { cx: 11, cy: 11, r: 8 }),
+          h('line', { x1: 21, y1: 21, x2: 16.65, y2: 16.65 })
+        );
+      case 'sliders':
+        return h('svg', svgProps,
+          h('line', { x1: 4, y1: 21, x2: 4, y2: 14 }),
+          h('line', { x1: 4, y1: 10, x2: 4, y2: 3 }),
+          h('line', { x1: 12, y1: 21, x2: 12, y2: 12 }),
+          h('line', { x1: 12, y1: 8, x2: 12, y2: 3 }),
+          h('line', { x1: 20, y1: 21, x2: 20, y2: 16 }),
+          h('line', { x1: 20, y1: 12, x2: 20, y2: 3 }),
+          h('line', { x1: 1, y1: 14, x2: 7, y2: 14 }),
+          h('line', { x1: 9, y1: 8, x2: 15, y2: 8 }),
+          h('line', { x1: 17, y1: 16, x2: 23, y2: 16 })
+        );
+      case 'plus':
+        return h('svg', svgProps,
+          h('line', { x1: 12, y1: 5, x2: 12, y2: 19 }),
+          h('line', { x1: 5, y1: 12, x2: 19, y2: 12 })
+        );
+      case 'minus':
+        return h('svg', svgProps,
+          h('line', { x1: 5, y1: 12, x2: 19, y2: 12 })
+        );
+      case 'sparkles':
+        return h('svg', svgProps,
+          h('path', { d: 'm12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z' })
+        );
+      case 'clock':
+        return h('svg', svgProps,
+          h('circle', { cx: 12, cy: 12, r: 10 }),
+          h('polyline', { points: '12 6 12 12 16 14' })
+        );
       default:
         return h('svg', svgProps, h('circle', { cx: 12, cy: 12, r: 8 }));
     }
@@ -108,14 +146,14 @@
   // TOP ANNOUNCEMENT BAR
   // --------------------------------------------------------------------------
   function AnnouncementBar() {
-    return h('div', { className: 'top-announcement-bar' },
-      h('span', null, '✦ Fresh Roast Alert: Colombia Huila Pink Bourbon Honey lot now on bar · Complimentary UK delivery on beans over £25'),
+    return h('div', { className: 'top-announcement-bar', role: 'region', 'aria-label': 'Announcement' },
+      h('span', null, '✦ Fresh Micro-Lot Alert: Colombia Huila Pink Bourbon Honey lot now on bar · Complimentary UK delivery on fresh beans over £25'),
       h('a', { href: '#subscription' }, 'Order Fresh Beans →')
     );
   }
 
   // --------------------------------------------------------------------------
-  // SITE NAVBAR
+  // SITE NAVBAR WITH MOBILE DRAWER TRIGGER
   // --------------------------------------------------------------------------
   function SiteNavbar(props) {
     var brand = DATA.brand || {};
@@ -123,6 +161,7 @@
     var onOpenCart = props.onOpenCart;
     var theme = props.theme;
     var onToggleTheme = props.onToggleTheme;
+    var onToggleMobileNav = props.onToggleMobileNav;
 
     var navLinks = [
       { id: 'menu', label: 'Menu & Drinks', href: '#menu' },
@@ -134,6 +173,16 @@
 
     return h('header', { className: 'site-navbar', role: 'banner' },
       h('div', { className: 'container navbar-container' },
+        // Mobile Hamburger Trigger
+        h('button', {
+          type: 'button',
+          className: 'mobile-hamburger-btn',
+          onClick: onToggleMobileNav,
+          'aria-label': 'Open mobile navigation menu'
+        },
+          h(Icon, { name: 'menu', size: 22 })
+        ),
+
         // Brand Lockup
         h('a', { href: '#', className: 'brand-lockup', 'aria-label': brand.name + ' Home' },
           h('div', { className: 'brand-emblem' }, 'A'),
@@ -176,18 +225,97 @@
           },
             h(Icon, { name: 'bag', size: 16 }),
             h('span', null, 'Order Bag'),
-            cartCount > 0 && h('span', { className: 'cart-pill-count' }, cartCount)
+            cartCount > 0 && h('span', {
+              className: 'cart-pill-count',
+              'aria-live': 'polite'
+            }, cartCount)
           ),
 
           // Store Finder Anchor Button
           h('a', {
             href: '#locations',
-            className: 'btn btn-secondary btn-sm',
-            style: { display: 'inline-flex' }
+            className: 'btn btn-secondary btn-sm nav-store-btn'
           },
             h(Icon, { name: 'map-pin', size: 14 }),
             h('span', null, 'Find a Cafe')
           )
+        )
+      )
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // MOBILE NAVIGATION DRAWER
+  // --------------------------------------------------------------------------
+  function MobileNavDrawer(props) {
+    var isOpen = props.isOpen;
+    var onClose = props.onClose;
+    var theme = props.theme;
+    var onToggleTheme = props.onToggleTheme;
+
+    var navLinks = [
+      { id: 'menu', label: 'Handcrafted Drinks & Menu', href: '#menu' },
+      { id: 'craft', label: 'Our Roastery Craft', href: '#craft' },
+      { id: 'loyalty', label: 'Atelier Coffee Club (9 Stamps)', href: '#loyalty' },
+      { id: 'locations', label: 'Locations & Opening Times', href: '#locations' },
+      { id: 'subscription', label: 'Coffee at Home Subscriptions', href: '#subscription' }
+    ];
+
+    return h(React.Fragment, null,
+      h('div', {
+        className: 'mobile-nav-backdrop' + (isOpen ? ' open' : ''),
+        onClick: onClose,
+        'aria-hidden': !isOpen
+      }),
+      h('nav', {
+        className: 'mobile-nav-drawer' + (isOpen ? ' open' : ''),
+        'aria-label': 'Mobile Navigation'
+      },
+        h('div', { className: 'mobile-nav-head' },
+          h('div', { className: 'brand-lockup' },
+            h('div', { className: 'brand-emblem' }, 'A'),
+            h('span', { className: 'brand-name' }, 'AURA Atelier')
+          ),
+          h('button', {
+            type: 'button',
+            className: 'modal-close-button',
+            onClick: onClose,
+            'aria-label': 'Close menu'
+          }, h(Icon, { name: 'close', size: 18 }))
+        ),
+
+        h('div', { className: 'mobile-nav-links' },
+          navLinks.map(function (item) {
+            return h('a', {
+              key: item.id,
+              href: item.href,
+              className: 'mobile-nav-link-item',
+              onClick: onClose
+            }, item.label);
+          })
+        ),
+
+        h('div', { className: 'mobile-nav-footer' },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' } },
+            h('span', { style: { fontSize: '13px', color: 'var(--cafe-text-muted)' } }, 'Appearance:'),
+            h('button', {
+              type: 'button',
+              className: 'theme-toggle-btn',
+              onClick: onToggleTheme,
+              style: { width: 'auto', padding: '6px 14px', borderRadius: '20px', gap: '6px' }
+            },
+              h(Icon, { name: theme === 'dark' ? 'sun' : 'moon', size: 16 }),
+              h('span', { style: { fontSize: '12px' } }, theme === 'dark' ? 'Obsidian' : 'Warm Linen')
+            )
+          ),
+          h('p', { style: { fontSize: '12px', color: 'var(--cafe-text-muted)', margin: '0 0 10px' } },
+            'Flagship: 42 Cutting Room Square, Ancoats'
+          ),
+          h('a', {
+            href: 'tel:+441617928400',
+            className: 'btn btn-secondary btn-sm',
+            style: { width: '100%', justifyContent: 'center' }
+          }, 'Call Ancoats Flagship')
         )
       )
     );
@@ -271,23 +399,421 @@
   }
 
   // --------------------------------------------------------------------------
-  // INTERACTIVE MENU EXPLORER WITH KCAL/KJ LABELLING
+  // BEVERAGE & ITEM CUSTOMIZATION MODAL (The Specialty Configurator)
+  // --------------------------------------------------------------------------
+  function CustomizationModal(props) {
+    var item = props.item;
+    var onClose = props.onClose;
+    var onAddConfiguredItem = props.onAddConfiguredItem;
+
+    if (!item) return null;
+
+    var opts = DATA.customizationOptions || {};
+    var isFood = item.categoryId === 'bakery-brunch';
+
+    // Options state
+    var selectedSizeState = useState('reg');
+    var selectedSize = selectedSizeState[0];
+    var setSelectedSize = selectedSizeState[1];
+
+    var selectedMilkState = useState('semiSkimmed');
+    var selectedMilk = selectedMilkState[0];
+    var setSelectedMilk = selectedMilkState[1];
+
+    var selectedBeanState = useState('classico');
+    var selectedBean = selectedBeanState[0];
+    var setSelectedBean = selectedBeanState[1];
+
+    var selectedTempState = useState('steamed');
+    var selectedTemp = selectedTempState[0];
+    var setSelectedTemp = selectedTempState[1];
+
+    var selectedSyrupState = useState('none');
+    var selectedSyrup = selectedSyrupState[0];
+    var setSelectedSyrup = selectedSyrupState[1];
+
+    var isExtraShotState = useState(false);
+    var isExtraShot = isExtraShotState[0];
+    var setIsExtraShot = isExtraShotState[1];
+
+    var isWarmedState = useState(true);
+    var isWarmed = isWarmedState[0];
+    var setIsWarmed = isWarmedState[1];
+
+    var baristaNotesState = useState('');
+    var baristaNotes = baristaNotesState[0];
+    var setBaristaNotes = baristaNotesState[1];
+
+    // Compute live price & kcal
+    var calculated = useMemo(function () {
+      var price = item.price || 0;
+      var kcal = item.kcal || 0;
+
+      if (!isFood && item.hasMilkOptions) {
+        // Size
+        var sizeObj = (opts.sizes || []).find(function (s) { return s.id === selectedSize; });
+        if (sizeObj) {
+          price += sizeObj.extraPrice;
+          kcal += sizeObj.extraKcal;
+        }
+
+        // Milk
+        var milkObj = (opts.milks || []).find(function (m) { return m.id === selectedMilk; });
+        if (milkObj) {
+          price += milkObj.extraPrice;
+          kcal += milkObj.extraKcal;
+        }
+
+        // Beans
+        var beanObj = (opts.beans || []).find(function (b) { return b.id === selectedBean; });
+        if (beanObj) {
+          price += beanObj.extraPrice;
+        }
+
+        // Temp
+        var tempObj = (opts.temperatures || []).find(function (t) { return t.id === selectedTemp; });
+        if (tempObj && tempObj.extraPrice) {
+          price += tempObj.extraPrice;
+        }
+
+        // Syrup
+        var syrupObj = (opts.syrups || []).find(function (sy) { return sy.id === selectedSyrup; });
+        if (syrupObj) {
+          price += syrupObj.extraPrice;
+          kcal += syrupObj.extraKcal;
+        }
+
+        // Extra shot
+        if (isExtraShot) {
+          price += 0.80;
+          kcal += 4;
+        }
+      }
+
+      return {
+        price: Math.max(0, price),
+        priceDisplay: '£' + price.toFixed(2),
+        kcal: Math.max(2, kcal)
+      };
+    }, [item, isFood, selectedSize, selectedMilk, selectedBean, selectedTemp, selectedSyrup, isExtraShot]);
+
+    function handleConfirm() {
+      var milkObj = (opts.milks || []).find(function (m) { return m.id === selectedMilk; });
+      var sizeObj = (opts.sizes || []).find(function (s) { return s.id === selectedSize; });
+      var beanObj = (opts.beans || []).find(function (b) { return b.id === selectedBean; });
+      var tempObj = (opts.temperatures || []).find(function (t) { return t.id === selectedTemp; });
+      var syrupObj = (opts.syrups || []).find(function (sy) { return sy.id === selectedSyrup; });
+
+      var customizationSummary = [];
+      if (!isFood && item.hasMilkOptions) {
+        if (sizeObj) customizationSummary.push(sizeObj.id === 'large' ? 'Large 12oz' : 'Regular 8oz');
+        if (milkObj) customizationSummary.push(milkObj.label.split(' ')[0] + ' ' + (milkObj.label.split(' ')[1] || ''));
+        if (beanObj && beanObj.id !== 'classico') customizationSummary.push(beanObj.id === 'guest' ? 'Single-Origin Guest' : 'Decaf');
+        if (tempObj && tempObj.id === 'iced') customizationSummary.push('Iced');
+        if (syrupObj && syrupObj.id !== 'none') customizationSummary.push(syrupObj.label.split(' ')[0] + ' Syrup');
+        if (isExtraShot) customizationSummary.push('+Extra Shot');
+      } else if (isFood) {
+        customizationSummary.push(isWarmed ? 'Served Warm' : 'Room Temp');
+      }
+
+      var configuredRecord = {
+        id: item.id + '_' + Date.now(),
+        baseId: item.id,
+        name: item.name,
+        subtitle: customizationSummary.length > 0 ? customizationSummary.join(' · ') : (item.subtitle || 'Handcrafted order'),
+        price: calculated.price,
+        priceDisplay: calculated.priceDisplay,
+        kcal: calculated.kcal,
+        image: item.image,
+        notes: baristaNotes.trim(),
+        customization: {
+          size: selectedSize,
+          milk: selectedMilk,
+          bean: selectedBean,
+          temperature: selectedTemp,
+          syrup: selectedSyrup,
+          extraShot: isExtraShot,
+          isWarmed: isWarmed,
+          notes: baristaNotes.trim()
+        }
+      };
+
+      onAddConfiguredItem(configuredRecord);
+      onClose();
+    }
+
+    return h('div', {
+      className: 'nutrition-modal-backdrop',
+      role: 'dialog',
+      'aria-modal': 'true',
+      'aria-labelledby': 'customizer-modal-title'
+    },
+      h('div', { className: 'customizer-modal-box' },
+        // Header
+        h('div', { className: 'customizer-modal-head' },
+          h('div', { style: { display: 'flex', alignItems: 'center', gap: '14px' } },
+            h('img', { src: item.image, alt: item.name, className: 'customizer-head-thumb' }),
+            h('div', null,
+              h('h3', { id: 'customizer-modal-title', className: 'customizer-title' }, item.name),
+              h('div', { className: 'customizer-subtitle' }, item.subtitle)
+            )
+          ),
+          h('button', {
+            type: 'button',
+            className: 'modal-close-button',
+            onClick: onClose,
+            'aria-label': 'Close customizer'
+          }, h(Icon, { name: 'close', size: 18 }))
+        ),
+
+        // Scrollable Options Body
+        h('div', { className: 'customizer-scroll-body' },
+          // If Food: Warm option
+          isFood ? h('div', { className: 'config-group' },
+            h('label', { className: 'config-label' }, 'Serving Style:'),
+            h('div', { className: 'config-pills-row' },
+              h('button', {
+                type: 'button',
+                className: 'config-pill' + (isWarmed ? ' active' : ''),
+                onClick: function () { setIsWarmed(true); }
+              }, '🔥 Warm from Bakehouse Oven'),
+              h('button', {
+                type: 'button',
+                className: 'config-pill' + (!isWarmed ? ' active' : ''),
+                onClick: function () { setIsWarmed(false); }
+              }, 'Room Temperature')
+            )
+          ) : null,
+
+          // Size Option (For Drinks)
+          !isFood && item.hasMilkOptions ? h('div', { className: 'config-group' },
+            h('label', { className: 'config-label' }, 'Select Cup Size:'),
+            h('div', { className: 'config-pills-row' },
+              (opts.sizes || []).map(function (s) {
+                var isSel = selectedSize === s.id;
+                return h('button', {
+                  key: s.id,
+                  type: 'button',
+                  className: 'config-pill' + (isSel ? ' active' : ''),
+                  onClick: function () { setSelectedSize(s.id); }
+                },
+                  h('span', null, s.label),
+                  s.extraPrice > 0 && h('span', { className: 'pill-addon-price' }, '+£' + s.extraPrice.toFixed(2))
+                );
+              })
+            )
+          ) : null,
+
+          // Milk Options (For Drinks)
+          !isFood && item.hasMilkOptions ? h('div', { className: 'config-group' },
+            h('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' } },
+              h('label', { className: 'config-label', style: { margin: 0 } }, 'Choose Milk:'),
+              h('span', { style: { fontSize: '11.5px', color: 'var(--cafe-bronze)' } }, 'Minor Figures & Organic Dairy')
+            ),
+            h('div', { className: 'config-milks-grid' },
+              (opts.milks || []).map(function (m) {
+                var isSel = selectedMilk === m.id;
+                return h('button', {
+                  key: m.id,
+                  type: 'button',
+                  className: 'config-milk-card' + (isSel ? ' active' : ''),
+                  onClick: function () { setSelectedMilk(m.id); }
+                },
+                  h('div', { className: 'milk-card-name' }, m.label),
+                  h('div', { className: 'milk-card-meta' },
+                    h('span', { className: 'milk-badge' }, m.badge),
+                    m.extraPrice > 0 && h('span', { className: 'milk-price' }, '+£' + m.extraPrice.toFixed(2))
+                  )
+                );
+              })
+            )
+          ) : null,
+
+          // Bean Roast Profile
+          !isFood ? h('div', { className: 'config-group' },
+            h('label', { className: 'config-label' }, 'Roast / Bean Extraction:'),
+            h('div', { className: 'config-pills-row vertical' },
+              (opts.beans || []).map(function (b) {
+                var isSel = selectedBean === b.id;
+                return h('button', {
+                  key: b.id,
+                  type: 'button',
+                  className: 'config-pill-wide' + (isSel ? ' active' : ''),
+                  onClick: function () { setSelectedBean(b.id); }
+                },
+                  h('div', null,
+                    h('strong', null, b.label),
+                    h('span', { className: 'bean-badge' }, b.badge)
+                  ),
+                  b.extraPrice > 0 && h('span', { className: 'pill-addon-price' }, '+£' + b.extraPrice.toFixed(2))
+                );
+              })
+            )
+          ) : null,
+
+          // Temperature & Ice
+          !isFood && item.categoryId !== 'iced-coldbrew' ? h('div', { className: 'config-group' },
+            h('label', { className: 'config-label' }, 'Drink Temperature:'),
+            h('div', { className: 'config-pills-row' },
+              (opts.temperatures || []).map(function (t) {
+                var isSel = selectedTemp === t.id;
+                return h('button', {
+                  key: t.id,
+                  type: 'button',
+                  className: 'config-pill' + (isSel ? ' active' : ''),
+                  onClick: function () { setSelectedTemp(t.id); }
+                },
+                  h('span', null, t.label),
+                  t.extraPrice > 0 && h('span', { className: 'pill-addon-price' }, '+£' + t.extraPrice.toFixed(2))
+                );
+              })
+            )
+          ) : null,
+
+          // Organic Syrups & Extra Shot
+          !isFood && item.hasMilkOptions ? h('div', { className: 'config-group' },
+            h('label', { className: 'config-label' }, 'House Made Syrups:'),
+            h('div', { className: 'config-pills-row' },
+              (opts.syrups || []).map(function (sy) {
+                var isSel = selectedSyrup === sy.id;
+                return h('button', {
+                  key: sy.id,
+                  type: 'button',
+                  className: 'config-pill' + (isSel ? ' active' : ''),
+                  onClick: function () { setSelectedSyrup(sy.id); }
+                }, sy.label);
+              })
+            ),
+            h('div', { style: { marginTop: '12px' } },
+              h('label', { className: 'checkbox-pill-label' },
+                h('input', {
+                  type: 'checkbox',
+                  checked: isExtraShot,
+                  onChange: function (e) { setIsExtraShot(e.target.checked); }
+                }),
+                h('span', null, 'Add Extra Short Ristretto Shot (+£0.80 · 70mg caffeine)')
+              )
+            )
+          ) : null,
+
+          // Barista Instructions
+          h('div', { className: 'config-group', style: { marginBottom: 0 } },
+            h('label', { className: 'config-label' }, 'Special Request for Barista (Optional):'),
+            h('input', {
+              type: 'text',
+              className: 'config-input',
+              placeholder: 'e.g., Extra hot microfoam, light cocoa dust, no lid...',
+              value: baristaNotes,
+              onChange: function (e) { setBaristaNotes(e.target.value); },
+              maxLength: 120
+            })
+          )
+        ),
+
+        // Live Total & Add CTA Footer
+        h('div', { className: 'customizer-modal-foot' },
+          h('div', { className: 'customizer-summary-col' },
+            h('div', { className: 'customizer-live-price' }, calculated.priceDisplay),
+            h('div', { className: 'customizer-live-kcal' },
+              calculated.kcal + ' kcal · UK Calorie Compliant'
+            )
+          ),
+          h('button', {
+            type: 'button',
+            className: 'btn btn-primary btn-add-customized',
+            onClick: handleConfirm
+          },
+            h(Icon, { name: 'bag', size: 16 }),
+            h('span', null, 'Add to Bag — ' + calculated.priceDisplay)
+          )
+        )
+      )
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // INTERACTIVE MENU EXPLORER WITH SEARCH & DIETARY FILTERS
   // --------------------------------------------------------------------------
   function MenuExplorerSection(props) {
     var onOpenNutrition = props.onOpenNutrition;
+    var onOpenCustomizer = props.onOpenCustomizer;
     var onAddToCart = props.onAddToCart;
 
     var activeCatState = useState('all');
     var activeCat = activeCatState[0];
     var setActiveCat = activeCatState[1];
 
+    var searchQueryState = useState('');
+    var searchQuery = searchQueryState[0];
+    var setSearchQuery = searchQueryState[1];
+
+    var activeDietState = useState('all');
+    var activeDiet = activeDietState[0];
+    var setActiveDiet = activeDietState[1];
+
+    var searchInputRef = useRef(null);
+
     var categories = DATA.categories || [];
     var items = DATA.items || [];
 
+    // Keyboard shortcut '/' to focus search
+    useEffect(function () {
+      function handleKeyDown(e) {
+        if (e.key === '/' && document.activeElement !== searchInputRef.current && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          e.preventDefault();
+          if (searchInputRef.current) {
+            searchInputRef.current.focus();
+          }
+        }
+      }
+      window.addEventListener('keydown', handleKeyDown);
+      return function () { window.removeEventListener('keydown', handleKeyDown); };
+    }, []);
+
+    // Filter logic
     var filteredItems = useMemo(function () {
-      if (activeCat === 'all') return items;
-      return items.filter(function (it) { return it.categoryId === activeCat; });
-    }, [activeCat, items]);
+      var q = searchQuery.trim().toLowerCase();
+      return items.filter(function (it) {
+        // Category check
+        if (activeCat !== 'all' && it.categoryId !== activeCat) return false;
+
+        // Dietary check
+        if (activeDiet === 'vegan') {
+          if (!it.dietary || !it.dietary.includes('Vegan')) return false;
+        } else if (activeDiet === 'gluten-free') {
+          if (!it.dietary || !it.dietary.includes('Gluten-Free')) return false;
+        } else if (activeDiet === 'dairy-free') {
+          if (!it.dietary || !it.dietary.includes('Dairy-Free')) return false;
+        } else if (activeDiet === 'specialty') {
+          if (!it.dietary || !it.dietary.includes('88+ Specialty')) return false;
+        } else if (activeDiet === 'under-100') {
+          if ((it.kcal || 0) >= 100) return false;
+        } else if (activeDiet === 'popular') {
+          if (!it.isPopular) return false;
+        }
+
+        // Search query check
+        if (q.length > 0) {
+          var nameMatch = (it.name || '').toLowerCase().includes(q);
+          var subMatch = (it.subtitle || '').toLowerCase().includes(q);
+          var descMatch = (it.description || '').toLowerCase().includes(q);
+          var notesMatch = (it.flavorNotes || []).some(function (fn) { return fn.toLowerCase().includes(q); });
+          if (!nameMatch && !subMatch && !descMatch && !notesMatch) return false;
+        }
+
+        return true;
+      });
+    }, [items, activeCat, activeDiet, searchQuery]);
+
+    var dietaryOptions = [
+      { id: 'all', label: 'All Items' },
+      { id: 'popular', label: 'Popular 🔥' },
+      { id: 'vegan', label: 'Vegan 🌱' },
+      { id: 'gluten-free', label: 'Gluten-Free 🌾' },
+      { id: 'dairy-free', label: 'Dairy-Free 🥛' },
+      { id: 'specialty', label: '88+ Specialty ⭐' },
+      { id: 'under-100', label: '< 100 kcal 🥗' }
+    ];
 
     return h('section', { id: 'menu', className: 'menu-section-container' },
       h('div', { className: 'container' },
@@ -296,6 +822,30 @@
           h('h2', { className: 'section-main-title' }, 'Our Handcrafted Menu'),
           h('p', { className: 'section-lead-paragraph' },
             'Precision extracted espresso, single-origin filter carafes, draft nitro cold brews, and morning sourdough bakes. Energy declarations comply with UK Calorie Labelling Regulations.'
+          )
+        ),
+
+        // Live Search Bar with Shortcut
+        h('div', { className: 'menu-search-wrapper' },
+          h('div', { className: 'search-input-box' },
+            h(Icon, { name: 'search', size: 18, color: 'var(--cafe-bronze)' }),
+            h('input', {
+              ref: searchInputRef,
+              type: 'search',
+              className: 'menu-search-field',
+              placeholder: "Search drinks, single origins, flavor notes, or pastries (Press '/' to focus)...",
+              value: searchQuery,
+              onChange: function (e) { setSearchQuery(e.target.value); },
+              'aria-label': 'Search menu items'
+            }),
+            searchQuery.length > 0
+              ? h('button', {
+                type: 'button',
+                className: 'search-clear-btn',
+                onClick: function () { setSearchQuery(''); },
+                'aria-label': 'Clear search'
+              }, h(Icon, { name: 'close', size: 14 }))
+              : h('kbd', { className: 'search-kbd-badge' }, '/')
           )
         ),
 
@@ -312,57 +862,107 @@
           })
         ),
 
+        // Dietary Quick Filters
+        h('div', { className: 'dietary-filters-row' },
+          dietaryOptions.map(function (d) {
+            var isSel = activeDiet === d.id;
+            return h('button', {
+              key: d.id,
+              type: 'button',
+              className: 'diet-filter-pill' + (isSel ? ' active' : ''),
+              onClick: function () { setActiveDiet(d.id); }
+            }, d.label);
+          })
+        ),
+
+        // Search Results Notice
+        (searchQuery.length > 0 || activeDiet !== 'all') && h('div', { className: 'search-results-indicator' },
+          h('span', null, 'Showing ' + filteredItems.length + ' item' + (filteredItems.length === 1 ? '' : 's') + ' matching your preferences'),
+          (searchQuery.length > 0 || activeDiet !== 'all') && h('button', {
+            type: 'button',
+            className: 'reset-filters-btn',
+            onClick: function () {
+              setSearchQuery('');
+              setActiveDiet('all');
+              setActiveCat('all');
+            }
+          }, 'Reset Filters ✕')
+        ),
+
         // Menu Grid
-        h('div', { className: 'menu-products-grid' },
-          filteredItems.map(function (item) {
-            return h('article', { key: item.id, className: 'product-card' },
-              h('div', { className: 'product-img-wrap' },
-                h('img', {
-                  src: item.image,
-                  alt: item.name,
-                  className: 'product-photo'
-                }),
-                item.isPopular && h('span', { className: 'popular-tag' }, 'Popular'),
-                h('span', { className: 'kcal-top-badge' }, item.kcal + ' kcal')
-              ),
-              h('div', { className: 'product-body' },
-                h('div', { className: 'product-header-row' },
-                  h('h3', { className: 'product-title' }, item.name),
-                  h('span', { className: 'product-price' }, item.priceDisplay)
+        filteredItems.length === 0
+          ? h('div', { className: 'no-results-box' },
+            h(Icon, { name: 'coffee', size: 36, color: 'var(--cafe-bronze)' }),
+            h('h4', null, 'No coffee or bakehouse offerings found'),
+            h('p', null, "Try adjusting your search terms or clearing the dietary filters."),
+            h('button', {
+              type: 'button',
+              className: 'btn btn-secondary btn-sm',
+              onClick: function () {
+                setSearchQuery('');
+                setActiveDiet('all');
+                setActiveCat('all');
+              }
+            }, 'View All Offerings')
+          )
+          : h('div', { className: 'menu-products-grid' },
+            filteredItems.map(function (item) {
+              return h('article', { key: item.id, className: 'product-card' },
+                h('div', { className: 'product-img-wrap' },
+                  h('img', {
+                    src: item.image,
+                    alt: item.name,
+                    className: 'product-photo',
+                    loading: 'lazy'
+                  }),
+                  item.isPopular && h('span', { className: 'popular-tag' }, 'Popular'),
+                  h('span', { className: 'kcal-top-badge' }, item.kcal + ' kcal')
                 ),
-                h('p', { className: 'product-subtitle' }, item.subtitle),
-                h('p', { className: 'product-desc' }, item.description),
-
-                // Flavor Notes
-                item.flavorNotes && h('div', { className: 'flavor-notes-row' },
-                  item.flavorNotes.map(function (fn, idx) {
-                    return h('span', { key: idx, className: 'flavor-pill' }, fn);
-                  })
-                ),
-
-                // Card Footer
-                h('div', { className: 'product-card-actions' },
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-nutrition-info',
-                    onClick: function () { onOpenNutrition(item); },
-                    title: 'View UK nutritional table & allergens'
-                  },
-                    h(Icon, { name: 'clipboard', size: 14 }),
-                    'Nutrition & Kcals'
+                h('div', { className: 'product-body' },
+                  h('div', { className: 'product-header-row' },
+                    h('h3', { className: 'product-title' }, item.name),
+                    h('span', { className: 'product-price' }, item.priceDisplay)
                   ),
-                  h('button', {
-                    type: 'button',
-                    className: 'btn-add-order',
-                    onClick: function () { onAddToCart(item); }
-                  },
-                    '+ Add to Bag'
+                  h('p', { className: 'product-subtitle' }, item.subtitle),
+                  h('p', { className: 'product-desc' }, item.description),
+
+                  // Flavor Notes
+                  item.flavorNotes && h('div', { className: 'flavor-notes-row' },
+                    item.flavorNotes.map(function (fn, idx) {
+                      return h('span', {
+                        key: idx,
+                        className: 'flavor-pill',
+                        title: "Filter by '" + fn + "'",
+                        onClick: function () { setSearchQuery(fn); }
+                      }, fn);
+                    })
+                  ),
+
+                  // Card Footer Actions
+                  h('div', { className: 'product-card-actions' },
+                    h('button', {
+                      type: 'button',
+                      className: 'btn-nutrition-info',
+                      onClick: function () { onOpenNutrition(item); },
+                      title: 'View UK nutritional table & allergens'
+                    },
+                      h(Icon, { name: 'clipboard', size: 14 }),
+                      'Nutrition'
+                    ),
+                    h('button', {
+                      type: 'button',
+                      className: 'btn-add-order',
+                      onClick: function () { onOpenCustomizer(item); },
+                      title: 'Customize milk, size & roast before adding'
+                    },
+                      h(Icon, { name: 'sliders', size: 14 }),
+                      'Customize & Add'
+                    )
                   )
                 )
-              )
-            );
-          })
-        )
+              );
+            })
+          )
       )
     );
   }
@@ -373,6 +973,7 @@
   function NutritionModal(props) {
     var item = props.item;
     var onClose = props.onClose;
+    var onAddConfiguredItem = props.onAddConfiguredItem;
 
     var selectedMilkState = useState('semiSkimmed');
     var selectedMilk = selectedMilkState[0];
@@ -393,12 +994,34 @@
     var displayProtein = item.hasMilkOptions ? (currentMilk.protein + 'g') : '0.4g';
     var displaySalt = item.hasMilkOptions ? (currentMilk.salt + 'g') : '0.01g';
 
-    return h('div', { className: 'nutrition-modal-backdrop', role: 'dialog', 'aria-modal': 'true' },
+    function handleQuickAddWithMilk() {
+      var extra = (selectedMilk === 'oatMilk' || selectedMilk === 'almondMilk' || selectedMilk === 'coconutMilk') ? 0.50 : (selectedMilk === 'soyaMilk' ? 0.40 : 0);
+      var configured = {
+        id: item.id + '_' + Date.now(),
+        baseId: item.id,
+        name: item.name,
+        subtitle: currentMilk.label.split(' ')[0] + ' ' + (currentMilk.label.split(' ')[1] || ''),
+        price: item.price + extra,
+        priceDisplay: '£' + (item.price + extra).toFixed(2),
+        kcal: displayKcal,
+        image: item.image,
+        customization: { milk: selectedMilk }
+      };
+      onAddConfiguredItem(configured);
+      onClose();
+    }
+
+    return h('div', {
+      className: 'nutrition-modal-backdrop',
+      role: 'dialog',
+      'aria-modal': 'true',
+      'aria-labelledby': 'nutrition-title'
+    },
       h('div', { className: 'nutrition-modal-box' },
         // Header
         h('div', { className: 'nutrition-modal-header' },
           h('div', null,
-            h('h3', { className: 'nutrition-modal-title' }, item.name),
+            h('h3', { id: 'nutrition-title', className: 'nutrition-modal-title' }, item.name),
             h('div', { className: 'nutrition-modal-serving' },
               'Serving Size: ' + (item.servingSize || 'Standard 12oz (355ml)')
             )
@@ -479,6 +1102,16 @@
           )
         ),
 
+        // Action: Add directly with selected milk
+        item.hasMilkOptions && h('div', { style: { marginTop: '16px', display: 'flex', justifyContent: 'flex-end' } },
+          h('button', {
+            type: 'button',
+            className: 'btn btn-primary',
+            onClick: handleQuickAddWithMilk,
+            style: { width: '100%', minHeight: '44px' }
+          }, 'Add to Bag with ' + currentMilk.label.split(' ')[0] + ' (' + displayKcal + ' kcal)')
+        ),
+
         // Regulation Notice
         h('p', { className: 'nutrition-disclaimer' },
           DATA.nutritionGuidelineNotice || 'Calorie information complies with the UK Calorie Labelling Regulations 2021. Adults need around 2,000 kcal a day.'
@@ -501,36 +1134,36 @@
           )
         ),
 
-        h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' } },
+        h('div', { className: 'craft-pillars-grid' },
           // Pillar 1
-          h('div', { style: { background: 'var(--cafe-bg-card)', padding: '32px', borderRadius: '16px', border: '1px solid var(--cafe-border-subtle)', boxShadow: 'var(--cafe-shadow-sm)' } },
-            h('div', { style: { width: '48px', height: '48px', borderRadius: '12px', background: 'var(--cafe-bronze-dim)', color: 'var(--cafe-bronze)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' } },
+          h('div', { className: 'craft-pillar-card' },
+            h('div', { className: 'craft-icon-box' },
               h(Icon, { name: 'coffee', size: 24 })
             ),
-            h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '20px', margin: '0 0 10px' } }, '1. Direct-Trade Specialty Lots'),
-            h('p', { style: { color: 'var(--cafe-text-secondary)', lineHeight: 1.6, fontSize: '14px' } },
+            h('h3', { className: 'craft-pillar-title' }, '1. Direct-Trade Specialty Lots'),
+            h('p', { className: 'craft-pillar-desc' },
               'We buy directly from smallholder producer cooperatives in Huila, Yirgacheffe, and Chiriquí. We pay an average of 3.2x Fairtrade minimums to guarantee regenerative farming and world-class 88+ cupping lots.'
             )
           ),
 
           // Pillar 2
-          h('div', { style: { background: 'var(--cafe-bg-card)', padding: '32px', borderRadius: '16px', border: '1px solid var(--cafe-border-subtle)', boxShadow: 'var(--cafe-shadow-sm)' } },
-            h('div', { style: { width: '48px', height: '48px', borderRadius: '12px', background: 'var(--cafe-bronze-dim)', color: 'var(--cafe-bronze)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' } },
+          h('div', { className: 'craft-pillar-card' },
+            h('div', { className: 'craft-icon-box' },
               h(Icon, { name: 'flame', size: 24 })
             ),
-            h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '20px', margin: '0 0 10px' } }, '2. Small-Batch Convection Roasting'),
-            h('p', { style: { color: 'var(--cafe-text-secondary)', lineHeight: 1.6, fontSize: '14px' } },
+            h('h3', { className: 'craft-pillar-title' }, '2. Small-Batch Convection Roasting'),
+            h('p', { className: 'craft-pillar-desc' },
               'Roasted fresh weekly in Manchester and London. Using modern closed-loop convection roasters, we roast with 80% lower emissions while developing natural sweetness and delicate floral clarity with zero scorched defect.'
             )
           ),
 
           // Pillar 3
-          h('div', { style: { background: 'var(--cafe-bg-card)', padding: '32px', borderRadius: '16px', border: '1px solid var(--cafe-border-subtle)', boxShadow: 'var(--cafe-shadow-sm)' } },
-            h('div', { style: { width: '48px', height: '48px', borderRadius: '12px', background: 'var(--cafe-bronze-dim)', color: 'var(--cafe-bronze)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' } },
+          h('div', { className: 'craft-pillar-card' },
+            h('div', { className: 'craft-icon-box' },
               h(Icon, { name: 'clipboard', size: 24 })
             ),
-            h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '20px', margin: '0 0 10px' } }, '3. The 48-Hour Bakehouse'),
-            h('p', { style: { color: 'var(--cafe-text-secondary)', lineHeight: 1.6, fontSize: '14px' } },
+            h('h3', { className: 'craft-pillar-title' }, '3. The 48-Hour Bakehouse'),
+            h('p', { className: 'craft-pillar-desc' },
               'Every croissant, cardamom knot, and sourdough loaf is hand-laminated with Normandy cultured butter and Wildfarmed regenerative flour, undergoing 48 hours of slow cold fermentation for exquisite flakiness and digestion.'
             )
           )
@@ -540,46 +1173,97 @@
   }
 
   // --------------------------------------------------------------------------
-  // ATELIER COFFEE CLUB (Inspired by Caffè Nero 9 Stamps)
+  // ATELIER COFFEE CLUB WITH INTERACTIVE 9-STAMP SIMULATOR & VOUCHER UNLOCK
   // --------------------------------------------------------------------------
   function LoyaltyClubSection(props) {
     var loyalty = DATA.loyalty || {};
-    var onJoin = props.onJoin;
+
+    var stampsState = useState(7);
+    var stamps = stampsState[0];
+    var setStamps = stampsState[1];
+
+    var showRewardState = useState(false);
+    var showReward = showRewardState[0];
+    var setShowReward = showRewardState[1];
+
+    var confettiTriggerState = useState(false);
+    var confettiTrigger = confettiTriggerState[0];
+    var setConfettiTrigger = confettiTriggerState[1];
+
+    function handleStampClick(num) {
+      if (num === stamps + 1 && stamps < 9) {
+        var next = stamps + 1;
+        setStamps(next);
+        if (next === 9) {
+          setConfettiTrigger(true);
+          setTimeout(function () { setShowReward(true); }, 600);
+        }
+      }
+    }
+
+    function handleResetStamps() {
+      setStamps(7);
+      setShowReward(false);
+      setConfettiTrigger(false);
+    }
 
     return h('section', { id: 'loyalty', className: 'loyalty-section' },
       h('div', { className: 'container' },
         h('div', { className: 'loyalty-card-grid' },
           // Left: Interactive Digital 9-Stamp Card
-          h('div', { className: 'stamp-card-frame' },
+          h('div', { className: 'stamp-card-frame' + (stamps === 9 ? ' completed-card' : '') },
             h('div', { className: 'stamp-card-top' },
               h('span', { className: 'stamp-card-brand' }, 'AURA Atelier Pass'),
-              h('span', { className: 'stamp-card-status' }, '7 / 9 STAMPS COLLECTED')
+              h('span', { className: 'stamp-card-status' },
+                stamps === 9 ? '🎉 9 / 9 COMPLETE · 10th FREE!' : stamps + ' / 9 STAMPS COLLECTED'
+              )
             ),
 
             // 9 Stamp Grid
             h('div', { className: 'stamp-grid-9' },
               [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (num) {
-                var isStamped = num <= 7;
-                return h('div', {
+                var isStamped = num <= stamps;
+                var isNext = num === stamps + 1;
+                return h('button', {
                   key: num,
-                  className: 'stamp-slot' + (isStamped ? ' stamped' : '')
+                  type: 'button',
+                  className: 'stamp-slot' + (isStamped ? ' stamped' : '') + (isNext ? ' next-tap' : ''),
+                  onClick: function () { handleStampClick(num); },
+                  title: isStamped ? 'Stamp #' + num + ' collected' : (isNext ? 'Tap to stamp your coffee!' : 'Stamp #' + num),
+                  disabled: !isNext && num > stamps
                 },
-                  isStamped ? h(Icon, { name: 'check', size: 16 }) : num
+                  isStamped ? h(Icon, { name: 'check', size: 18 }) : (isNext ? '+ Tap' : num)
                 );
               }),
-              h('div', { className: 'stamp-slot free-cup' },
-                h(Icon, { name: 'coffee', size: 16 }),
-                h('span', { style: { fontSize: '9px', marginTop: '2px' } }, '10th FREE')
+              h('div', {
+                className: 'stamp-slot free-cup' + (stamps === 9 ? ' unlocked' : ''),
+                onClick: function () { if (stamps === 9) setShowReward(true); }
+              },
+                h(Icon, { name: 'sparkles', size: 18, color: stamps === 9 ? '#FAF6F0' : 'var(--cafe-bronze)' }),
+                h('span', { style: { fontSize: '9px', marginTop: '2px', fontWeight: 700 } },
+                  stamps === 9 ? 'CLAIM' : '10th FREE'
+                )
               )
             ),
 
             h('div', { className: 'stamp-card-bottom' },
-              h('span', null, 'Patron: Alex Chen'),
-              h('span', null, '2 more stamps to your complimentary coffee')
+              h('div', null,
+                h('span', null, 'Patron: Alex Chen'),
+                h('span', { style: { display: 'block', fontSize: '11px', color: 'var(--cafe-bronze)', marginTop: '2px' } },
+                  stamps < 9
+                    ? (9 - stamps) + ' more stamp' + (9 - stamps === 1 ? '' : 's') + ' to complimentary reward'
+                    : 'Complimentary beverage ready for collection!'
+                )
+              ),
+              stamps > 7 && h('button', {
+                type: 'button',
+                className: 'btn-reset-demo-stamps',
+                onClick: handleResetStamps
+              }, 'Reset Pass')
             )
           ),
 
-          // Right: Club Details & Sign Up
+          // Right: Club Details & Interactive Wallet Pass
           h('div', null,
             h('span', { className: 'section-eyebrow' }, 'Digital Membership'),
             h('h2', { className: 'section-main-title', style: { textAlign: 'left' } },
@@ -589,34 +1273,91 @@
               loyalty.subtitle || 'Scan your digital stamp pass at any bar. Plus enjoy complimentary birthday pastries, queue-skip mobile ordering, and seasonal nano-lot tastings.'
             ),
 
-            h('ul', { style: { listStyle: 'none', padding: 0, margin: '0 0 28px' } },
+            h('ul', { className: 'loyalty-benefits-list' },
               (loyalty.benefits || []).map(function (b, idx) {
-                return h('li', { key: idx, style: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', marginBottom: '10px', color: 'var(--cafe-text-secondary)' } },
-                  h('span', { style: { color: 'var(--cafe-bronze)', fontWeight: 700 } }, '✓'),
+                return h('li', { key: idx },
+                  h('span', { className: 'benefit-check' }, '✓'),
                   b
                 );
               })
             ),
 
-            h('button', {
-              type: 'button',
-              className: 'btn btn-primary',
-              onClick: onJoin
-            },
-              h(Icon, { name: 'star', size: 16, color: '#FAF6F0' }),
-              'Add Digital Pass to Apple / Google Wallet'
+            h('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
+              h('button', {
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: function () { setShowReward(true); }
+              },
+                h(Icon, { name: 'star', size: 16, color: '#FAF6F0' }),
+                stamps === 9 ? 'View Free Coffee Reward Voucher' : 'Preview Apple / Google Wallet Pass'
+              ),
+              stamps < 9 && h('button', {
+                type: 'button',
+                className: 'btn btn-secondary',
+                onClick: function () { handleStampClick(stamps + 1); }
+              }, 'Tap Stamp #' + (stamps + 1) + ' (Simulate Order)')
             )
           )
+        )
+      ),
+
+      // Reward Modal
+      showReward && h('div', {
+        className: 'nutrition-modal-backdrop',
+        role: 'dialog',
+        'aria-modal': 'true'
+      },
+        h('div', { className: 'loyalty-reward-modal-box' },
+          h('div', { className: 'reward-stamp-header' },
+            h('div', { className: 'reward-gold-badge' }, '✦ AURA REWARD PASS'),
+            h('button', {
+              type: 'button',
+              className: 'modal-close-button',
+              onClick: function () { setShowReward(false); }
+            }, h(Icon, { name: 'close', size: 16 }))
+          ),
+          h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '24px', margin: '14px 0 6px' } },
+            stamps === 9 ? '10th Complimentary Beverage' : 'Atelier Digital Membership Card'
+          ),
+          h('p', { style: { fontSize: '13.5px', color: 'var(--cafe-text-secondary)', marginBottom: '20px' } },
+            stamps === 9
+              ? 'Congratulations! Present this pass to your barista at Ancoats, Marylebone, or Soho for any handcrafted drink of your choice on the house.'
+              : 'Add this pass to your Apple Wallet or Google Wallet for contactless NFC stamping at all AURA bars.'
+          ),
+          // Barcode Simulation
+          h('div', { className: 'simulated-barcode-card' },
+            h('div', { className: 'barcode-bars' },
+              '||| | |||| | ||| |||| | || | |||| ||| | ||'
+            ),
+            h('div', { className: 'barcode-code-text' },
+              'PASS: AURA-REWARD-2026-CH77'
+            )
+          ),
+          h('button', {
+            type: 'button',
+            className: 'btn btn-primary',
+            style: { width: '100%', minHeight: '46px', marginTop: '16px' },
+            onClick: function () { setShowReward(false); }
+          }, 'Done & Return to Cafe')
         )
       )
     );
   }
 
   // --------------------------------------------------------------------------
-  // CAFE LOCATIONS FINDER
+  // CAFE LOCATIONS FINDER WITH CITY FILTER & LIVE STATUS
   // --------------------------------------------------------------------------
   function LocationsSection() {
     var locations = DATA.locations || [];
+
+    var cityFilterState = useState('all');
+    var cityFilter = cityFilterState[0];
+    var setCityFilter = cityFilterState[1];
+
+    var filteredLocations = useMemo(function () {
+      if (cityFilter === 'all') return locations;
+      return locations.filter(function (l) { return l.city.toLowerCase() === cityFilter; });
+    }, [locations, cityFilter]);
 
     return h('section', { id: 'locations', className: 'locations-section' },
       h('div', { className: 'container' },
@@ -624,15 +1365,36 @@
           h('span', { className: 'section-eyebrow' }, 'Find Your Local Atelier'),
           h('h2', { className: 'section-main-title' }, 'Our Neighborhood Sanctuaries'),
           h('p', { className: 'section-lead-paragraph' },
-            'Open seven days a week across Manchester and London. Featuring acoustic calm, outdoor terraces, and filter bars.'
+            'Open seven days a week across Manchester and London. Featuring acoustic calm, outdoor heated piazzas, and dedicated pour-over filter bars.'
           )
         ),
 
+        // City Filter Tabs
+        h('div', { className: 'locations-city-filter' },
+          [
+            { id: 'all', label: 'All Sanctuaries (3)' },
+            { id: 'manchester', label: 'Manchester (1)' },
+            { id: 'london', label: 'London (2)' }
+          ].map(function (c) {
+            var isSel = cityFilter === c.id;
+            return h('button', {
+              key: c.id,
+              type: 'button',
+              className: 'city-filter-btn' + (isSel ? ' active' : ''),
+              onClick: function () { setCityFilter(c.id); }
+            }, c.label);
+          })
+        ),
+
         h('div', { className: 'locations-cards-grid' },
-          locations.map(function (loc) {
+          filteredLocations.map(function (loc) {
             return h('div', { key: loc.id, className: 'location-card' },
               h('div', { className: 'location-img-wrap' },
-                h('img', { src: loc.image, alt: loc.name, className: 'location-img' })
+                h('img', { src: loc.image, alt: loc.name, className: 'location-img', loading: 'lazy' }),
+                h('span', { className: 'live-open-badge' },
+                  h('span', { className: 'live-pulse-dot' }),
+                  'Open Today · 07:00 – 18:00'
+                )
               ),
               h('div', { className: 'location-body' },
                 h('span', { className: 'location-city-tag' }, loc.city),
@@ -642,7 +1404,8 @@
                   ' ' + loc.address
                 ),
                 h('div', { className: 'location-hours' },
-                  '🕒 ' + loc.hours
+                  h(Icon, { name: 'clock', size: 13, color: 'var(--cafe-text-muted)' }),
+                  ' ' + loc.hours
                 ),
                 h('div', { className: 'location-features-list' },
                   loc.features.map(function (f, idx) {
@@ -655,7 +1418,7 @@
                     target: '_blank',
                     rel: 'noreferrer',
                     className: 'btn btn-secondary btn-sm',
-                    style: { flex: 1 }
+                    style: { flex: 1, justifyContent: 'center' }
                   }, 'Get Directions ↗'),
                   h('a', {
                     href: 'tel:' + loc.phone.replace(/\\s/g, ''),
@@ -694,10 +1457,11 @@
       onAddToCart({
         id: sub.id + '_' + Date.now(),
         name: sub.name,
-        subtitle: 'Grind: ' + selectedGrind + ' · ' + sub.cadence,
+        subtitle: 'Grind: ' + selectedGrind + ' · Fortnightly Fresh Dispatch',
         priceDisplay: sub.priceDisplay,
         price: sub.id === 'sub_curator' ? 11.50 : 10.00,
-        image: sub.image
+        image: sub.image,
+        customization: { grind: selectedGrind }
       });
     }
 
@@ -747,16 +1511,30 @@
   }
 
   // --------------------------------------------------------------------------
-  // SLIDE-OVER ORDER BAG & CHECKOUT DRAWER
+  // SLIDE-OVER ORDER BAG & MULTI-LOCATION CHECKOUT DRAWER
   // --------------------------------------------------------------------------
   function CartDrawer(props) {
     var isOpen = props.isOpen;
     var onClose = props.onClose;
     var cart = props.cart || [];
     var onRemove = props.onRemove;
+    var onUpdateQty = props.onUpdateQty;
     var onCheckout = props.onCheckout;
 
-    var subtotal = cart.reduce(function (sum, it) { return sum + (it.price || 0); }, 0);
+    var selectedLocationState = useState('ancoats');
+    var selectedLocation = selectedLocationState[0];
+    var setSelectedLocation = selectedLocationState[1];
+
+    var pickupTimeState = useState('asap');
+    var pickupTime = pickupTimeState[0];
+    var setPickupTime = pickupTimeState[1];
+
+    var subtotal = cart.reduce(function (sum, it) {
+      var q = it.qty || 1;
+      return sum + (it.price || 0) * q;
+    }, 0);
+
+    var vatAmount = subtotal * (20 / 120); // UK 20% VAT included in prices
 
     return h(React.Fragment, null,
       h('div', {
@@ -770,8 +1548,12 @@
         'aria-modal': 'true',
         'aria-label': 'Your Order Bag'
       },
+        // Panel Header
         h('div', { className: 'cart-panel-head' },
-          h('h4', { className: 'cart-panel-title' }, 'Your Order Bag (' + cart.length + ')'),
+          h('div', null,
+            h('h4', { className: 'cart-panel-title' }, 'Your Order Bag (' + cart.reduce(function (c, it) { return c + (it.qty || 1); }, 0) + ')'),
+            h('span', { style: { fontSize: '11.5px', color: 'var(--cafe-text-muted)' } }, 'Handcrafted for Express Counter Pickup')
+          ),
           h('button', {
             type: 'button',
             className: 'modal-close-button',
@@ -780,46 +1562,99 @@
           }, h(Icon, { name: 'close', size: 16 }))
         ),
 
+        // Pickup Location & Schedule Selector
+        cart.length > 0 && h('div', { className: 'cart-pickup-selectors-box' },
+          h('div', { className: 'cart-selector-row' },
+            h('label', { className: 'cart-sel-label' }, 'Collect from Bar:'),
+            h('select', {
+              className: 'cart-dropdown-select',
+              value: selectedLocation,
+              onChange: function (e) { setSelectedLocation(e.target.value); }
+            },
+              h('option', { value: 'ancoats' }, 'Ancoats Flagship, Manchester (M4 5BF)'),
+              h('option', { value: 'marylebone' }, 'Marylebone Atelier, London (W1U 7QA)'),
+              h('option', { value: 'soho' }, 'Soho Espresso Bar, London (W1F 8HS)')
+            )
+          ),
+          h('div', { className: 'cart-selector-row' },
+            h('label', { className: 'cart-sel-label' }, 'Pickup Time:'),
+            h('select', {
+              className: 'cart-dropdown-select',
+              value: pickupTime,
+              onChange: function (e) { setPickupTime(e.target.value); }
+            },
+              h('option', { value: 'asap' }, '⚡ ASAP (Ready in ~6 minutes)'),
+              h('option', { value: '15m' }, 'In 15 minutes'),
+              h('option', { value: '30m' }, 'In 30 minutes'),
+              h('option', { value: '45m' }, 'In 45 minutes')
+            )
+          )
+        ),
+
+        // Scrollable Items List
         h('div', { className: 'cart-items-scroll' },
           cart.length === 0
-            ? h('div', { style: { textAlign: 'center', padding: '60px 20px', color: 'var(--cafe-text-muted)' } },
+            ? h('div', { className: 'cart-empty-state' },
               h(Icon, { name: 'coffee', size: 40, color: 'var(--cafe-bronze)' }),
-              h('h4', { style: { margin: '16px 0 6px', color: 'var(--cafe-text-primary)' } }, 'Your bag is empty'),
-              h('p', { style: { fontSize: '13px' } }, 'Add an artisan flat white, single-origin pour-over, or cardamom bun to order.')
+              h('h4', null, 'Your bag is empty'),
+              h('p', null, 'Add an artisan flat white, single-origin pour-over, or cardamom bun to order.')
             )
             : cart.map(function (item, idx) {
-              return h('div', { key: idx, className: 'cart-item-card' },
+              var q = item.qty || 1;
+              var lineTotal = (item.price || 0) * q;
+              return h('div', { key: item.id || idx, className: 'cart-item-card' },
                 h('div', { className: 'cart-item-info' },
                   h('h5', null, item.name),
-                  h('p', null, item.subtitle || 'Handcrafted order')
+                  h('p', null, item.subtitle || 'Handcrafted order'),
+                  item.notes && h('span', { className: 'cart-item-note' }, 'Note: ' + item.notes)
                 ),
-                h('div', { style: { display: 'flex', alignItems: 'center' } },
-                  h('span', { className: 'cart-item-price' }, item.priceDisplay || '£' + item.price.toFixed(2)),
-                  h('button', {
-                    type: 'button',
-                    onClick: function () { onRemove(idx); },
-                    style: { background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '4px' },
-                    'aria-label': 'Remove item'
-                  }, h(Icon, { name: 'close', size: 14 }))
+                h('div', { className: 'cart-item-actions-col' },
+                  h('span', { className: 'cart-item-price' }, '£' + lineTotal.toFixed(2)),
+                  // Quantity Stepper
+                  h('div', { className: 'qty-stepper' },
+                    h('button', {
+                      type: 'button',
+                      className: 'qty-btn',
+                      onClick: function () { onUpdateQty(idx, q - 1); },
+                      'aria-label': 'Decrease quantity'
+                    }, h(Icon, { name: 'minus', size: 12 })),
+                    h('span', { className: 'qty-display' }, q),
+                    h('button', {
+                      type: 'button',
+                      className: 'qty-btn',
+                      onClick: function () { onUpdateQty(idx, q + 1); },
+                      'aria-label': 'Increase quantity'
+                    }, h(Icon, { name: 'plus', size: 12 }))
+                  )
                 )
               );
             })
         ),
 
+        // Drawer Footer
         cart.length > 0 && h('div', { className: 'cart-panel-foot' },
           h('div', { className: 'cart-subtotal-line' },
-            h('span', null, 'Order Total:'),
-            h('span', { style: { color: 'var(--cafe-bronze)', fontSize: '18px' } }, '£' + subtotal.toFixed(2))
+            h('span', null, 'Order Subtotal:'),
+            h('span', { style: { color: 'var(--cafe-bronze)', fontSize: '18px', fontWeight: 700 } }, '£' + subtotal.toFixed(2))
+          ),
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: 'var(--cafe-text-muted)', marginBottom: '12px' } },
+            h('span', null, 'Includes UK 20% VAT:'),
+            h('span', null, '£' + vatAmount.toFixed(2))
           ),
           h('p', { style: { fontSize: '12px', color: 'var(--cafe-text-muted)', margin: '0 0 16px' } },
-            '🕒 Ready in ~6 minutes at our Ancoats counter. Collect with your digital pass.'
+            '🕒 Ready in ~6 mins. Collect at your selected counter with your digital pass.'
           ),
           h('button', {
             type: 'button',
             className: 'btn btn-primary',
             style: { width: '100%', minHeight: '48px' },
-            onClick: onCheckout
-          }, 'Confirm Pickup Order →')
+            onClick: function () {
+              onCheckout({
+                location: selectedLocation === 'ancoats' ? 'Ancoats Flagship' : (selectedLocation === 'marylebone' ? 'Marylebone Atelier' : 'Soho Espresso Bar'),
+                pickupTime: pickupTime === 'asap' ? 'ASAP (~6 minutes)' : 'Scheduled (' + pickupTime + ')'
+              });
+            }
+          }, 'Confirm Pickup Order — £' + subtotal.toFixed(2) + ' →')
         )
       )
     );
@@ -842,14 +1677,18 @@
         h('h3', { style: { fontFamily: 'var(--font-serif)', fontSize: '24px', margin: '0 0 8px' } },
           'Pickup Order Queued'
         ),
-        h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--cafe-bronze)', fontWeight: 700, marginBottom: '16px' } },
+        h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: '16px', color: 'var(--cafe-bronze)', fontWeight: 700, marginBottom: '14px' } },
           'COLLECTION PASS: ' + order.code
         ),
-        h('p', { style: { fontSize: '14px', color: 'var(--cafe-text-secondary)', lineHeight: 1.5, marginBottom: '24px' } },
-          'Our baristas have received your order. We are handcrafting it now with freshly ground lots at our Ancoats Flagship bar.'
+        h('p', { style: { fontSize: '14px', color: 'var(--cafe-text-secondary)', lineHeight: 1.5, marginBottom: '20px' } },
+          'Our baristas have received your order at our ',
+          h('strong', null, order.location || 'Ancoats Flagship'),
+          ' bar. Ready for collection ',
+          h('strong', null, order.pickupTime || 'in ~6 minutes'),
+          '.'
         ),
         h('div', { style: { background: 'var(--cafe-bg-surface)', padding: '16px', borderRadius: '12px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', fontSize: '14px' } },
-          h('span', null, 'Total Charged:'),
+          h('span', null, 'Total Paid:'),
           h('strong', null, '£' + order.total.toFixed(2))
         ),
         h('button', {
@@ -858,6 +1697,32 @@
           style: { width: '100%', minHeight: '44px' },
           onClick: onClose
         }, 'Done & Return to Cafe')
+      )
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // MOBILE STICKY FLOATING ORDER BAR
+  // --------------------------------------------------------------------------
+  function MobileStickyOrderBar(props) {
+    var cartCount = props.cartCount;
+    var cartTotal = props.cartTotal;
+    var onOpenCart = props.onOpenCart;
+
+    if (cartCount === 0) return null;
+
+    return h('div', { className: 'mobile-sticky-order-bar' },
+      h('button', {
+        type: 'button',
+        className: 'mobile-sticky-inner-btn',
+        onClick: onOpenCart,
+        'aria-label': 'View Order Bag, ' + cartCount + ' items for £' + cartTotal.toFixed(2)
+      },
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+          h(Icon, { name: 'bag', size: 18 }),
+          h('span', { style: { fontWeight: 700 } }, 'View Order Bag (' + cartCount + ')')
+        ),
+        h('span', { className: 'mobile-sticky-price' }, '£' + cartTotal.toFixed(2) + ' →')
       )
     );
   }
@@ -961,13 +1826,38 @@
       setTheme(function (prev) { return prev === 'dark' ? 'light' : 'dark'; });
     }
 
-    var cartState = useState([]);
+    // Cart state with localStorage persistence
+    var cartState = useState(function () {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          var saved = window.localStorage.getItem('aura_cart');
+          if (saved) return JSON.parse(saved);
+        } catch (e) { }
+      }
+      return [];
+    });
     var cart = cartState[0];
     var setCart = cartState[1];
+
+    useEffect(function () {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem('aura_cart', JSON.stringify(cart));
+        } catch (e) { }
+      }
+    }, [cart]);
 
     var isCartOpenState = useState(false);
     var isCartOpen = isCartOpenState[0];
     var setIsCartOpen = isCartOpenState[1];
+
+    var isMobileNavOpenState = useState(false);
+    var isMobileNavOpen = isMobileNavOpenState[0];
+    var setIsMobileNavOpen = isMobileNavOpenState[1];
+
+    var customizerItemState = useState(null);
+    var activeCustomizerItem = customizerItemState[0];
+    var setActiveCustomizerItem = customizerItemState[1];
 
     var nutritionItemState = useState(null);
     var activeNutritionItem = nutritionItemState[0];
@@ -977,9 +1867,58 @@
     var activeOrderSuccess = orderSuccessState[0];
     var setActiveOrderSuccess = orderSuccessState[1];
 
-    function handleAddToCart(item) {
-      setCart(function (prev) { return [item].concat(prev); });
+    // Keyboard ESC to close any open modal
+    useEffect(function () {
+      function handleKeyDown(e) {
+        if (e.key === 'Escape') {
+          setActiveCustomizerItem(null);
+          setActiveNutritionItem(null);
+          setIsCartOpen(false);
+          setIsMobileNavOpen(false);
+          setActiveOrderSuccess(null);
+        }
+      }
+      window.addEventListener('keydown', handleKeyDown);
+      return function () { window.removeEventListener('keydown', handleKeyDown); };
+    }, []);
+
+    // Prevent body scroll when modal open
+    useEffect(function () {
+      var isAnyModalOpen = isCartOpen || isMobileNavOpen || Boolean(activeCustomizerItem) || Boolean(activeNutritionItem) || Boolean(activeOrderSuccess);
+      if (isAnyModalOpen) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    }, [isCartOpen, isMobileNavOpen, activeCustomizerItem, activeNutritionItem, activeOrderSuccess]);
+
+    function handleAddConfiguredItem(configuredItem) {
+      setCart(function (prev) {
+        var existingIdx = prev.findIndex(function (it) {
+          return it.baseId === configuredItem.baseId && it.subtitle === configuredItem.subtitle;
+        });
+        if (existingIdx >= 0) {
+          var copy = prev.slice();
+          copy[existingIdx].qty = (copy[existingIdx].qty || 1) + 1;
+          return copy;
+        }
+        configuredItem.qty = 1;
+        return [configuredItem].concat(prev);
+      });
       setIsCartOpen(true);
+    }
+
+    function handleUpdateCartQty(idx, newQty) {
+      setCart(function (prev) {
+        if (newQty <= 0) {
+          var copy = prev.slice();
+          copy.splice(idx, 1);
+          return copy;
+        }
+        var copy = prev.slice();
+        copy[idx].qty = newQty;
+        return copy;
+      });
     }
 
     function handleRemoveCart(idx) {
@@ -990,48 +1929,65 @@
       });
     }
 
-    function handleCheckout() {
+    function handleCheckout(meta) {
       if (cart.length === 0) return;
-      var subtotal = cart.reduce(function (sum, it) { return sum + (it.price || 0); }, 0);
+      var subtotal = cart.reduce(function (sum, it) { return sum + (it.price || 0) * (it.qty || 1); }, 0);
       var newOrder = {
         code: 'AURA-' + Math.floor(1000 + Math.random() * 9000),
         items: cart,
-        total: subtotal
+        total: subtotal,
+        location: meta.location,
+        pickupTime: meta.pickupTime
       };
       setCart([]);
       setIsCartOpen(false);
       setActiveOrderSuccess(newOrder);
     }
 
+    var totalCount = cart.reduce(function (sum, it) { return sum + (it.qty || 1); }, 0);
+    var totalPrice = cart.reduce(function (sum, it) { return sum + (it.price || 0) * (it.qty || 1); }, 0);
+
     return h('div', { className: 'aura-cafe-app' },
       h(AnnouncementBar, null),
       h(SiteNavbar, {
-        cartCount: cart.length,
+        cartCount: totalCount,
         onOpenCart: function () { setIsCartOpen(true); },
+        theme: theme,
+        onToggleTheme: toggleTheme,
+        onToggleMobileNav: function () { setIsMobileNavOpen(true); }
+      }),
+      h(MobileNavDrawer, {
+        isOpen: isMobileNavOpen,
+        onClose: function () { setIsMobileNavOpen(false); },
         theme: theme,
         onToggleTheme: toggleTheme
       }),
       h('main', null,
         h(HeroSection, { onOpenCart: function () { setIsCartOpen(true); } }),
         h(MenuExplorerSection, {
-          onAddToCart: handleAddToCart,
+          onAddToCart: handleAddConfiguredItem,
+          onOpenCustomizer: function (item) { setActiveCustomizerItem(item); },
           onOpenNutrition: function (item) { setActiveNutritionItem(item); }
         }),
         h(CraftStorySection, null),
-        h(LoyaltyClubSection, {
-          onJoin: function () {
-            alert('Atelier Pass added to your digital wallet! You have 7 stamps collected.');
-          }
-        }),
+        h(LoyaltyClubSection, null),
         h(LocationsSection, null),
-        h(SubscriptionSection, { onAddToCart: handleAddToCart })
+        h(SubscriptionSection, { onAddToCart: handleAddConfiguredItem })
       ),
       h(SiteFooter, null),
+
+      // Beverage & Item Customization Configurator Modal
+      h(CustomizationModal, {
+        item: activeCustomizerItem,
+        onClose: function () { setActiveCustomizerItem(null); },
+        onAddConfiguredItem: handleAddConfiguredItem
+      }),
 
       // Nutrition Specification Sheet Modal
       h(NutritionModal, {
         item: activeNutritionItem,
-        onClose: function () { setActiveNutritionItem(null); }
+        onClose: function () { setActiveNutritionItem(null); },
+        onAddConfiguredItem: handleAddConfiguredItem
       }),
 
       // Cart Slide-Over Drawer
@@ -1040,6 +1996,7 @@
         onClose: function () { setIsCartOpen(false); },
         cart: cart,
         onRemove: handleRemoveCart,
+        onUpdateQty: handleUpdateCartQty,
         onCheckout: handleCheckout
       }),
 
@@ -1047,6 +2004,13 @@
       h(OrderSuccessModal, {
         order: activeOrderSuccess,
         onClose: function () { setActiveOrderSuccess(null); }
+      }),
+
+      // Mobile Sticky Bottom Order Bar
+      h(MobileStickyOrderBar, {
+        cartCount: totalCount,
+        cartTotal: totalPrice,
+        onOpenCart: function () { setIsCartOpen(true); }
       })
     );
   }

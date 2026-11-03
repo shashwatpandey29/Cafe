@@ -381,6 +381,45 @@
     ],
 
     // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // BEVERAGE & ITEM CUSTOMIZATION ENGINE (Specially Crafted Options)
+    // ------------------------------------------------------------------------
+    customizationOptions: {
+      sizes: [
+        { id: 'reg', label: 'Regular (8oz / 240ml)', extraPrice: 0, extraKcal: 0 },
+        { id: 'large', label: 'Large (12oz / 355ml)', extraPrice: 0.50, extraKcal: 45 }
+      ],
+      milks: [
+        { id: 'semiSkimmed', label: 'Organic Semi-Skimmed Milk', extraPrice: 0, extraKcal: 0, badge: 'Standard' },
+        { id: 'wholeMilk', label: 'Organic Whole Milk', extraPrice: 0, extraKcal: 47, badge: 'Rich' },
+        { id: 'oatMilk', label: 'Minor Figures Barista Oat', extraPrice: 0.50, extraKcal: 20, badge: 'Plant-Based +£0.50' },
+        { id: 'almondMilk', label: 'Roasted Almond Milk', extraPrice: 0.50, extraKcal: -60, badge: 'Plant-Based +£0.50' },
+        { id: 'soyaMilk', label: 'Organic Soya Milk', extraPrice: 0.40, extraKcal: -20, badge: 'Plant-Based +£0.40' },
+        { id: 'coconutMilk', label: 'Organic Coconut Milk', extraPrice: 0.50, extraKcal: -54, badge: 'Plant-Based +£0.50' }
+      ],
+      beans: [
+        { id: 'classico', label: 'Classico House Espresso (Dark Chocolate & Hazelnut)', extraPrice: 0, badge: 'Signature' },
+        { id: 'guest', label: 'Single-Origin Guest Lot · Ethiopia Yirgacheffe G1 (+£0.60)', extraPrice: 0.60, badge: '88+ Specialty' },
+        { id: 'decaf', label: 'Swiss Water Decaf (Natural Molasses & Fig)', extraPrice: 0, badge: 'Chemical-Free' }
+      ],
+      temperatures: [
+        { id: 'steamed', label: 'Velvet Steamed (65°C Silk Microfoam)' },
+        { id: 'extraHot', label: 'Extra Hot (72°C)' },
+        { id: 'iced', label: 'Iced over Slow-Melt Crystal Cubes (+£0.30)', extraPrice: 0.30 }
+      ],
+      syrups: [
+        { id: 'none', label: 'No Syrup (Pure Origin Character)', extraPrice: 0, extraKcal: 0 },
+        { id: 'vanilla', label: 'Organic Madagascar Vanilla Pod Syrup (+£0.60)', extraPrice: 0.60, extraKcal: 45 },
+        { id: 'caramel', label: 'Sea Salted Amber Caramel (+£0.60)', extraPrice: 0.60, extraKcal: 50 },
+        { id: 'hazelnut', label: 'Roasted Piedmont Hazelnut (+£0.60)', extraPrice: 0.60, extraKcal: 48 }
+      ],
+      extraShots: [
+        { id: 'none', label: 'Standard Double Extraction', extraPrice: 0 },
+        { id: 'singleExtra', label: '+ Extra Ristretto Shot (+£0.80)', extraPrice: 0.80 }
+      ]
+    },
+
+    // ------------------------------------------------------------------------
     // MILK COMPARATIVE MATRIX (Caffè Nero Regulatory Standard)
     // ------------------------------------------------------------------------
     milkMatrix: {

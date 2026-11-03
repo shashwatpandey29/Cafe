@@ -1435,3 +1435,899 @@ button, input, select {
   flex-wrap: wrap;
   gap: 12px;
 }
+
+/* ==========================================================================
+   14. MODERN UPGRADES: SEARCH, CUSTOMIZER, MOBILE DRAWER, LOYALTY & CARTS
+   ========================================================================== */
+
+/* Modern Web Guidance: Overscroll containment to prevent page scrolling behind overlays */
+.nutrition-modal-backdrop,
+.nutrition-modal-box,
+.customizer-modal-box,
+.cart-drawer-panel,
+.cart-drawer-backdrop,
+.mobile-nav-backdrop,
+.mobile-nav-drawer {
+  overscroll-behavior: contain;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Hamburger Button & Mobile Drawer
+   -------------------------------------------------------------------------- */
+.mobile-hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--cafe-text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.mobile-hamburger-btn:hover {
+  background: var(--cafe-bg-surface);
+}
+
+@media (max-width: 1040px) {
+  .mobile-hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-store-btn {
+    display: none !important;
+  }
+}
+
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1800;
+  background: var(--cafe-bg-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-nav-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 85vw;
+  z-index: 1900;
+  background: var(--cafe-bg-card);
+  box-shadow: var(--cafe-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 24px;
+}
+
+.mobile-nav-drawer.open {
+  transform: translateX(0);
+}
+
+.mobile-nav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--cafe-border-subtle);
+  margin-bottom: 20px;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.mobile-nav-link-item {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cafe-text-primary);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cafe-border-subtle);
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-link-item:hover {
+  color: var(--cafe-bronze);
+}
+
+.mobile-nav-footer {
+  padding-top: 20px;
+  border-top: 1px solid var(--cafe-border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Live Menu Search Bar & Dietary Filters
+   -------------------------------------------------------------------------- */
+.menu-search-wrapper {
+  max-width: 680px;
+  margin: 0 auto 24px;
+}
+
+.search-input-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--cafe-bg-card);
+  border: 1.5px solid var(--cafe-border-medium);
+  border-radius: 9999px;
+  padding: 10px 20px;
+  box-shadow: var(--cafe-shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input-box:focus-within {
+  border-color: var(--cafe-bronze);
+  box-shadow: 0 0 0 3px var(--cafe-bronze-dim);
+}
+
+.menu-search-field {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--cafe-text-primary);
+  font-size: 14.5px;
+  outline: none;
+}
+
+.menu-search-field::placeholder {
+  color: var(--cafe-text-muted);
+}
+
+.search-kbd-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--cafe-bg-surface);
+  border: 1px solid var(--cafe-border-medium);
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: var(--cafe-text-muted);
+}
+
+.search-clear-btn {
+  background: none;
+  border: none;
+  color: var(--cafe-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.search-clear-btn:hover {
+  color: var(--cafe-bronze);
+}
+
+.dietary-filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.diet-filter-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--cafe-border-subtle);
+  background: var(--cafe-bg-card);
+  color: var(--cafe-text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diet-filter-pill:hover {
+  border-color: var(--cafe-bronze);
+  color: var(--cafe-bronze);
+  background: var(--cafe-bronze-dim);
+}
+
+.diet-filter-pill.active {
+  background: var(--cafe-bronze);
+  border-color: var(--cafe-bronze);
+  color: #FFFFFF;
+}
+
+.search-results-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cafe-bg-surface);
+  border: 1px solid var(--cafe-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--cafe-text-secondary);
+}
+
+.reset-filters-btn {
+  background: none;
+  border: none;
+  color: var(--cafe-terracotta);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reset-filters-btn:hover {
+  text-decoration: underline;
+}
+
+.no-results-box {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--cafe-bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--cafe-border-medium);
+  margin-bottom: 40px;
+}
+
+.no-results-box h4 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  margin: 14px 0 6px;
+}
+
+.no-results-box p {
+  font-size: 13.5px;
+  color: var(--cafe-text-muted);
+  margin-bottom: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Beverage & Item Customization Modal
+   -------------------------------------------------------------------------- */
+.customizer-modal-box {
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  background: var(--cafe-bg-card);
+  border: 1px solid var(--cafe-border-medium);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--cafe-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.customizer-modal-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--cafe-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cafe-bg-surface);
+}
+
+.customizer-head-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.customizer-title {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  margin: 0 0 2px;
+  color: var(--cafe-text-primary);
+}
+
+.customizer-subtitle {
+  font-size: 12px;
+  color: var(--cafe-text-muted);
+}
+
+.customizer-scroll-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.config-group {
+  margin-bottom: 22px;
+}
+
+.config-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cafe-text-secondary);
+  margin-bottom: 10px;
+}
+
+.config-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.config-pills-row.vertical {
+  flex-direction: column;
+}
+
+.config-pill {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-surface);
+  color: var(--cafe-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.config-pill:hover {
+  border-color: var(--cafe-bronze);
+  color: var(--cafe-bronze);
+}
+
+.config-pill.active {
+  background: var(--cafe-bronze);
+  border-color: var(--cafe-bronze);
+  color: #FFFFFF;
+}
+
+.pill-addon-price {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.config-pill-wide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-surface);
+  color: var(--cafe-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.config-pill-wide:hover {
+  border-color: var(--cafe-bronze);
+}
+
+.config-pill-wide.active {
+  border-color: var(--cafe-bronze);
+  background: var(--cafe-bronze-dim);
+}
+
+.bean-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--cafe-bronze-dim);
+  color: var(--cafe-bronze);
+}
+
+.config-milks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .config-milks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.config-milk-card {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-surface);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.config-milk-card:hover {
+  border-color: var(--cafe-bronze);
+}
+
+.config-milk-card.active {
+  border-color: var(--cafe-bronze);
+  background: var(--cafe-bronze-dim);
+}
+
+.milk-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cafe-text-primary);
+  margin-bottom: 4px;
+}
+
+.milk-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.milk-badge {
+  color: var(--cafe-text-muted);
+}
+
+.milk-price {
+  font-weight: 700;
+  color: var(--cafe-bronze);
+}
+
+.checkbox-pill-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--cafe-text-primary);
+  cursor: pointer;
+}
+
+.config-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-surface);
+  color: var(--cafe-text-primary);
+  font-size: 13px;
+  outline: none;
+}
+
+.config-input:focus {
+  border-color: var(--cafe-bronze);
+}
+
+.customizer-modal-foot {
+  padding: 18px 24px;
+  border-top: 1px solid var(--cafe-border-subtle);
+  background: var(--cafe-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.customizer-live-price {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--cafe-bronze);
+  font-family: var(--font-serif);
+}
+
+.customizer-live-kcal {
+  font-size: 11.5px;
+  color: var(--cafe-text-muted);
+}
+
+.btn-add-customized {
+  min-height: 48px;
+  padding: 12px 24px;
+}
+
+/* --------------------------------------------------------------------------
+   Enhanced Cart Drawer (Quantity Stepper, Pickup Location & Timers)
+   -------------------------------------------------------------------------- */
+.cart-pickup-selectors-box {
+  padding: 14px 24px;
+  background: var(--cafe-bg-surface);
+  border-bottom: 1px solid var(--cafe-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cart-selector-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-sel-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cafe-text-secondary);
+  white-space: nowrap;
+}
+
+.cart-dropdown-select {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-card);
+  color: var(--cafe-text-primary);
+  font-size: 12px;
+  outline: none;
+}
+
+.cart-item-actions-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--cafe-border-medium);
+  border-radius: 9999px;
+  overflow: hidden;
+  background: var(--cafe-bg-surface);
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--cafe-text-primary);
+}
+
+.qty-btn:hover {
+  background: var(--cafe-bronze-dim);
+  color: var(--cafe-bronze);
+}
+
+.qty-display {
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+}
+
+.cart-item-note {
+  display: block;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--cafe-bronze);
+  margin-top: 2px;
+}
+
+.cart-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--cafe-text-muted);
+}
+
+.cart-empty-state h4 {
+  margin: 16px 0 6px;
+  color: var(--cafe-text-primary);
+  font-family: var(--font-serif);
+  font-size: 20px;
+}
+
+.cart-empty-state p {
+  font-size: 13px;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Floating Sticky Order Bar
+   -------------------------------------------------------------------------- */
+.mobile-sticky-order-bar {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 16px;
+  right: 16px;
+  z-index: 1200;
+  animation: slideUpPill 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpPill {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  .mobile-sticky-order-bar {
+    display: block;
+  }
+}
+
+.mobile-sticky-inner-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-radius: 9999px;
+  background-color: var(--cafe-espresso);
+  color: var(--cafe-text-inverse);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--cafe-border-medium);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mobile-sticky-price {
+  font-weight: 800;
+  color: var(--cafe-bronze);
+  font-size: 15px;
+}
+
+/* --------------------------------------------------------------------------
+   Interactive Loyalty Club Pass Simulator & Reward Modal
+   -------------------------------------------------------------------------- */
+.stamp-card-frame.completed-card {
+  border: 2px solid var(--cafe-bronze);
+  box-shadow: 0 0 24px rgba(184, 115, 51, 0.4);
+}
+
+.stamp-slot.next-tap {
+  border-color: var(--cafe-bronze);
+  background: var(--cafe-bronze-dim);
+  color: var(--cafe-bronze);
+  cursor: pointer;
+  animation: pulseTap 1.5s infinite;
+}
+
+@keyframes pulseTap {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); box-shadow: 0 0 10px rgba(184, 115, 51, 0.5); }
+  100% { transform: scale(1); }
+}
+
+.stamp-slot.free-cup.unlocked {
+  background: var(--cafe-bronze);
+  color: #FFFFFF;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(184, 115, 51, 0.6);
+  animation: pulseReward 2s infinite;
+}
+
+@keyframes pulseReward {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.btn-reset-demo-stamps {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--cafe-bronze);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.loyalty-reward-modal-box {
+  max-width: 440px;
+  width: 100%;
+  background: var(--cafe-bg-card);
+  border: 1px solid var(--cafe-border-medium);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: var(--cafe-shadow-lg);
+  position: relative;
+}
+
+.reward-stamp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reward-gold-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cafe-bronze);
+  background: var(--cafe-bronze-dim);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--cafe-border-subtle);
+}
+
+.simulated-barcode-card {
+  background: #FFFFFF;
+  color: #000000;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.barcode-bars {
+  font-family: monospace;
+  font-size: 28px;
+  letter-spacing: 4px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.barcode-code-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.loyalty-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+}
+
+.loyalty-benefits-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--cafe-text-secondary);
+}
+
+.benefit-check {
+  color: var(--cafe-bronze);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Locations City Filter & Live Status
+   -------------------------------------------------------------------------- */
+.locations-city-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+
+.city-filter-btn {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--cafe-border-medium);
+  background: var(--cafe-bg-card);
+  color: var(--cafe-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-filter-btn:hover {
+  border-color: var(--cafe-bronze);
+  color: var(--cafe-bronze);
+}
+
+.city-filter-btn.active {
+  background: var(--cafe-espresso);
+  color: var(--cafe-text-inverse);
+  border-color: var(--cafe-espresso);
+}
+
+.live-open-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  background: rgba(18, 14, 12, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FAF6F0;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.location-img-wrap {
+  position: relative;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.craft-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.craft-pillar-card {
+  background: var(--cafe-bg-card);
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid var(--cafe-border-subtle);
+  box-shadow: var(--cafe-shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.craft-pillar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cafe-shadow-md);
+}
+
+.craft-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--cafe-bronze-dim);
+  color: var(--cafe-bronze);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.craft-pillar-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  margin: 0 0 10px;
+}
+
+.craft-pillar-desc {
+  color: var(--cafe-text-secondary);
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0;
+}
