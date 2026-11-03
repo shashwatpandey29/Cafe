@@ -1,5 +1,29 @@
 {
-  "name": "vxq-k9m-z7r-p4n",
   "version": 2,
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/public/index.html" },
+    { "source": "/admin", "destination": "/public/admin.html" },
+    { "source": "/expired", "destination": "/public/expired.html" },
+    { "source": "/expired.html", "destination": "/public/expired.html" },
+    { "source": "/gate.css", "destination": "/public/gate.css" },
+    { "source": "/guardian.js", "destination": "/public/guardian.js" },
+    { "source": "/api/auth/verify", "destination": "/api/auth/verify.js" },
+    { "source": "/api/auth/session", "destination": "/api/auth/session.js" },
+    { "source": "/api/auth/logout", "destination": "/api/auth/logout.js" },
+    { "source": "/api/admin/keys", "destination": "/api/admin/keys.js" },
+    { "source": "/demo/:cafe", "destination": "/api/serve-demo.js?cafe=:cafe" },
+    { "source": "/demo/:cafe/", "destination": "/api/serve-demo.js?cafe=:cafe" },
+    { "source": "/demo/:cafe/:file*", "destination": "/api/serve-demo.js?cafe=:cafe&file=:file*" }
+  ],
+  "headers": [
+    {
+      "source": "/demo/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ]
 }

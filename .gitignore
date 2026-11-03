@@ -4,3 +4,11 @@ node_modules/
 *.log
 .agents/
 page_source.html
+yeahman_site.html
+site.min.css
+site.min.js
+*.png
+data/keys.json
+.env
+.env.local
+.env.*.local

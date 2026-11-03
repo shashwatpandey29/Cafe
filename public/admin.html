@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Gate Admin | Session Control & Key Generator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23121820%22/><text y=%22.88em%22 font-size=%2254%22 font-family=%22sans-serif%22 font-weight=%22900%22 fill=%22%23F59E0B%22 text-anchor=%22middle%22 x=%2250%22>⚡</text></svg>" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/gate.css" />
+  <style>
+    body.admin-body {
+      background-color: #07090D;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 30px 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .admin-container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .admin-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    .admin-subtitle {
+      color: #94A3B8;
+      font-size: 0.88rem;
+      margin: 4px 0 0 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .panel-card {
+      background: rgba(18, 24, 34, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+    }
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #94A3B8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(10, 14, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #FFF;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: #38BDF8;
+    }
+    .btn-action {
+      background: #2563EB;
+      color: #FFF;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: #1D4ED8;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table.key-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    table.key-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px 14px;
+      color: #94A3B8;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+    }
+    table.key-table td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-status.pending { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-status.active { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-status.expired { background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-status.revoked { background: rgba(148, 163, 184, 0.15); color: #94A3B8; border: 1px solid rgba(148, 163, 184, 0.3); }
+    
+    .btn-xs {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #FFF;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-xs:hover { background: rgba(255, 255, 255, 0.18); }
+    .btn-xs.danger:hover { background: rgba(244, 63, 94, 0.3); color: #FDA4AF; border-color: rgba(244, 63, 94, 0.5); }
+    .btn-xs.success:hover { background: rgba(16, 185, 129, 0.3); color: #6EE7B7; border-color: rgba(16, 185, 129, 0.5); }
+
+    .toast-pill {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: #059669;
+      color: #FFF;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="admin-body">
+  <div class="admin-container">
+    <header class="admin-header">
+      <div>
+        <h1 class="admin-title">Client Demo Key Administration</h1>
+        <p class="admin-subtitle">Generate 1-hour ephemeral passes, inspect live viewing sessions, and manage customer access.</p>
+      </div>
+      <div>
+        <a href="/" target="_blank" class="btn-xs" style="padding: 8px 14px; font-size: 0.82rem;">Preview Access Portal ↗</a>
+      </div>
+    </header>
+
+    <!-- Password Modal if unauthenticated -->
+    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; justify-content:center; align-items:center;">
+      <div class="panel-card" style="max-width:380px; width:90%; text-align:center;">
+        <h2 style="font-size:1.3rem; margin:0 0 8px 0;">Admin Password Required</h2>
+        <p style="font-size:0.85rem; color:#94A3B8; margin:0 0 18px 0;">Enter your master admin key to manage demo passes.</p>
+        <input type="password" id="admin-pass-input" class="form-control" placeholder="Admin Password" style="margin-bottom:14px; text-align:center;" />
+        <button type="button" id="btn-login" class="btn-action">Unlock Admin Dashboard</button>
+        <div id="login-error" style="color:#F43F5E; font-size:0.82rem; margin-top:10px; display:none;">Invalid password.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Left: Generator Panel -->
+      <div class="panel-card">
+        <h2 class="panel-title">⚡ Generate New Passcode</h2>
+        <form id="gen-form">
+          <div class="form-group">
+            <label class="form-label" for="gen-cafe">Select Brand Demo</label>
+            <select id="gen-cafe" class="form-control" required>
+              <option value="caffe-nero">Caffè Nero (Digital Flagship)</option>
+              <option value="one-club-row">One Club Row (Shoreditch Brasserie)</option>
+              <option value="yeah-man-caribbean">Yeah Man Caribbean (Ordering Hub)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gen-client">Prospect / Lead Name</label>
+            <input type="text" id="gen-client" class="form-control" placeholder="e.g. Jamie - Restaurant Owner" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gen-duration">Viewing Window Duration</label>
+            <select id="gen-duration" class="form-control">
+              <option value="60" selected>60 Minutes (Standard 1-Hour Pass)</option>
+              <option value="30">30 Minutes (Quick Review)</option>
+              <option value="120">120 Minutes (Extended Evaluation)</option>
+              <option value="1440">24 Hours (Day Pass)</option>
+            </select>
+          </div>
+
+          <button type="submit" id="btn-create" class="btn-action">Create Identity Passcode</button>
+        </form>
+
+        <div id="gen-result" style="display:none; margin-top:20px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; color:#34D399; font-weight:700; margin-bottom:4px;">New Pass Generated</div>
+          <div id="gen-key-display" style="font-family:var(--font-mono); font-size:1.15rem; font-weight:700; color:#FFF; margin-bottom:8px;"></div>
+          <button type="button" id="btn-copy-magic" class="btn-xs success" style="width:100%; padding:8px;">📋 Copy 1-Click Magic Link</button>
+        </div>
+      </div>
+
+      <!-- Right: Live Keys Table -->
+      <div class="panel-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h2 class="panel-title" style="margin:0;">📋 Registered Passes (<span id="key-count">0</span>)</h2>
+          <button type="button" id="btn-refresh" class="btn-xs">↻ Refresh</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="key-table">
+            <thead>
+              <tr>
+                <th>Passcode</th>
+                <th>Brand / Lead</th>
+                <th>Status / Timer</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="keys-tbody">
+              <tr>
+                <td colspan="4" style="text-align:center; color:#94A3B8; padding:30px;">Loading passes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      let adminKey = sessionStorage.getItem('cafe_admin_key') || 'admin123';
+      const authModal = document.getElementById('auth-modal');
+      const passInput = document.getElementById('admin-pass-input');
+      const loginBtn = document.getElementById('btn-login');
+      const loginError = document.getElementById('login-error');
+      const tbody = document.getElementById('keys-tbody');
+      const countEl = document.getElementById('key-count');
+
+      let lastGeneratedLink = '';
+
+      function formatRemaining(sec) {
+        if (!sec || sec <= 0) return '0m';
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return `${m}m ${s}s left`;
+      }
+
+      async function fetchKeys() {
+        try {
+          const res = await fetch('/api/admin/keys', {
+            headers: { 'Authorization': `Bearer ${adminKey}` }
+          });
+
+          if (res.status === 401) {
+            authModal.style.display = 'flex';
+            return;
+          }
+
+          const data = await res.json();
+          renderTable(data.keys || []);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      function renderTable(keys) {
+        countEl.textContent = keys.length;
+        if (keys.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94A3B8; padding:24px;">No passes created yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = keys.map(k => {
+          let statusHtml = '';
+          if (k.computedStatus === 'pending') {
+            statusHtml = '<span class="badge-status pending">● Unused (Pending)</span>';
+          } else if (k.computedStatus === 'active') {
+            statusHtml = `<span class="badge-status active">● Active (${formatRemaining(k.remainingSeconds)})</span>`;
+          } else if (k.computedStatus === 'expired') {
+            statusHtml = '<span class="badge-status expired">✕ Expired</span>';
+          } else if (k.computedStatus === 'revoked') {
+            statusHtml = '<span class="badge-status revoked">⊘ Revoked</span>';
+          }
+
+          let cafeLabel = k.cafe;
+          if (k.cafe === 'caffe-nero') cafeLabel = 'Caffè Nero';
+          else if (k.cafe === 'one-club-row') cafeLabel = 'One Club Row';
+          else if (k.cafe === 'yeah-man-caribbean') cafeLabel = 'Yeah Man';
+
+          return `
+            <tr>
+              <td>
+                <strong style="font-family:var(--font-mono); color:#38BDF8;">${k.key}</strong>
+              </td>
+              <td>
+                <div style="font-weight:600;">${cafeLabel}</div>
+                <div style="font-size:0.75rem; color:#94A3B8;">${k.clientName || 'General Lead'}</div>
+              </td>
+              <td>
+                ${statusHtml}
+              </td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:nowrap;">
+                  <button type="button" class="btn-xs success" onclick="window.copyKeyLink('${k.key}')">Link</button>
+                  <button type="button" class="btn-xs" onclick="window.extendKey('${k.key}')">+30m</button>
+                  <button type="button" class="btn-xs danger" onclick="window.revokeKey('${k.key}')">Revoke</button>
+                  <button type="button" class="btn-xs danger" onclick="window.deleteKey('${k.key}')">✕</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Actions attached to window
+      window.copyKeyLink = function (key) {
+        const url = `${window.location.origin}/?key=${key}`;
+        navigator.clipboard.writeText(url).then(() => {
+          alert(`Copied 1-Click Magic Link to clipboard:\n${url}`);
+        });
+      };
+
+      window.extendKey = async function (key) {
+        if (!confirm(`Add 30 minutes of viewing time to pass ${key}?`)) return;
+        await fetch('/api/admin/keys', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminKey}`
+          },
+          body: JSON.stringify({ action: 'extend', key, additionalMinutes: 30 })
+        });
+        fetchKeys();
+      };
+
+      window.revokeKey = async function (key) {
+        if (!confirm(`Immediately deactivate and lock pass ${key}? Viewer will be bounced instantly.`)) return;
+        await fetch('/api/admin/keys', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminKey}`
+          },
+          body: JSON.stringify({ action: 'revoke', key })
+        });
+        fetchKeys();
+      };
+
+      window.deleteKey = async function (key) {
+        if (!confirm(`Delete pass record ${key}?`)) return;
+        await fetch('/api/admin/keys', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminKey}`
+          },
+          body: JSON.stringify({ action: 'delete', key })
+        });
+        fetchKeys();
+      };
+
+      // Handle Key Generator Form Submit
+      document.getElementById('gen-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const cafe = document.getElementById('gen-cafe').value;
+        const clientName = document.getElementById('gen-client').value;
+        const durationMinutes = document.getElementById('gen-duration').value;
+
+        const res = await fetch('/api/admin/keys', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminKey}`
+          },
+          body: JSON.stringify({
+            action: 'generate',
+            cafe,
+            clientName,
+            durationMinutes
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const newKey = data.key.key;
+          lastGeneratedLink = `${window.location.origin}/?key=${newKey}`;
+
+          document.getElementById('gen-key-display').textContent = newKey;
+          document.getElementById('gen-result').style.display = 'block';
+          document.getElementById('gen-client').value = '';
+          fetchKeys();
+        } else {
+          alert('Error generating key. Check admin password.');
+        }
+      });
+
+      document.getElementById('btn-copy-magic').addEventListener('click', function () {
+        if (lastGeneratedLink) {
+          navigator.clipboard.writeText(lastGeneratedLink).then(() => {
+            alert(`Copied 1-Click Magic Link:\n${lastGeneratedLink}`);
+          });
+        }
+      });
+
+      document.getElementById('btn-refresh').addEventListener('click', fetchKeys);
+
+      // Login Modal Handler
+      loginBtn.addEventListener('click', function () {
+        const val = passInput.value.trim();
+        if (!val) return;
+        adminKey = val;
+        sessionStorage.setItem('cafe_admin_key', val);
+        authModal.style.display = 'none';
+        fetchKeys();
+      });
+
+      passInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') loginBtn.click();
+      });
+
+      // Initial Load
+      fetchKeys();
+
+      // Auto poll every 10 seconds for active viewer countdowns
+      setInterval(fetchKeys, 10000);
+    })();
+  </script>
+</body>
+</html>

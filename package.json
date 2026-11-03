@@ -1,10 +1,12 @@
 {
-  "name": "caffe-nero-react-flagship",
-  "version": "2.0.0",
-  "description": "Caffè Nero (caffenero.com) Post-Audit React 18 Digital Flagship Remake",
+  "name": "hospitality-client-demo-gateway",
+  "version": "1.0.0",
+  "description": "Multi-Tenant Hospitality Client Demo Gateway with Identity Key Expiry Engine",
+  "main": "server.js",
   "scripts": {
-    "start": "python -m http.server 8080",
-    "preview": "npx serve -l 8080"
+    "start": "node server.js",
+    "test": "node test_gateway.js",
+    "test:all": "node test_gateway.js && node test_runner.js"
   },
   "dependencies": {
     "react": "^18.3.1",
