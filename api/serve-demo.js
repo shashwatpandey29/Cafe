@@ -22,7 +22,7 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
-const ALLOWED_CAFES = ['caffe-nero', 'one-club-row', 'yeah-man-caribbean'];
+const ALLOWED_CAFES = ['caffe-nero', 'one-club-row', 'yeah-man-caribbean', 'aura-coffee-atelier'];
 
 module.exports = async function handler(req, res) {
   const cookies = parseCookies(req);

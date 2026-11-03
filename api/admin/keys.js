@@ -149,6 +149,7 @@ module.exports = async function handler(req, res) {
 
         let prefix = 'DEMO';
         if (cafe === 'caffe-nero') prefix = 'NERO';
+        else if (cafe === 'aura-coffee-atelier') prefix = 'AURA';
         else if (cafe === 'one-club-row') prefix = 'OCR';
         else if (cafe === 'yeah-man-caribbean') prefix = 'YMC';
 
@@ -199,7 +200,7 @@ module.exports = async function handler(req, res) {
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
-      // 3. Reset / Re-Arm Pass (New Feature: give a client another 1-hr chance)
+      // 3. Reset / Re-Arm Pass (give a client another 1-hr chance)
       if (action === 'reset') {
         const { key, durationMinutes } = body;
         const record = await getKey(key);
@@ -221,7 +222,7 @@ module.exports = async function handler(req, res) {
         return res.end(JSON.stringify({ success: true, key: record, message: 'Pass re-armed as fresh pending pass.' }));
       }
 
-      // 4. Update Lead Status & Notes (New Feature: CRM notes per prospect)
+      // 4. Update Lead Status & Notes (CRM notes per prospect)
       if (action === 'update_lead') {
         const { key, leadStatus, notes } = body;
         const record = await getKey(key);

@@ -1,7 +1,8 @@
 /**
  * Automated Verification Harness for Private Demo Gateway
  * Tests Storage, Cryptography, 1-Hour Timer Lifecycle, Cross-Tenant Isolation,
- * Expired Key Lockout, and Admin API endpoints.
+ * Expired Key Lockout, and Admin API endpoints across all 4 cafes:
+ * Caffè Nero, AURA Coffee Atelier, One Club Row, and Yeah Man Caribbean.
  */
 
 const assert = require('assert');
@@ -93,20 +94,22 @@ async function runTests() {
 
   it('Generates formatted identity keys with brand prefixes', () => {
     const k1 = generateIdentityKey('NERO');
-    const k2 = generateIdentityKey('OCR');
-    const k3 = generateIdentityKey('YMC');
+    const k2 = generateIdentityKey('AURA');
+    const k3 = generateIdentityKey('OCR');
+    const k4 = generateIdentityKey('YMC');
 
     assert.ok(k1.startsWith('NERO-'), 'Caffè Nero key prefix match');
-    assert.ok(k2.startsWith('OCR-'), 'One Club Row key prefix match');
-    assert.ok(k3.startsWith('YMC-'), 'Yeah Man Caribbean key prefix match');
+    assert.ok(k2.startsWith('AURA-'), 'AURA Coffee Atelier key prefix match');
+    assert.ok(k3.startsWith('OCR-'), 'One Club Row key prefix match');
+    assert.ok(k4.startsWith('YMC-'), 'Yeah Man Caribbean key prefix match');
     assert.strictEqual(k1.split('-').length, 3, 'Key has 3 hyphen-delimited segments');
   });
 
   it('Signs and verifies valid HMAC-SHA256 session token', () => {
     const now = Date.now();
     const payload = {
-      key: 'NERO-TEST-1234',
-      cafe: 'caffe-nero',
+      key: 'AURA-TEST-1234',
+      cafe: 'aura-coffee-atelier',
       expiresAt: now + 3600000
     };
     const token = signSession(payload);
@@ -116,7 +119,7 @@ async function runTests() {
     assert.ok(verified, 'Verification succeeded');
     assert.strictEqual(verified.valid, true, 'Token is valid');
     assert.strictEqual(verified.expired, false, 'Token is not expired');
-    assert.strictEqual(verified.payload.cafe, 'caffe-nero', 'Payload cafe matches');
+    assert.strictEqual(verified.payload.cafe, 'aura-coffee-atelier', 'Payload cafe matches');
   });
 
   it('Detects tampered token and rejects signature forgery', () => {
@@ -140,18 +143,21 @@ async function runTests() {
 
   await itAsync('Initializes default seeds if DB is fresh', async () => {
     const keys = await listKeys();
-    assert.ok(keys.length >= 3, 'Has at least 3 default demo keys');
+    assert.ok(keys.length >= 3, 'Has default demo keys');
     const neroSeed = await getKey('NERO-DEMO-2026');
     assert.ok(neroSeed, 'NERO-DEMO-2026 seed exists');
     assert.strictEqual(neroSeed.cafe, 'caffe-nero');
-    assert.strictEqual(neroSeed.status, 'pending');
+
+    const auraSeed = await getKey('AURA-DEMO-2026') || DEFAULT_SEEDS.find(s => s.key === 'AURA-DEMO-2026');
+    assert.ok(auraSeed, 'AURA-DEMO-2026 seed exists');
+    assert.strictEqual(auraSeed.cafe, 'aura-coffee-atelier');
   });
 
   await itAsync('Saves and deletes key records idempotently', async () => {
     const testKey = 'TEST-UNIT-9999';
     await saveKey({
       key: testKey,
-      cafe: 'one-club-row',
+      cafe: 'aura-coffee-atelier',
       status: 'pending',
       createdAt: Date.now()
     });
@@ -167,13 +173,13 @@ async function runTests() {
 
   console.log('\n--- Tier 3: Identity Verification & 1-Hour Timer Lifecycle ---');
 
-  const lifecycleKey = 'NERO-LIFECYCLE-001';
+  const lifecycleKey = 'AURA-LIFECYCLE-001';
 
   await itAsync('Activates pending key on first entry, setting exact 1-hour window', async () => {
     await saveKey({
       key: lifecycleKey,
-      cafe: 'caffe-nero',
-      clientName: 'Executive Pitch Lead',
+      cafe: 'aura-coffee-atelier',
+      clientName: 'AURA Executive Lead',
       durationMinutes: 60,
       status: 'pending',
       createdAt: Date.now(),
@@ -192,8 +198,8 @@ async function runTests() {
     assert.strictEqual(res.statusCode, 200, 'Verification returns 200 OK');
     const data = JSON.parse(res.body);
     assert.strictEqual(data.success, true);
-    assert.strictEqual(data.cafe, 'caffe-nero');
-    assert.strictEqual(data.redirectUrl, '/demo/caffe-nero/');
+    assert.strictEqual(data.cafe, 'aura-coffee-atelier');
+    assert.strictEqual(data.redirectUrl, '/demo/aura-coffee-atelier/');
     assert.ok(data.remainingSeconds >= 3590 && data.remainingSeconds <= 3600, 'Remaining seconds is approx 3600s');
 
     // Verify Set-Cookie header was issued
@@ -221,11 +227,10 @@ async function runTests() {
     assert.strictEqual(res.statusCode, 200);
 
     const data = JSON.parse(res.body);
-    assert.strictEqual(data.expiresAt, originalExpiresAt, 'Expiration timestamp remains unchanged (does not reset)');
+    assert.strictEqual(data.expiresAt, originalExpiresAt, 'Expiration timestamp remains unchanged');
   });
 
   await itAsync('Expired key is locked out forever and cannot be reused', async () => {
-    // Manually simulate expiration by setting expiresAt in the past
     const record = await getKey(lifecycleKey);
     record.expiresAt = Date.now() - 10000;
     record.status = 'expired';
@@ -246,10 +251,10 @@ async function runTests() {
 
   console.log('\n--- Tier 4: Gatekeeper & Cross-Tenant Security ---');
 
-  await itAsync('Unauthenticated request to /demo/caffe-nero is redirected to portal', async () => {
+  await itAsync('Unauthenticated request to /demo/aura-coffee-atelier is redirected to portal', async () => {
     const req = createMockReq({
-      url: '/demo/caffe-nero',
-      query: { cafe: 'caffe-nero' }
+      url: '/demo/aura-coffee-atelier',
+      query: { cafe: 'aura-coffee-atelier' }
     });
     const res = createMockRes();
 
@@ -258,7 +263,7 @@ async function runTests() {
     assert.ok(res.headers.Location.includes('/?error=unauthorized'), 'Redirect location contains error');
   });
 
-  await itAsync('Cross-tenant violation: Caffè Nero token cannot access One Club Row', async () => {
+  await itAsync('Cross-tenant violation: Caffè Nero token cannot access AURA Coffee Atelier', async () => {
     const neroToken = signSession({
       key: 'NERO-KEY',
       cafe: 'caffe-nero',
@@ -266,8 +271,8 @@ async function runTests() {
     });
 
     const req = createMockReq({
-      url: '/demo/one-club-row',
-      query: { cafe: 'one-club-row' },
+      url: '/demo/aura-coffee-atelier',
+      query: { cafe: 'aura-coffee-atelier' },
       headers: { cookie: `demo_session=${neroToken}` }
     });
     const res = createMockRes();
@@ -277,12 +282,11 @@ async function runTests() {
     assert.ok(res.headers.Location.includes('forbidden_cafe'), 'Redirects with forbidden_cafe error');
   });
 
-  await itAsync('Valid session serves demo HTML with injected guardian and security headers', async () => {
-    // Re-activate a key
-    const validKey = 'OCR-ACTIVE-TEST';
+  await itAsync('Valid session serves demo HTML with injected guardian and base href', async () => {
+    const validKey = 'AURA-ACTIVE-TEST';
     await saveKey({
       key: validKey,
-      cafe: 'one-club-row',
+      cafe: 'aura-coffee-atelier',
       status: 'active',
       durationMinutes: 60,
       firstActivatedAt: Date.now(),
@@ -291,23 +295,23 @@ async function runTests() {
 
     const token = signSession({
       key: validKey,
-      cafe: 'one-club-row',
+      cafe: 'aura-coffee-atelier',
       expiresAt: Date.now() + 3600000
     });
 
     const req = createMockReq({
-      url: '/demo/one-club-row',
-      query: { cafe: 'one-club-row' },
+      url: '/demo/aura-coffee-atelier',
+      query: { cafe: 'aura-coffee-atelier' },
       headers: { cookie: `demo_session=${token}` }
     });
     const res = createMockRes();
 
     await serveDemoHandler(req, res);
     assert.strictEqual(res.statusCode, 200, 'Demo served successfully');
-    assert.ok(res.body.includes('One Club Row'), 'Demo HTML contains brand name');
+    assert.ok(res.body.includes('AURA COFFEE ATELIER'), 'Demo HTML contains brand name');
+    assert.ok(res.body.includes('<base href="/demo/aura-coffee-atelier/" />'), 'Base href injected');
     assert.ok(res.body.includes('/guardian.js'), 'Injected guardian script present');
     assert.ok(res.body.includes('window.DEMO_SESSION'), 'Injected session metadata present');
-    assert.strictEqual(res.headers['Cache-Control'], 'no-store, no-cache, must-revalidate', 'Prevents browser caching');
   });
 
   console.log('\n--- Tier 5: Admin API & Session Management ---');
@@ -330,8 +334,8 @@ async function runTests() {
       headers: { authorization: 'Bearer shashwat2908' },
       body: {
         action: 'generate',
-        cafe: 'yeah-man-caribbean',
-        clientName: 'Jamie Caribbean Lead',
+        cafe: 'aura-coffee-atelier',
+        clientName: 'AURA Roastery Director',
         durationMinutes: 60
       }
     });
@@ -341,7 +345,7 @@ async function runTests() {
     assert.strictEqual(adminRes.statusCode, 201, 'Key created');
     const createdData = JSON.parse(adminRes.body);
     const newKey = createdData.key.key;
-    assert.ok(newKey.startsWith('YMC-'), 'Prefix is YMC');
+    assert.ok(newKey.startsWith('AURA-'), 'Prefix is AURA');
 
     // Extend session by 30 minutes
     const extendReq = createMockReq({

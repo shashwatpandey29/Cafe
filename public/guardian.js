@@ -33,6 +33,7 @@
     var cafeLabel = 'Preview';
     if (session && session.cafe) {
       if (session.cafe === 'caffe-nero') cafeLabel = 'Caffè Nero';
+      else if (session.cafe === 'aura-coffee-atelier') cafeLabel = 'AURA Atelier';
       else if (session.cafe === 'one-club-row') cafeLabel = 'One Club Row';
       else if (session.cafe === 'yeah-man-caribbean') cafeLabel = 'Yeah Man';
     }

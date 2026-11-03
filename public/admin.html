@@ -369,6 +369,7 @@
             <label class="form-label" for="gen-cafe">Select Brand Demo</label>
             <select id="gen-cafe" class="form-control" required>
               <option value="caffe-nero">Caffè Nero (Digital Flagship)</option>
+              <option value="aura-coffee-atelier">AURA Coffee Atelier (4th-Wave Sanctuary)</option>
               <option value="one-club-row">One Club Row (Shoreditch Brasserie)</option>
               <option value="yeah-man-caribbean">Yeah Man Caribbean (Ordering Hub)</option>
             </select>
@@ -431,6 +432,7 @@
           <select id="filter-cafe" class="filter-select">
             <option value="ALL">All Brands</option>
             <option value="caffe-nero">Caffè Nero</option>
+            <option value="aura-coffee-atelier">AURA Coffee Atelier</option>
             <option value="one-club-row">One Club Row</option>
             <option value="yeah-man-caribbean">Yeah Man Caribbean</option>
           </select>
@@ -508,6 +510,7 @@
 
       function getCafeName(slug) {
         if (slug === 'caffe-nero') return 'Caffè Nero';
+        if (slug === 'aura-coffee-atelier') return 'AURA Coffee Atelier';
         if (slug === 'one-club-row') return 'One Club Row';
         if (slug === 'yeah-man-caribbean') return 'Yeah Man Caribbean';
         return slug;
