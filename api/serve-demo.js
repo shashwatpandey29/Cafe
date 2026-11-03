@@ -25,6 +25,10 @@ const MIME_TYPES = {
 const ALLOWED_CAFES = ['caffe-nero', 'one-club-row', 'yeah-man-caribbean'];
 
 module.exports = async function handler(req, res) {
+  const cookies = parseCookies(req);
+  const token = cookies.demo_session;
+  const verification = token ? verifySession(token) : null;
+
   // Extract cafe and optional asset path from query or URL
   let cafe = req.query && req.query.cafe;
   let file = (req.query && req.query.file) || 'index.html';
@@ -40,6 +44,16 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // SMART RESILIENCE: If browser resolved an asset as /demo/styles.css or /demo/app.js
+  // (without the cafe name in path), recover the intended cafe from the active session!
+  if ((!cafe || !ALLOWED_CAFES.includes(cafe)) && verification && verification.valid && verification.payload) {
+    cafe = verification.payload.cafe;
+    const urlParts = (req.url || '').split('?')[0].split('/').filter(Boolean);
+    if (urlParts[0] === 'demo' && urlParts[1]) {
+      file = urlParts.slice(1).join('/');
+    }
+  }
+
   // 1. Validate cafe exists
   if (!cafe || !ALLOWED_CAFES.includes(cafe)) {
     res.statusCode = 404;
@@ -48,16 +62,12 @@ module.exports = async function handler(req, res) {
   }
 
   // 2. Validate session cookie
-  const cookies = parseCookies(req);
-  const token = cookies.demo_session;
-
   if (!token) {
     res.statusCode = 302;
     res.setHeader('Location', `/?error=unauthorized&cafe=${cafe}`);
     return res.end();
   }
 
-  const verification = verifySession(token);
   if (!verification || !verification.valid) {
     if (verification && verification.expired) {
       res.statusCode = 302;
@@ -102,12 +112,13 @@ module.exports = async function handler(req, res) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-  // 6. If HTML, inject guardian script and session metadata
+  // 6. If HTML, inject base tag, guardian script, and session bootstrap
   if (ext === '.html') {
     let html = fs.readFileSync(filePath, 'utf-8');
 
     const injection = `
 <!-- DEMO IDENTITY GUARDIAN & TIMER INJECTION -->
+<base href="/demo/${cafe}/" />
 <link rel="stylesheet" href="/gate.css" />
 <script>
   window.DEMO_SESSION = {
@@ -119,7 +130,9 @@ module.exports = async function handler(req, res) {
 <script src="/guardian.js" defer></script>
 `;
 
-    if (html.includes('</head>')) {
+    if (html.includes('<head>')) {
+      html = html.replace('<head>', `<head>\n${injection}`);
+    } else if (html.includes('</head>')) {
       html = html.replace('</head>', `${injection}\n</head>`);
     } else {
       html = injection + html;

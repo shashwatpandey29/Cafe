@@ -1,26 +1,47 @@
 /**
  * /api/admin/keys
  * Executive Key Generation & Session Administration API
+ * Gated by HMAC Signed Admin Cookie or Timing-Safe Authorization Header.
  */
 
+const crypto = require('crypto');
 const { listKeys, getKey, saveKey, deleteKey } = require('../../lib/storage');
-const { generateIdentityKey } = require('../../lib/crypto');
+const { generateIdentityKey, verifySession, parseCookies } = require('../../lib/crypto');
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'NeroAdmin#2026!Key';
+
+function timingSafeCheck(input, secret) {
+  if (typeof input !== 'string' || typeof secret !== 'string') return false;
+  const inputBuffer = Buffer.from(input, 'utf-8');
+  const secretBuffer = Buffer.from(secret, 'utf-8');
+  if (inputBuffer.length !== secretBuffer.length) {
+    crypto.timingSafeEqual(inputBuffer, inputBuffer);
+    return false;
+  }
+  return crypto.timingSafeEqual(inputBuffer, secretBuffer);
+}
 
 function checkAdminAuth(req) {
+  // 1. Check HTTP-only signed admin_session cookie
+  const cookies = parseCookies(req);
+  if (cookies.admin_session) {
+    const verified = verifySession(cookies.admin_session);
+    if (verified && verified.valid && verified.payload && verified.payload.role === 'admin') {
+      return true;
+    }
+  }
+
+  // 2. Check Authorization header with timing-safe check
   const authHeader = req.headers['authorization'] || '';
   const bearerMatch = authHeader.match(/^Bearer\s+(.+)$/i);
   const headerKey = req.headers['x-admin-key'];
-  
-  let urlKey = null;
-  if (req.url && req.url.includes('?')) {
-    const params = new URLSearchParams(req.url.split('?')[1]);
-    urlKey = params.get('adminKey');
+  const provided = (bearerMatch && bearerMatch[1]) || headerKey;
+
+  if (provided && timingSafeCheck(provided, ADMIN_PASSWORD)) {
+    return true;
   }
 
-  const provided = (bearerMatch && bearerMatch[1]) || headerKey || urlKey;
-  return provided === ADMIN_PASSWORD;
+  return false;
 }
 
 async function parseBody(req) {
@@ -32,29 +53,26 @@ async function parseBody(req) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch (e) {
-        resolve({});
-      }
+      try { resolve(body ? JSON.parse(body) : {}); } catch (e) { resolve({}); }
     });
+    setTimeout(() => { if (!body) resolve({}); }, 500);
   });
 }
 
 module.exports = async function handler(req, res) {
-  // CORS for local testing
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
 
   if (req.method === 'OPTIONS') {
-    res.writeHead(204);
+    res.statusCode = 204;
     return res.end();
   }
 
   if (!checkAdminAuth(req)) {
-    res.writeHead(401, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({ error: 'Unauthorized: Invalid Admin Password' }));
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Unauthorized: Admin authentication required.' }));
   }
 
   const now = Date.now();
@@ -85,7 +103,8 @@ module.exports = async function handler(req, res) {
         };
       }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
       return res.end(JSON.stringify({ keys: enriched }));
     }
 
@@ -97,7 +116,8 @@ module.exports = async function handler(req, res) {
       if (action === 'generate') {
         const { cafe, clientName, durationMinutes = 60 } = body;
         if (!cafe) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
           return res.end(JSON.stringify({ error: 'Please select a cafe.' }));
         }
 
@@ -120,7 +140,8 @@ module.exports = async function handler(req, res) {
         };
 
         await saveKey(record);
-        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.statusCode = 201;
+        res.setHeader('Content-Type', 'application/json');
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
@@ -128,7 +149,8 @@ module.exports = async function handler(req, res) {
         const { key, additionalMinutes = 30 } = body;
         const record = await getKey(key);
         if (!record) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
           return res.end(JSON.stringify({ error: 'Key not found' }));
         }
 
@@ -139,7 +161,8 @@ module.exports = async function handler(req, res) {
         record.revokedAt = null;
 
         await saveKey(record);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
@@ -147,25 +170,29 @@ module.exports = async function handler(req, res) {
         const { key } = body;
         const record = await getKey(key);
         if (!record) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
           return res.end(JSON.stringify({ error: 'Key not found' }));
         }
 
         record.status = 'revoked';
         record.revokedAt = now;
         await saveKey(record);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
       if (action === 'delete') {
         const { key } = body;
         await deleteKey(key);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
         return res.end(JSON.stringify({ success: true }));
       }
 
-      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
       return res.end(JSON.stringify({ error: `Unknown action: ${action}` }));
     }
 
@@ -174,16 +201,19 @@ module.exports = async function handler(req, res) {
       if (body.key) {
         await deleteKey(body.key);
       }
-      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
       return res.end(JSON.stringify({ success: true }));
     }
 
-    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
     return res.end(JSON.stringify({ error: 'Method Not Allowed' }));
 
   } catch (error) {
     console.error('[API /admin/keys] Error:', error);
-    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
     return res.end(JSON.stringify({ error: 'Internal admin API error' }));
   }
 };

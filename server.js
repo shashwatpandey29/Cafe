@@ -6,12 +6,12 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 
 const verifyHandler = require('./api/auth/verify');
 const sessionHandler = require('./api/auth/session');
 const logoutHandler = require('./api/auth/logout');
 const adminKeysHandler = require('./api/admin/keys');
+const adminAuthHandler = require('./api/admin/auth');
 const serveDemoHandler = require('./api/serve-demo');
 
 const PORT = process.env.PORT || 3000;
@@ -52,6 +52,9 @@ const server = http.createServer(async (req, res) => {
   }
   if (pathname === '/api/auth/logout') {
     return logoutHandler(req, res);
+  }
+  if (pathname === '/api/admin/auth') {
+    return adminAuthHandler(req, res);
   }
   if (pathname === '/api/admin/keys') {
     return adminKeysHandler(req, res);

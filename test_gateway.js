@@ -193,7 +193,7 @@ async function runTests() {
     const data = JSON.parse(res.body);
     assert.strictEqual(data.success, true);
     assert.strictEqual(data.cafe, 'caffe-nero');
-    assert.strictEqual(data.redirectUrl, '/demo/caffe-nero');
+    assert.strictEqual(data.redirectUrl, '/demo/caffe-nero/');
     assert.ok(data.remainingSeconds >= 3590 && data.remainingSeconds <= 3600, 'Remaining seconds is approx 3600s');
 
     // Verify Set-Cookie header was issued
@@ -327,7 +327,7 @@ async function runTests() {
     const adminReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer admin123' },
+      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
       body: {
         action: 'generate',
         cafe: 'yeah-man-caribbean',
@@ -347,7 +347,7 @@ async function runTests() {
     const extendReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer admin123' },
+      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
       body: {
         action: 'extend',
         key: newKey,
@@ -362,7 +362,7 @@ async function runTests() {
     const revokeReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer admin123' },
+      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
       body: {
         action: 'revoke',
         key: newKey

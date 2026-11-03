@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Identity Gate Admin | Session Control & Key Generator</title>
+  <title>Identity Gate Admin | Secure Executive Console</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23121820%22/><text y=%22.88em%22 font-size=%2254%22 font-family=%22sans-serif%22 font-weight=%22900%22 fill=%22%23F59E0B%22 text-anchor=%22middle%22 x=%2250%22>⚡</text></svg>" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,9 +18,14 @@
       padding: 30px 20px;
       min-height: 100vh;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
     }
     .admin-container {
       max-width: 1040px;
+      width: 100%;
       margin: 0 auto;
     }
     .admin-header {
@@ -90,6 +95,7 @@
       font-size: 0.92rem;
       box-sizing: border-box;
       outline: none;
+      transition: border-color 0.2s;
     }
     .form-control:focus {
       border-color: #38BDF8;
@@ -108,6 +114,10 @@
     }
     .btn-action:hover {
       background: #1D4ED8;
+    }
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     .table-responsive {
       overflow-x: auto;
@@ -152,8 +162,8 @@
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #FFF;
       border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 0.74rem;
+      padding: 6px 12px;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
@@ -163,39 +173,69 @@
     .btn-xs.danger:hover { background: rgba(244, 63, 94, 0.3); color: #FDA4AF; border-color: rgba(244, 63, 94, 0.5); }
     .btn-xs.success:hover { background: rgba(16, 185, 129, 0.3); color: #6EE7B7; border-color: rgba(16, 185, 129, 0.5); }
 
-    .toast-pill {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 8px;
-      background: #059669;
-      color: #FFF;
-      font-size: 0.82rem;
-      margin-top: 10px;
+    /* Login Screen Container */
+    #view-login {
+      max-width: 420px;
+      width: 90%;
+      margin: 80px auto;
+      text-align: center;
     }
   </style>
 </head>
 <body class="admin-body">
-  <div class="admin-container">
+
+  <!-- ========================================== -->
+  <!-- 1. HARDENED LOGIN SCREEN (Shown by default) -->
+  <!-- ========================================== -->
+  <div id="view-login" class="panel-card">
+    <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:12px; background:rgba(59,130,246,0.15); color:#38BDF8; font-size:1.4rem; margin-bottom:16px;">
+      🔒
+    </div>
+    <h2 style="font-size:1.4rem; font-weight:800; margin:0 0 8px 0;">Admin Portal Gate</h2>
+    <p style="font-size:0.88rem; color:#94A3B8; margin:0 0 24px 0; line-height:1.5;">
+      Authentication required. Rate limiting & brute-force monitoring active.
+    </p>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="login-pass">Administrator Master Password</label>
+        <input 
+          type="password" 
+          id="login-pass" 
+          class="form-control" 
+          placeholder="Enter master password" 
+          required 
+          autofocus 
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button type="submit" id="btn-login-submit" class="btn-action">
+        <span>Verify & Unlock Console</span>
+      </button>
+
+      <div id="login-feedback" style="display:none; margin-top:14px; padding:10px 14px; border-radius:8px; font-size:0.84rem; text-align:left;"></div>
+    </form>
+
+    <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.08); padding-top:16px; font-size:0.78rem; color:#64748B;">
+      Max 5 failed attempts per 15 minutes per IP.
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. FULL CONTROL DASHBOARD (Hidden until authenticated) -->
+  <!-- ========================================== -->
+  <div id="view-dashboard" class="admin-container" style="display:none;">
     <header class="admin-header">
       <div>
         <h1 class="admin-title">Client Demo Key Administration</h1>
         <p class="admin-subtitle">Generate 1-hour ephemeral passes, inspect live viewing sessions, and manage customer access.</p>
       </div>
-      <div>
-        <a href="/" target="_blank" class="btn-xs" style="padding: 8px 14px; font-size: 0.82rem;">Preview Access Portal ↗</a>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a href="/" target="_blank" class="btn-xs">Preview Portal ↗</a>
+        <button type="button" id="btn-logout" class="btn-xs danger">Log Out ⏻</button>
       </div>
     </header>
-
-    <!-- Password Modal if unauthenticated -->
-    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; justify-content:center; align-items:center;">
-      <div class="panel-card" style="max-width:380px; width:90%; text-align:center;">
-        <h2 style="font-size:1.3rem; margin:0 0 8px 0;">Admin Password Required</h2>
-        <p style="font-size:0.85rem; color:#94A3B8; margin:0 0 18px 0;">Enter your master admin key to manage demo passes.</p>
-        <input type="password" id="admin-pass-input" class="form-control" placeholder="Admin Password" style="margin-bottom:14px; text-align:center;" />
-        <button type="button" id="btn-login" class="btn-action">Unlock Admin Dashboard</button>
-        <div id="login-error" style="color:#F43F5E; font-size:0.82rem; margin-top:10px; display:none;">Invalid password.</div>
-      </div>
-    </div>
 
     <div class="grid-2">
       <!-- Left: Generator Panel -->
@@ -232,7 +272,7 @@
         <div id="gen-result" style="display:none; margin-top:20px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px;">
           <div style="font-size:0.75rem; text-transform:uppercase; color:#34D399; font-weight:700; margin-bottom:4px;">New Pass Generated</div>
           <div id="gen-key-display" style="font-family:var(--font-mono); font-size:1.15rem; font-weight:700; color:#FFF; margin-bottom:8px;"></div>
-          <button type="button" id="btn-copy-magic" class="btn-xs success" style="width:100%; padding:8px;">📋 Copy 1-Click Magic Link</button>
+          <button type="button" id="btn-copy-magic" class="btn-xs success" style="width:100%; padding:10px;">📋 Copy 1-Click Magic Link</button>
         </div>
       </div>
 
@@ -266,15 +306,25 @@
 
   <script>
     (function () {
-      let adminKey = sessionStorage.getItem('cafe_admin_key') || 'admin123';
-      const authModal = document.getElementById('auth-modal');
-      const passInput = document.getElementById('admin-pass-input');
-      const loginBtn = document.getElementById('btn-login');
-      const loginError = document.getElementById('login-error');
+      const viewLogin = document.getElementById('view-login');
+      const viewDashboard = document.getElementById('view-dashboard');
+      const loginForm = document.getElementById('login-form');
+      const loginPass = document.getElementById('login-pass');
+      const loginBtn = document.getElementById('btn-login-submit');
+      const loginFeedback = document.getElementById('login-feedback');
+      const logoutBtn = document.getElementById('btn-logout');
+
       const tbody = document.getElementById('keys-tbody');
       const countEl = document.getElementById('key-count');
-
       let lastGeneratedLink = '';
+
+      function showLoginError(msg) {
+        loginFeedback.style.display = 'block';
+        loginFeedback.style.background = 'rgba(244, 63, 94, 0.12)';
+        loginFeedback.style.border = '1px solid rgba(244, 63, 94, 0.3)';
+        loginFeedback.style.color = '#FDA4AF';
+        loginFeedback.textContent = msg;
+      }
 
       function formatRemaining(sec) {
         if (!sec || sec <= 0) return '0m';
@@ -283,14 +333,80 @@
         return `${m}m ${s}s left`;
       }
 
-      async function fetchKeys() {
+      // 1. Check if already authenticated on server
+      async function checkAuthStatus() {
         try {
-          const res = await fetch('/api/admin/keys', {
-            headers: { 'Authorization': `Bearer ${adminKey}` }
+          const res = await fetch('/api/admin/auth');
+          const data = await res.json();
+          if (data.authenticated) {
+            viewLogin.style.display = 'none';
+            viewDashboard.style.display = 'block';
+            fetchKeys();
+          } else {
+            viewLogin.style.display = 'block';
+            viewDashboard.style.display = 'none';
+          }
+        } catch (e) {
+          viewLogin.style.display = 'block';
+          viewDashboard.style.display = 'none';
+        }
+      }
+
+      // 2. Handle Login
+      loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const pass = loginPass.value.trim();
+        if (!pass) return;
+
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<span>Verifying credentials...</span>';
+        loginFeedback.style.display = 'none';
+
+        try {
+          const res = await fetch('/api/admin/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pass })
           });
 
+          const data = await res.json();
+
+          if (res.ok && data.authenticated) {
+            loginPass.value = '';
+            viewLogin.style.display = 'none';
+            viewDashboard.style.display = 'block';
+            fetchKeys();
+          } else {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<span>Verify & Unlock Console</span>';
+            showLoginError(data.error || 'Authentication failed.');
+          }
+        } catch (err) {
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<span>Verify & Unlock Console</span>';
+          showLoginError('Network error connecting to security gateway.');
+        }
+      });
+
+      // 3. Handle Logout
+      logoutBtn.addEventListener('click', async function () {
+        await fetch('/api/admin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'logout' })
+        });
+        viewDashboard.style.display = 'none';
+        viewLogin.style.display = 'block';
+        loginFeedback.style.display = 'none';
+      });
+
+      // 4. Fetch and render keys
+      async function fetchKeys() {
+        try {
+          const res = await fetch('/api/admin/keys');
           if (res.status === 401) {
-            authModal.style.display = 'flex';
+            viewDashboard.style.display = 'none';
+            viewLogin.style.display = 'block';
             return;
           }
 
@@ -334,9 +450,7 @@
                 <div style="font-weight:600;">${cafeLabel}</div>
                 <div style="font-size:0.75rem; color:#94A3B8;">${k.clientName || 'General Lead'}</div>
               </td>
-              <td>
-                ${statusHtml}
-              </td>
+              <td>${statusHtml}</td>
               <td>
                 <div style="display:flex; gap:6px; flex-wrap:nowrap;">
                   <button type="button" class="btn-xs success" onclick="window.copyKeyLink('${k.key}')">Link</button>
@@ -350,7 +464,6 @@
         }).join('');
       }
 
-      // Actions attached to window
       window.copyKeyLink = function (key) {
         const url = `${window.location.origin}/?key=${key}`;
         navigator.clipboard.writeText(url).then(() => {
@@ -362,10 +475,7 @@
         if (!confirm(`Add 30 minutes of viewing time to pass ${key}?`)) return;
         await fetch('/api/admin/keys', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminKey}`
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'extend', key, additionalMinutes: 30 })
         });
         fetchKeys();
@@ -375,10 +485,7 @@
         if (!confirm(`Immediately deactivate and lock pass ${key}? Viewer will be bounced instantly.`)) return;
         await fetch('/api/admin/keys', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminKey}`
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'revoke', key })
         });
         fetchKeys();
@@ -388,16 +495,13 @@
         if (!confirm(`Delete pass record ${key}?`)) return;
         await fetch('/api/admin/keys', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminKey}`
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'delete', key })
         });
         fetchKeys();
       };
 
-      // Handle Key Generator Form Submit
+      // Generate Pass
       document.getElementById('gen-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const cafe = document.getElementById('gen-cafe').value;
@@ -406,16 +510,8 @@
 
         const res = await fetch('/api/admin/keys', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminKey}`
-          },
-          body: JSON.stringify({
-            action: 'generate',
-            cafe,
-            clientName,
-            durationMinutes
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'generate', cafe, clientName, durationMinutes })
         });
 
         if (res.ok) {
@@ -428,7 +524,7 @@
           document.getElementById('gen-client').value = '';
           fetchKeys();
         } else {
-          alert('Error generating key. Check admin password.');
+          alert('Error generating key. Check authorization.');
         }
       });
 
@@ -442,25 +538,11 @@
 
       document.getElementById('btn-refresh').addEventListener('click', fetchKeys);
 
-      // Login Modal Handler
-      loginBtn.addEventListener('click', function () {
-        const val = passInput.value.trim();
-        if (!val) return;
-        adminKey = val;
-        sessionStorage.setItem('cafe_admin_key', val);
-        authModal.style.display = 'none';
-        fetchKeys();
-      });
-
-      passInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') loginBtn.click();
-      });
-
-      // Initial Load
-      fetchKeys();
-
-      // Auto poll every 10 seconds for active viewer countdowns
-      setInterval(fetchKeys, 10000);
+      // Initialize
+      checkAuthStatus();
+      setInterval(() => {
+        if (viewDashboard.style.display !== 'none') fetchKeys();
+      }, 10000);
     })();
   </script>
 </body>

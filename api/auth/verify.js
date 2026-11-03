@@ -120,7 +120,7 @@ module.exports = async function handler(req, res) {
       success: true,
       cafe: keyRecord.cafe,
       clientName: keyRecord.clientName,
-      redirectUrl: `/demo/${keyRecord.cafe}`,
+      redirectUrl: `/demo/${keyRecord.cafe}/`,
       expiresAt,
       remainingSeconds
     }, {
