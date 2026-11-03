@@ -1,0 +1,455 @@
+/* ==========================================================================
+   EXECUTIVE ACCESS GATE & DEMO GUARDIAN DESIGN SYSTEM
+   Dark Luxury Glassmorphic Aesthetics for Client Demos
+   ========================================================================== */
+
+:root {
+  --bg-primary: #07090D;
+  --bg-card: rgba(18, 24, 34, 0.78);
+  --bg-card-hover: rgba(26, 34, 48, 0.88);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(99, 102, 241, 0.35);
+  
+  --text-white: #FFFFFF;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+
+  --accent-gold: #F59E0B;
+  --accent-emerald: #10B981;
+  --accent-blue: #3B82F6;
+  --accent-rose: #F43F5E;
+  --accent-purple: #8B5CF6;
+
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --radius-full: 9999px;
+
+  --shadow-ambient: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 35px -5px rgba(99, 102, 241, 0.25);
+}
+
+/* Reset & Base Body for Gate/Expired pages */
+body.gate-page {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 55%);
+  color: var(--text-white);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Background Ambient Orbs */
+.ambient-glow {
+  position: fixed;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 350px;
+  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.2), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Master Glass Card Container */
+.gate-card {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 520px;
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  box-shadow: var(--shadow-ambient), var(--shadow-glow);
+  box-sizing: border-box;
+  text-align: center;
+  animation: gateFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gateFadeIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Brand Badge */
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 8px var(--accent-emerald);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.gate-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+}
+
+.gate-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0 0 28px 0;
+}
+
+/* Form & Input Styling */
+.key-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.key-input {
+  width: 100%;
+  background: rgba(10, 14, 20, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  color: var(--text-white);
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.key-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+  background: rgba(10, 14, 20, 1);
+}
+
+.key-input::placeholder {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* Submit CTA Button */
+.btn-unlock {
+  background: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.45);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-unlock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(59, 130, 246, 0.6);
+  filter: brightness(1.1);
+}
+
+.btn-unlock:active {
+  transform: translateY(0);
+}
+
+.btn-unlock:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Feedback & Alerts */
+.gate-alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin-top: 16px;
+  display: none;
+  text-align: left;
+}
+
+.gate-alert.error {
+  display: block;
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #FDA4AF;
+}
+
+.gate-alert.info {
+  display: block;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93C5FD;
+}
+
+.gate-alert.success {
+  display: block;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6EE7B7;
+}
+
+/* Notice Footnote */
+.gate-note {
+  margin-top: 24px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   IN-DEMO FLOATING GUARDIAN HUD
+   ========================================================================== */
+#demo-guardian-hud {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(12, 16, 24, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.2);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-white);
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+#demo-guardian-hud:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(12, 16, 24, 0.95);
+}
+
+.hud-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 8px var(--accent-emerald);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+.hud-dot.warning {
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-gold);
+}
+
+.hud-dot.danger {
+  background: var(--accent-rose);
+  box-shadow: 0 0 8px var(--accent-rose);
+}
+
+.hud-label {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.hud-timer {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #38BDF8;
+  letter-spacing: 0.05em;
+  min-width: 58px;
+  text-align: right;
+}
+
+.hud-timer.danger {
+  color: #F87171;
+  animation: timerBlink 1s infinite;
+}
+
+@keyframes timerBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.hud-btn-end {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-btn-end:hover {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #FDA4AF;
+}
+
+/* Fullscreen Screen Blur Overlay on Expire */
+#demo-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(7, 9, 13, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  padding: 24px;
+}
+
+#demo-transition-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================================================
+   EXPIRED / SESSION CONCLUDED PAGE
+   ========================================================================== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  text-decoration: none;
+  color: var(--text-white);
+  text-align: left;
+  transition: all 0.25s ease;
+}
+
+.contact-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+.contact-icon.whatsapp { background: rgba(37, 211, 102, 0.15); color: #25D366; }
+.contact-icon.phone { background: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+.contact-icon.email { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+
+.contact-info strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.contact-info span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .gate-card {
+    padding: 30px 22px;
+    width: 94%;
+  }
+  .gate-title {
+    font-size: 1.55rem;
+  }
+  #demo-guardian-hud {
+    top: auto;
+    bottom: 16px;
+    right: 14px;
+    left: 14px;
+    justify-content: space-between;
+  }
+}

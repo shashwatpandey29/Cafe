@@ -1,11 +1,12 @@
 {
-  "name": "yeah-man-caribbean-ordering-hub",
+  "name": "hospitality-client-demo-gateway",
   "version": "1.0.0",
-  "description": "Yeah Man Caribbean (yeahmancaribbeanstretford.co.uk) Direct Commission-Free Ordering Hub & React 18 Web Application",
+  "description": "Multi-Tenant Hospitality Client Demo Gateway with Identity Key Expiry Engine",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test_runner.js",
-    "verify": "node verify_responsive_layout.js"
+    "test": "node test_gateway.js",
+    "test:all": "node test_gateway.js && node test_runner.js"
   },
   "dependencies": {
     "react": "^18.3.1",

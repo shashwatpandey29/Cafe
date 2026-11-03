@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viewing Window Concluded | Executive Demo Portal</title>
+  <meta name="description" content="Your 60-minute exclusive demo viewing session has concluded. Get in touch to schedule an executive technical walkthrough or discuss commercial commissioning." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23121820%22/><text y=%22.88em%22 font-size=%2254%22 font-family=%22sans-serif%22 font-weight=%22900%22 fill=%22%23F43F5E%22 text-anchor=%22middle%22 x=%2250%22>✕</text></svg>" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/gate.css" />
+</head>
+<body class="gate-page">
+  <div class="ambient-glow" style="background: radial-gradient(ellipse at center, rgba(244, 63, 94, 0.15), transparent 70%);"></div>
+
+  <main class="gate-card" style="max-width: 560px;">
+    <div class="brand-pill" style="border-color: rgba(244, 63, 94, 0.25); background: rgba(244, 63, 94, 0.08);">
+      <span class="brand-dot" style="background: #F43F5E; box-shadow: 0 0 8px #F43F5E;"></span>
+      <span style="color: #FDA4AF;">60-Minute Pass Decommissioned</span>
+    </div>
+
+    <h1 class="gate-title">Viewing Session Concluded</h1>
+    <p class="gate-subtitle" id="expired-lead-text">
+      Thank you for exploring our custom-engineered digital web platform. Your 1-hour exclusive evaluation pass has completed.
+    </p>
+
+    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px 20px; text-align: left; margin-bottom: 24px;">
+      <h3 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 6px 0; color: #FFFFFF;">Ready to take the next step?</h3>
+      <p style="font-size: 0.85rem; color: #94A3B8; margin: 0; line-height: 1.5;">
+        Whether you would like to discuss full system deployment, custom POS/ordering integrations, or request an extended presentation for your team:
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <a href="https://wa.me/441618643259?text=Hi%20Shashwat%2C%20I%20just%20completed%20the%20demo%20preview%20and%20would%20like%20to%20discuss%20the%20platform." target="_blank" rel="noopener noreferrer" class="contact-card">
+        <div class="contact-icon whatsapp">
+          💬
+        </div>
+        <div class="contact-info">
+          <strong>Direct WhatsApp Discussion</strong>
+          <span>Message Shashwat directly for immediate response & proposals</span>
+        </div>
+      </a>
+
+      <a href="tel:+441618643259" class="contact-card">
+        <div class="contact-icon phone">
+          📞
+        </div>
+        <div class="contact-info">
+          <strong>Direct Telephone Consultation</strong>
+          <span>Call 0161 864 3259 to review technical scope and timeline</span>
+        </div>
+      </a>
+
+      <a href="mailto:contact@caffenerodigital.com?subject=Digital%20Demo%20Follow-up%20%26%20Walkthrough%20Request&body=Hi%20Shashwat%2C%0A%0AWe%20reviewed%20the%20demo%20and%20would%20like%20to%20schedule%20a%20detailed%20walkthrough.%0A%0ABest%20regards" class="contact-card">
+        <div class="contact-icon email">
+          ✉️
+        </div>
+        <div class="contact-info">
+          <strong>Request Executive Walkthrough</strong>
+          <span>Email our development team for formal specifications</span>
+        </div>
+      </a>
+    </div>
+
+    <div style="margin-top: 28px;">
+      <a href="/" style="color: #64748B; font-size: 0.82rem; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#94A3B8'" onmouseout="this.style.color='#64748B'">
+        ← Return to Client Access Portal
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cafe = urlParams.get('cafe');
+      const leadText = document.getElementById('expired-lead-text');
+
+      if (cafe) {
+        let cafeName = 'your venue';
+        if (cafe === 'caffe-nero') cafeName = 'Caffè Nero';
+        else if (cafe === 'one-club-row') cafeName = 'One Club Row';
+        else if (cafe === 'yeah-man-caribbean') cafeName = 'Yeah Man Caribbean';
+
+        leadText.textContent = `Thank you for exploring the bespoke digital flagship platform engineered for ${cafeName}. Your 1-hour exclusive evaluation pass has now concluded and cannot be reused.`;
+      }
+    })();
+  </script>
+</body>
+</html>
