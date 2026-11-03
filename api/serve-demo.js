@@ -42,7 +42,8 @@ module.exports = async function handler(req, res) {
 
   // 1. Validate cafe exists
   if (!cafe || !ALLOWED_CAFES.includes(cafe)) {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
     return res.end('404 Demo Not Found');
   }
 
@@ -51,18 +52,20 @@ module.exports = async function handler(req, res) {
   const token = cookies.demo_session;
 
   if (!token) {
-    res.writeHead(302, { Location: `/?error=unauthorized&cafe=${cafe}` });
+    res.statusCode = 302;
+    res.setHeader('Location', `/?error=unauthorized&cafe=${cafe}`);
     return res.end();
   }
 
   const verification = verifySession(token);
   if (!verification || !verification.valid) {
-    // If expired, redirect to expired landing page
     if (verification && verification.expired) {
-      res.writeHead(302, { Location: `/expired.html?reason=expired&cafe=${cafe}` });
+      res.statusCode = 302;
+      res.setHeader('Location', `/expired.html?reason=expired&cafe=${cafe}`);
       return res.end();
     }
-    res.writeHead(302, { Location: `/?error=invalid_session` });
+    res.statusCode = 302;
+    res.setHeader('Location', `/?error=invalid_session`);
     return res.end();
   }
 
@@ -70,23 +73,29 @@ module.exports = async function handler(req, res) {
 
   // 3. Check cross-tenant isolation (Key for Caffè Nero cannot view One Club Row)
   if (payload.cafe !== cafe) {
-    res.writeHead(302, { Location: `/?error=forbidden_cafe` });
+    res.statusCode = 302;
+    res.setHeader('Location', `/?error=forbidden_cafe`);
     return res.end();
   }
 
   // 4. Double check database for remote admin revocation
   const keyRecord = await getKey(payload.key);
   if (!keyRecord || keyRecord.status === 'revoked') {
-    res.writeHead(302, { Location: `/expired.html?reason=revoked` });
+    res.statusCode = 302;
+    res.setHeader('Location', `/expired.html?reason=revoked`);
     return res.end();
   }
 
-  // 5. Locate requested file on disk
+  // 5. Locate requested file on disk (resilient across Vercel Lambda and local dev)
   const safeFile = path.normalize(file).replace(/^(\.\.[\/\\])+/, '');
-  const filePath = path.join(__dirname, '..', 'demos', cafe, safeFile);
+  let filePath = path.join(__dirname, '..', 'demos', cafe, safeFile);
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(process.cwd(), 'demos', cafe, safeFile);
+  }
 
   if (!fs.existsSync(filePath)) {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
     return res.end(`404 File Not Found: ${safeFile}`);
   }
 
@@ -116,18 +125,16 @@ module.exports = async function handler(req, res) {
       html = injection + html;
     }
 
-    res.writeHead(200, {
-      'Content-Type': contentType,
-      'Cache-Control': 'no-store, no-cache, must-revalidate'
-    });
+    res.statusCode = 200;
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     return res.end(html);
   }
 
   // 7. For static sub-assets (CSS, JS, images)
   const stream = fs.createReadStream(filePath);
-  res.writeHead(200, {
-    'Content-Type': contentType,
-    'Cache-Control': 'public, max-age=3600'
-  });
+  res.statusCode = 200;
+  res.setHeader('Content-Type', contentType);
+  res.setHeader('Cache-Control', 'public, max-age=3600');
   stream.pipe(res);
 };

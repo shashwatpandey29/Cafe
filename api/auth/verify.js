@@ -7,6 +7,18 @@
 const { getKey, saveKey } = require('../../lib/storage');
 const { signSession, serializeCookie } = require('../../lib/crypto');
 
+function sendJson(res, statusCode, data, headers = {}) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  for (const [k, v] of Object.entries(headers)) {
+    res.setHeader(k, v);
+  }
+  if (typeof res.status === 'function' && typeof res.json === 'function') {
+    return res.status(statusCode).json(data);
+  }
+  res.end(JSON.stringify(data));
+}
+
 // Helper to parse JSON body across Vercel serverless and Node http
 async function parseBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -23,13 +35,16 @@ async function parseBody(req) {
         resolve({});
       }
     });
+    // In case stream was already read or empty
+    setTimeout(() => {
+      if (!body) resolve({});
+    }, 500);
   });
 }
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
-    res.writeHead(405, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    return sendJson(res, 405, { error: 'Method Not Allowed' });
   }
 
   try {
@@ -37,27 +52,24 @@ module.exports = async function handler(req, res) {
     const rawKey = body.key;
 
     if (!rawKey || typeof rawKey !== 'string' || !rawKey.trim()) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ error: 'Please enter a valid identity key.' }));
+      return sendJson(res, 400, { error: 'Please enter a valid identity key.' });
     }
 
     const keyRecord = await getKey(rawKey);
     if (!keyRecord) {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({
+      return sendJson(res, 404, {
         error: 'Identity key not recognized. Please check your passcode and try again.'
-      }));
+      });
     }
 
     const now = Date.now();
 
     // 1. Check if manually revoked
     if (keyRecord.status === 'revoked') {
-      res.writeHead(403, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({
+      return sendJson(res, 403, {
         error: 'This demo pass has been deactivated. Please contact your representative for a new pass.',
         revoked: true
-      }));
+      });
     }
 
     // 2. Check if expired (either marked expired, or expiresAt has passed)
@@ -66,12 +78,11 @@ module.exports = async function handler(req, res) {
         keyRecord.status = 'expired';
         await saveKey(keyRecord);
       }
-      res.writeHead(403, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({
+      return sendJson(res, 403, {
         error: 'This demo pass has reached its 1-hour viewing limit and has permanently expired.',
         expired: true,
         expiredAt: keyRecord.expiresAt
-      }));
+      });
     }
 
     let expiresAt = keyRecord.expiresAt;
@@ -96,7 +107,7 @@ module.exports = async function handler(req, res) {
       expiresAt
     });
 
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
     const cookieHeader = serializeCookie('demo_session', token, {
       maxAge: remainingSeconds,
       secure: isProduction,
@@ -105,23 +116,19 @@ module.exports = async function handler(req, res) {
       path: '/'
     });
 
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Set-Cookie': cookieHeader
-    });
-
-    return res.end(JSON.stringify({
+    return sendJson(res, 200, {
       success: true,
       cafe: keyRecord.cafe,
       clientName: keyRecord.clientName,
       redirectUrl: `/demo/${keyRecord.cafe}`,
       expiresAt,
       remainingSeconds
-    }));
+    }, {
+      'Set-Cookie': cookieHeader
+    });
 
   } catch (error) {
     console.error('[API /auth/verify] Error:', error);
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({ error: 'Internal server verification error' }));
+    return sendJson(res, 500, { error: 'Internal server verification error: ' + error.message });
   }
 };
