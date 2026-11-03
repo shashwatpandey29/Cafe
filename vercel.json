@@ -14,7 +14,7 @@
     { "source": "/api/admin/keys", "destination": "/api/admin/keys.js" },
     { "source": "/demo/:cafe", "destination": "/api/serve-demo.js?cafe=:cafe" },
     { "source": "/demo/:cafe/", "destination": "/api/serve-demo.js?cafe=:cafe" },
-    { "source": "/demo/:cafe/:file*", "destination": "/api/serve-demo.js?cafe=:cafe&file=:file*" }
+    { "source": "/demo/:cafe/:file*", "destination": "/api/serve-demo.js?cafe=:cafe&file=:file" }
   ],
   "headers": [
     {
