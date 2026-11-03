@@ -1,7 +1,7 @@
 /**
  * POST /api/auth/verify
  * Validates Identity Key, activates 1-hour timer upon first entry,
- * and sets signed HTTP-only session cookie.
+ * records telemetry (IP, userAgent, viewCount), and sets signed HTTP-only session cookie.
  */
 
 const { getKey, saveKey } = require('../../lib/storage');
@@ -35,7 +35,6 @@ async function parseBody(req) {
         resolve({});
       }
     });
-    // In case stream was already read or empty
     setTimeout(() => {
       if (!body) resolve({});
     }, 500);
@@ -88,14 +87,22 @@ module.exports = async function handler(req, res) {
     let expiresAt = keyRecord.expiresAt;
     let durationMinutes = keyRecord.durationMinutes || 60;
 
+    // Track client telemetry
+    keyRecord.viewCount = (keyRecord.viewCount || 0) + 1;
+    keyRecord.lastActiveAt = now;
+    const clientIp = req.headers['x-forwarded-for'] || (req.socket && req.socket.remoteAddress) || null;
+    if (clientIp) keyRecord.ip = clientIp.split(',')[0].trim();
+    keyRecord.userAgent = req.headers['user-agent'] || null;
+
     // 3. First activation (starts the 1-hour timer!)
     if (!keyRecord.firstActivatedAt) {
       keyRecord.firstActivatedAt = now;
       keyRecord.expiresAt = now + (durationMinutes * 60 * 1000);
       keyRecord.status = 'active';
       expiresAt = keyRecord.expiresAt;
-      await saveKey(keyRecord);
     }
+
+    await saveKey(keyRecord);
 
     const remainingMs = Math.max(0, expiresAt - now);
     const remainingSeconds = Math.floor(remainingMs / 1000);

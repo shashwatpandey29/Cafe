@@ -2,13 +2,15 @@
  * /api/admin/keys
  * Executive Key Generation & Session Administration API
  * Gated by HMAC Signed Admin Cookie or Timing-Safe Authorization Header.
+ * Features: Key Generation, Lifecycle Management, Real-time Analytics,
+ * Lead Status Tracking, Re-arming Expired Passes, and Audit Telemetry.
  */
 
 const crypto = require('crypto');
 const { listKeys, getKey, saveKey, deleteKey } = require('../../lib/storage');
 const { generateIdentityKey, verifySession, parseCookies } = require('../../lib/crypto');
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'NeroAdmin#2026!Key';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shashwat2908';
 
 function timingSafeCheck(input, secret) {
   if (typeof input !== 'string' || typeof secret !== 'string') return false;
@@ -78,43 +80,67 @@ module.exports = async function handler(req, res) {
   const now = Date.now();
 
   try {
-    // GET: List all keys with dynamic computed status
+    // GET: List all keys with dynamic computed status & global analytics
     if (req.method === 'GET') {
       const keys = await listKeys();
+
+      let activeNowCount = 0;
+      let activeSessionsCount = 0;
+      let pendingCount = 0;
+      let expiredCount = 0;
+
       const enriched = keys.map(k => {
         let computedStatus = k.status;
         let remainingSeconds = 0;
+        const isOnline = Boolean(k.lastActiveAt && (now - k.lastActiveAt) < 65000);
 
         if (k.status === 'revoked') {
           computedStatus = 'revoked';
         } else if (k.expiresAt && now >= k.expiresAt) {
           computedStatus = 'expired';
+          expiredCount++;
         } else if (k.status === 'active' && k.expiresAt && now < k.expiresAt) {
           computedStatus = 'active';
           remainingSeconds = Math.floor((k.expiresAt - now) / 1000);
+          activeSessionsCount++;
+          if (isOnline) activeNowCount++;
         } else if (!k.firstActivatedAt) {
           computedStatus = 'pending';
+          pendingCount++;
         }
 
         return {
           ...k,
           computedStatus,
-          remainingSeconds
+          remainingSeconds,
+          isOnline,
+          leadStatus: k.leadStatus || 'Pitching',
+          notes: k.notes || '',
+          viewCount: k.viewCount || 0
         };
       }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
+      const stats = {
+        totalKeys: keys.length,
+        activeNow: activeNowCount,
+        activeSessions: activeSessionsCount,
+        pending: pendingCount,
+        expired: expiredCount
+      };
+
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      return res.end(JSON.stringify({ keys: enriched }));
+      return res.end(JSON.stringify({ keys: enriched, stats }));
     }
 
-    // POST: Manage keys (generate, extend, revoke, delete)
+    // POST: Manage keys (generate, extend, reset, update_lead, revoke, delete)
     if (req.method === 'POST') {
       const body = await parseBody(req);
       const action = body.action || 'generate';
 
+      // 1. Generate Key
       if (action === 'generate') {
-        const { cafe, clientName, durationMinutes = 60 } = body;
+        const { cafe, clientName, durationMinutes = 60, leadStatus = 'Pitching', notes = '' } = body;
         if (!cafe) {
           res.statusCode = 400;
           res.setHeader('Content-Type', 'application/json');
@@ -136,7 +162,13 @@ module.exports = async function handler(req, res) {
           createdAt: now,
           firstActivatedAt: null,
           expiresAt: null,
-          revokedAt: null
+          revokedAt: null,
+          lastActiveAt: null,
+          viewCount: 0,
+          leadStatus: leadStatus || 'Pitching',
+          notes: notes || '',
+          ip: null,
+          userAgent: null
         };
 
         await saveKey(record);
@@ -145,6 +177,7 @@ module.exports = async function handler(req, res) {
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
+      // 2. Extend Active/Expired Pass
       if (action === 'extend') {
         const { key, additionalMinutes = 30 } = body;
         const record = await getKey(key);
@@ -166,6 +199,48 @@ module.exports = async function handler(req, res) {
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
+      // 3. Reset / Re-Arm Pass (New Feature: give a client another 1-hr chance)
+      if (action === 'reset') {
+        const { key, durationMinutes } = body;
+        const record = await getKey(key);
+        if (!record) {
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
+          return res.end(JSON.stringify({ error: 'Key not found' }));
+        }
+
+        record.status = 'pending';
+        record.firstActivatedAt = null;
+        record.expiresAt = null;
+        record.revokedAt = null;
+        if (durationMinutes) record.durationMinutes = parseInt(durationMinutes, 10);
+
+        await saveKey(record);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        return res.end(JSON.stringify({ success: true, key: record, message: 'Pass re-armed as fresh pending pass.' }));
+      }
+
+      // 4. Update Lead Status & Notes (New Feature: CRM notes per prospect)
+      if (action === 'update_lead') {
+        const { key, leadStatus, notes } = body;
+        const record = await getKey(key);
+        if (!record) {
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
+          return res.end(JSON.stringify({ error: 'Key not found' }));
+        }
+
+        if (leadStatus) record.leadStatus = leadStatus;
+        if (notes !== undefined) record.notes = notes;
+
+        await saveKey(record);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        return res.end(JSON.stringify({ success: true, key: record }));
+      }
+
+      // 5. Revoke Pass
       if (action === 'revoke') {
         const { key } = body;
         const record = await getKey(key);
@@ -183,6 +258,7 @@ module.exports = async function handler(req, res) {
         return res.end(JSON.stringify({ success: true, key: record }));
       }
 
+      // 6. Delete Pass
       if (action === 'delete') {
         const { key } = body;
         await deleteKey(key);

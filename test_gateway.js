@@ -327,7 +327,7 @@ async function runTests() {
     const adminReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
+      headers: { authorization: 'Bearer shashwat2908' },
       body: {
         action: 'generate',
         cafe: 'yeah-man-caribbean',
@@ -347,7 +347,7 @@ async function runTests() {
     const extendReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
+      headers: { authorization: 'Bearer shashwat2908' },
       body: {
         action: 'extend',
         key: newKey,
@@ -362,7 +362,7 @@ async function runTests() {
     const revokeReq = createMockReq({
       url: '/api/admin/keys',
       method: 'POST',
-      headers: { authorization: 'Bearer NeroAdmin#2026!Key' },
+      headers: { authorization: 'Bearer shashwat2908' },
       body: {
         action: 'revoke',
         key: newKey

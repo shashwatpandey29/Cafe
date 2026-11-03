@@ -7,7 +7,7 @@
 const crypto = require('crypto');
 const { signSession, verifySession, serializeCookie, parseCookies } = require('../../lib/crypto');
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'NeroAdmin#2026!Key';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shashwat2908';
 
 // Rate limiting map: ip -> { failedAttempts, lockoutUntil }
 const loginAttempts = new Map();
